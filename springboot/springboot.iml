@@ -25,8 +25,9 @@
       <excludeFolder url="file://$MODULE_DIR$/${project.build.directory}/test-classes" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
-    <orderEntry type="jdk" jdkName="1.8 (2)" jdkType="JavaSDK" />
+    <orderEntry type="jdk" jdkName="1.8 (x86)" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="bangdb-client-java" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.7.1" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:2.7.1" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:2.7.1" level="project" />
@@ -88,5 +89,8 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-jcl:5.3.21" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-test:5.3.21" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.xmlunit:xmlunit-core:2.9.0" level="project" />
+    <orderEntry type="library" name="Maven: com.bangdb:bangdb-client-java:2.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.json:json:20190722" level="project" />
+    <orderEntry type="library" name="Maven: net.java.dev.jna:jna:5.10.0" level="project" />
   </component>
 </module>

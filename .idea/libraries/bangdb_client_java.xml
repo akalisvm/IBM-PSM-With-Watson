@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="bangdb-client-java">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/springboot/src/main/resources/lib/bangdb-client-java.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
