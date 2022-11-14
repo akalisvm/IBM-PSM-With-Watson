@@ -1,0 +1,17 @@
+{
+  "groups": [
+    {
+      "name": "nhs.login",
+      "type": "ucl.ac.uk.ibmpsmwithwatson.common.NHSLoginProperties",
+      "sourceType": "ucl.ac.uk.ibmpsmwithwatson.common.NHSLoginProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "nhs.login.client-id",
+      "type": "java.lang.String",
+      "sourceType": "ucl.ac.uk.ibmpsmwithwatson.common.NHSLoginProperties"
+    }
+  ],
+  "hints": []
+}
