@@ -1,5 +1,6 @@
 package ucl.ac.uk.ibmpsmwithwatson.common;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,9 +21,8 @@ import java.util.Objects;
 @Component
 public class NHSLoginClient {
 
-    private static final String GRANT_TYPE = "authorization_code";
-    private static final String CLIENT_ASSERTION_TYPE = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
-    private static final String REDIRECT_URI = "http://localhost:9090/callback";
+    @Value("${server.ip}")
+    private String IP;
 
     private final NHSLoginProperties nhsLoginProperties;
     private final RestTemplate restTemplate;
@@ -37,10 +37,10 @@ public class NHSLoginClient {
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("grant_type", GRANT_TYPE);
+        map.add("grant_type", "authorization_code");
         map.add("code", code);
-        map.add("redirect_uri", REDIRECT_URI);
-        map.add("client_assertion_type", CLIENT_ASSERTION_TYPE);
+        map.add("redirect_uri", "http://" + IP + ":9090/login/nhs");
+        map.add("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer");
         map.add("client_assertion", TokenService.getJws(nhsLoginProperties.getClientId(), nhsLoginProperties.getTokenEndpoint()));
 
         URI uri = URI.create(nhsLoginProperties.getTokenEndpoint());
