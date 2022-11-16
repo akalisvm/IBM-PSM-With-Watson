@@ -6,14 +6,14 @@
     height: 6vh
     ">
     <div style="padding-top: 0">
-      <el-button type="text" style="font-weight: bold; font-size: 20px; color: white;">
+      <el-button link style="font-weight: bold; font-size: 20px; color: white;">
         IBM PSM With Watson
       </el-button>
     </div>
     <div style="flex: 1" />
     <div style="min-width: 80px; padding-top: 10px; font-family: Arial, sans-serif">
       <el-dropdown>
-        <el-button type="text">
+        <el-button link>
           {{ this.user.email }}
         </el-button>
         <template #dropdown>

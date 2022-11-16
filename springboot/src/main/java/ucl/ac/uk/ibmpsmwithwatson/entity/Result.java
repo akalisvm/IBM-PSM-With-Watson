@@ -1,4 +1,4 @@
-package ucl.ac.uk.ibmpsmwithwatson.common;
+package ucl.ac.uk.ibmpsmwithwatson.entity;
 
 import lombok.Data;
 
@@ -22,7 +22,7 @@ public class Result<T> {
 
     public static <T> Result<T> success(T data) {
         Result<T> result = new Result<>(data);
-        result.setCode("0");
+        result.setCode("10000");
         result.setMsg("success");
         result.setData(data);
         return result;

@@ -8,7 +8,7 @@ const request = axios.create({
 
 request.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json;charset=utf-8';
-    if(getCookie("user") !== null) {
+    if(getCookie("user")) {
         config.headers['token'] = JSON.parse(getCookie("user")).token;
     }
     return config
@@ -26,8 +26,7 @@ request.interceptors.response.use(
             res = res ? JSON.parse(res) : res
         }
         return res;
-    },
-    error => {
+    }, error => {
         console.log('err' + error)
         return Promise.reject(error)
     }

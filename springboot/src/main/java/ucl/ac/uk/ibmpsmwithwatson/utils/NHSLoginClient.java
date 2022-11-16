@@ -1,4 +1,4 @@
-package ucl.ac.uk.ibmpsmwithwatson.common;
+package ucl.ac.uk.ibmpsmwithwatson.utils;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -12,6 +12,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
+import ucl.ac.uk.ibmpsmwithwatson.config.NHSLoginProperties;
 import ucl.ac.uk.ibmpsmwithwatson.entity.Token;
 import ucl.ac.uk.ibmpsmwithwatson.entity.User;
 
@@ -41,7 +42,7 @@ public class NHSLoginClient {
         map.add("code", code);
         map.add("redirect_uri", "http://" + IP + ":9090/login/nhs");
         map.add("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer");
-        map.add("client_assertion", TokenService.getJws(nhsLoginProperties.getClientId(), nhsLoginProperties.getTokenEndpoint()));
+        map.add("client_assertion", NHSLoginTokenService.getJws(nhsLoginProperties.getClientId(), nhsLoginProperties.getTokenEndpoint()));
 
         URI uri = URI.create(nhsLoginProperties.getTokenEndpoint());
 

@@ -6,6 +6,7 @@
     <div style="width: 100%; height: 88vh; overflow: hidden; background-color: aliceblue">
       <div style="width: 400px; margin: 150px auto;">
         <el-card>
+          <img width="190" src="../../public/IXNNHS.png" />
           <div style="color: black; font-size: 30px; padding-bottom: 30px">
             Welcome to <br/> IBM PSM With Watson
           </div>
@@ -69,7 +70,16 @@ export default {
     login() {
       this.$refs['form'].validate((valid) => {
         if(valid) {
-
+          request.post("/login/app", this.form).then(res => {
+            if(res.code === "10000") {
+              this.$router.push("/patients")
+            } else {
+              this.$message({
+                type: "error",
+                message: res.msg
+              })
+            }
+          })
         }
       })
     }

@@ -1,7 +1,9 @@
-package ucl.ac.uk.ibmpsmwithwatson.common;
+package ucl.ac.uk.ibmpsmwithwatson.config;
 
+import lombok.Data;
 import org.springframework.context.annotation.Configuration;
 
+@Data
 @Configuration
 public class NHSLoginProperties {
     private String environmentUri = "https://oidc.mock.signin.nhs.uk";
@@ -19,21 +21,5 @@ public class NHSLoginProperties {
 
     public String getUserInfoEndpoint() {
         return environmentUri + userInfoPath;
-    }
-
-    public void setEnvironmentUri(String environmentUri) {
-        this.environmentUri = environmentUri;
-    }
-
-    public void setTokenPath(String tokenPath) {
-        this.tokenPath = tokenPath;
-    }
-
-    public void setUserInfoPath(String userInfoPath) {
-        this.userInfoPath = userInfoPath;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
     }
 }

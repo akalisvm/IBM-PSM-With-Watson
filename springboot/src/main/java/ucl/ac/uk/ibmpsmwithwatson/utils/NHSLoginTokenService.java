@@ -1,4 +1,4 @@
-package ucl.ac.uk.ibmpsmwithwatson.common;
+package ucl.ac.uk.ibmpsmwithwatson.utils;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -16,10 +16,10 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
-public class TokenService {
+public class NHSLoginTokenService {
 
     private static final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RS512;
-    private static final Logger logger = LoggerFactory.getLogger(TokenService.class);
+    private static final Logger logger = LoggerFactory.getLogger(NHSLoginTokenService.class);
 
     public static String getJws(String clientId, String tokenUri) {
         try {
