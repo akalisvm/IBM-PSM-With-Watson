@@ -5,8 +5,8 @@
         <Header/>
       </el-header>
       <el-container style="padding: 0">
-        <el-aside>
-          <Aside/>
+        <el-aside :style="{ width: fIsCollapse ? '64px' : '220px' }">
+          <Aside v-on:getIsCollapse="getIsCollapseHandle" v-bind:isCollapse="fIsCollapse" />
         </el-aside>
         <el-main>
           <router-view/>
@@ -27,6 +27,16 @@ export default {
   components: {
     Aside,
     Header
+  },
+  data() {
+    return {
+      fIsCollapse: false,
+    }
+  },
+  methods: {
+    getIsCollapseHandle(data) {
+      this.fIsCollapse = data;
+    }
   }
 }
 </script>

@@ -12,49 +12,44 @@
     </div>
     <div style="flex: 1" />
     <div style="min-width: 80px; padding-top: 10px; font-family: Arial, sans-serif">
-      <el-dropdown>
-        <el-button link>
+      <el-dropdown v-if="this.login">
+        <el-button link style="color: white;">
           {{ this.user.email }}
         </el-button>
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item> Sign up with {{ this.user.email }} </el-dropdown-item>
-            <el-dropdown-item @click="exit" divided>Logout</el-dropdown-item>
+            <el-dropdown-item @click="goToLogin" divided>Logout</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
+      <el-button link @click="goToLogin" style="font-size: 20px; color: white" v-if="!this.login">
+        Sign up
+      </el-button>
     </div>
-
   </div>
 </template>
 
 <script>
-import request from "@/utils/request";
 import { getCookie } from "@/utils/cookie.utils";
 export default {
   name: "Header",
   data() {
     return {
       user: {},
-      form: {},
-      path: this.$route.path,
-      breadList: []
+      login: false
     }
   },
   created() {
-    this.user = JSON.parse(getCookie("user"))
-    this.getMatched()
-  },
-  watch: {
-    $route(to, form) {
-      this.breadList = this.$route.matched
+    if(getCookie("user")) {
+      this.user = JSON.parse(getCookie("user"))
+      this.login = true
+    } else {
+      this.login = false
     }
   },
   methods: {
-    getMatched() {
-      this.breadList = this.$route.matched
-    },
-    exit() {
+    goToLogin() {
       this.$router.push("/login")
     }
   }

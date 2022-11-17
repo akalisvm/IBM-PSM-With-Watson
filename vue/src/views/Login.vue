@@ -1,6 +1,6 @@
 <template>
   <el-header style="margin: 0; padding: 0">
-    <HeaderOuter/>
+    <Header/>
   </el-header>
   <div style="font-family: Arial, sans-serif; text-align: center">
     <div style="width: 100%; height: 88vh; overflow: hidden; background-color: aliceblue">
@@ -29,6 +29,7 @@
           </div>
         </el-card>
       </div>
+
     </div>
     <div>
       <p>Copyright &copy 2022-2023 by Tianang Chen. All rights reserved.</p>
@@ -38,14 +39,13 @@
 
 <script>
 import request from "@/utils/request";
-import HeaderOuter from "@/components/HeaderOuter";
-import { ref } from "vue";
+import Header from "@/components/Header";
 import { getCookie, delCookie } from "@/utils/cookie.utils";
 
 export default {
   name: 'Login',
   components: {
-    HeaderOuter
+    Header
   },
   data() {
     return {

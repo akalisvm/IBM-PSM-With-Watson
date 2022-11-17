@@ -35,7 +35,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         } catch (AlgorithmMismatchException e) {
             result = Result.error("10012", "Token Algorithm Mismatch");
         } catch (Exception e) {
-            result = Result.error("10013", "Unavailable Token");
+            result = Result.error("10013", "No Token Included");
         }
 
         // response by json
