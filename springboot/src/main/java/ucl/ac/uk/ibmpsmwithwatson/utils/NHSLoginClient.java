@@ -12,7 +12,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
-import ucl.ac.uk.ibmpsmwithwatson.config.NHSLoginProperties;
+import ucl.ac.uk.ibmpsmwithwatson.config.NHSLoginConfig;
 import ucl.ac.uk.ibmpsmwithwatson.entity.Token;
 import ucl.ac.uk.ibmpsmwithwatson.entity.User;
 
@@ -25,11 +25,11 @@ public class NHSLoginClient {
     @Value("${server.ip}")
     private String IP;
 
-    private final NHSLoginProperties nhsLoginProperties;
+    private final NHSLoginConfig nhsLoginConfig;
     private final RestTemplate restTemplate;
 
-    NHSLoginClient(NHSLoginProperties nhsLoginProperties, RestTemplateBuilder restTemplateBuilder) {
-        this.nhsLoginProperties = nhsLoginProperties;
+    NHSLoginClient(NHSLoginConfig nhsLoginConfig, RestTemplateBuilder restTemplateBuilder) {
+        this.nhsLoginConfig = nhsLoginConfig;
         this.restTemplate = restTemplateBuilder.build();
     }
 
@@ -42,9 +42,9 @@ public class NHSLoginClient {
         map.add("code", code);
         map.add("redirect_uri", "http://" + IP + ":9090/login/nhs");
         map.add("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer");
-        map.add("client_assertion", NHSLoginTokenService.getJws(nhsLoginProperties.getClientId(), nhsLoginProperties.getTokenEndpoint()));
+        map.add("client_assertion", NHSLoginTokenService.getJws(nhsLoginConfig.getClientId(), nhsLoginConfig.getTokenEndpoint()));
 
-        URI uri = URI.create(nhsLoginProperties.getTokenEndpoint());
+        URI uri = URI.create(nhsLoginConfig.getTokenEndpoint());
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, httpHeaders);
 
@@ -54,7 +54,7 @@ public class NHSLoginClient {
     }
 
     public User getUserInfo(String accessToken) {
-        URI userinfoUri = URI.create(nhsLoginProperties.getUserInfoEndpoint());
+        URI userinfoUri = URI.create(nhsLoginConfig.getUserInfoEndpoint());
         HttpHeaders userInfoHeaders = new HttpHeaders();
         userInfoHeaders.setBearerAuth(accessToken);
 

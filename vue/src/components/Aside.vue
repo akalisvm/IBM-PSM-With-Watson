@@ -3,7 +3,6 @@
     font-family: Arial, sans-serif;
     color: white;"
   >
-
     <el-menu
         style="min-height: 94vh; font-weight: bold"
         :default-active="path"

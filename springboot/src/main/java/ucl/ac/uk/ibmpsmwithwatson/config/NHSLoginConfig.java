@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Data
 @Configuration
-public class NHSLoginProperties {
+public class NHSLoginConfig {
     private String environmentUri = "https://oidc.mock.signin.nhs.uk";
     private String tokenPath = "/token";
     private String userInfoPath = "/userinfo";

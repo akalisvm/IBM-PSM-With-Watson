@@ -1,13 +1,12 @@
 package ucl.ac.uk.ibmpsmwithwatson.controller;
 
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import ucl.ac.uk.ibmpsmwithwatson.utils.JwtUtils;
 import ucl.ac.uk.ibmpsmwithwatson.utils.NHSLoginClient;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Result;
+import ucl.ac.uk.ibmpsmwithwatson.utils.Result;
 import ucl.ac.uk.ibmpsmwithwatson.entity.User;
 
 import javax.servlet.http.Cookie;
@@ -50,7 +49,7 @@ public class LoginController {
         User appUser = new User();
         appUser.setEmail(user.getEmail());
         appUser.setApp_token(JwtUtils.getToken(map));
-        setUserInfoCookie(user, response);
+        setUserInfoCookie(appUser, response);
         return Result.success(appUser);
     }
 

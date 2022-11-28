@@ -3,7 +3,7 @@ package ucl.ac.uk.ibmpsmwithwatson.controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Result;
+import ucl.ac.uk.ibmpsmwithwatson.utils.Result;
 
 @RestController
 @RequestMapping("/test")

@@ -24,7 +24,7 @@
         </template>
       </el-dropdown>
       <el-button link @click="goToLogin" style="font-size: 20px; color: white" v-if="!this.login">
-        Sign up
+        Sign in
       </el-button>
     </div>
   </div>

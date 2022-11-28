@@ -6,7 +6,6 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Result;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,15 +20,15 @@ public class JwtInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        // get the token from the header with the key "token"
+        // Get the token from the header with the key "token"
         String token = request.getHeader("token");
         Result<?> result;
 
         try {
-            // verify the token
+            // Verify the token
             return JwtUtils.verifyToken(token);
         } catch (SignatureVerificationException e) {
-            result = Result.error("10010", "Signature Verification failed");
+            result = Result.error("10010", "Signature Verification Failed");
         } catch (TokenExpiredException e) {
             result = Result.error("10011", "Token Expired");
         } catch (AlgorithmMismatchException e) {
@@ -38,7 +37,7 @@ public class JwtInterceptor implements HandlerInterceptor {
             result = Result.error("10013", "No Token Included");
         }
 
-        // response by json
+        // Response in json
         String json = new ObjectMapper().writeValueAsString(result);
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().println(json);
