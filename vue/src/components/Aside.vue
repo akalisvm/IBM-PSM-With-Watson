@@ -22,15 +22,21 @@
         <el-icon v-if="!isCollapse"><Fold /></el-icon>
         <el-icon v-if="isCollapse"><Expand /></el-icon>
       </el-button>
-      <el-menu-item index="/patients">
+      <el-menu-item index="/patients" v-if="this.user.role==='pro'">
         <el-icon><UserFilled /></el-icon>
-        <span>Patients</span>
+        <span>My Patients</span>
+      </el-menu-item>
+      <el-menu-item index="/personal" v-if="this.user.role==='patient'">
+        <el-icon><UserFilled /></el-icon>
+        <span>Personal Center</span>
       </el-menu-item>
     </el-menu>
   </div>
 </template>
 
 <script>
+import {getCookie} from "@/utils/cookie.utils";
+
 export default {
   name: "Aside",
   data() {
@@ -41,8 +47,8 @@ export default {
     }
   },
   created() {
-    let userStr = sessionStorage.getItem("user") || "{}"
-    this.user = JSON.parse(userStr)
+    this.user = JSON.parse(getCookie("user"))
+    console.log(this.user.role)
   },
   methods: {
     toggleCollapse() {

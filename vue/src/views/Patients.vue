@@ -1,6 +1,13 @@
 <template>
-  <div>
-    <h1>{{ this.user.email }}</h1>
+  <div style="font-family: Arial, sans-serif;">
+    <el-card>
+      <template #header>
+        <div>
+          <span>Status</span>
+        </div>
+      </template>
+      <el-empty />
+    </el-card>
   </div>
 </template>
 

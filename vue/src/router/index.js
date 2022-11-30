@@ -13,7 +13,12 @@ const routes = [
         path: 'patients',
         name: 'Patients',
         component: () => import("@/views/Patients")
-      }
+      },
+      {
+        path: 'personal',
+        name: 'Personal',
+        component: () => import("@/views/Personal")
+      },
     ]
   },
   {

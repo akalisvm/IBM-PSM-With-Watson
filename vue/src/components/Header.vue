@@ -5,20 +5,18 @@
     font-family: Arial, sans-serif;
     height: 6vh
     ">
-    <div style="padding-top: 0">
+    <div style="padding-top: 12px; padding-left: 10px">
       <el-button link style="font-weight: bold; font-size: 20px; color: white;">
         IBM PSM With Watson
       </el-button>
     </div>
     <div style="flex: 1" />
-    <div style="min-width: 80px; padding-top: 10px; font-family: Arial, sans-serif">
+    <div style="min-width: 80px; padding-top: 10px; padding-right: 10px; font-family: Arial, sans-serif">
       <el-dropdown v-if="this.login">
-        <el-button link style="color: white;">
-          {{ this.user.email }}
-        </el-button>
+        <el-avatar src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" />
         <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item> Sign up with {{ this.user.email }} </el-dropdown-item>
+          <el-dropdown-menu style="font-family: Arial, sans-serif;">
+            <el-dropdown-item disabled> Sign up with {{ this.user.email }} </el-dropdown-item>
             <el-dropdown-item @click="goToLogin" divided>Logout</el-dropdown-item>
           </el-dropdown-menu>
         </template>

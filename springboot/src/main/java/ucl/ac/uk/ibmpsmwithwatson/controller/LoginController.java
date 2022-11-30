@@ -33,21 +33,28 @@ public class LoginController {
     public Result<?> NHSLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
         String accessToken = nhsLoginClient.getAccessToken(code);
         User nhsUser = nhsLoginClient.getUserInfo(accessToken);
+        nhsUser.setRole("patient");
         nhsUser.setApp_token(JwtUtils.getToken(nhsUser.toMap(nhsUser)));
         setUserInfoCookie(nhsUser, response);
-        response.sendRedirect("http://" + IP + ":8080/patients");
+        response.sendRedirect("http://" + IP + ":8080/personal");
         return Result.success(nhsUser);
     }
 
     @PostMapping("/app")
     public Result<?> AppLogin(@RequestBody User user, HttpServletResponse response) throws JsonProcessingException, UnsupportedEncodingException {
-        if(!user.getEmail().equals("test@gmail.com") || !user.getPassword().equals("123")) {
+        if((!user.getEmail().equals("patient@test.com") && !user.getEmail().equals("pro@test.com") )
+                || !user.getPassword().equals("123")) {
             return Result.error("10001", "Incorrect email or password");
         }
         Map<String, String> map = new HashMap<>();
         map.put("email", user.getEmail());
         User appUser = new User();
         appUser.setEmail(user.getEmail());
+        if(user.getEmail().startsWith("patient")) {
+            appUser.setRole("patient");
+        } else {
+            appUser.setRole("pro");
+        }
         appUser.setApp_token(JwtUtils.getToken(map));
         setUserInfoCookie(appUser, response);
         return Result.success(appUser);

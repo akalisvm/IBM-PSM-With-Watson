@@ -72,9 +72,14 @@ export default {
         if(valid) {
           request.post("/login/app", this.form).then(res => {
             if(res.code === "10000") {
-              this.$router.push("/patients")
+              if(res.data.role === "patient") {
+                this.$router.push("/personal")
+              } else {
+                this.$router.push("/patients")
+              }
             } else {
-              this.$message({
+              this.$notify({
+                title: "Login Failed",
                 type: "error",
                 message: res.msg
               })

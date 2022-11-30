@@ -4,7 +4,7 @@
       <el-header style="padding: 0; height: 6vh">
         <Header/>
       </el-header>
-      <el-container style="padding: 0">
+      <el-container style="padding: 0; background-color: #f2f2f2">
         <el-aside :style="{ width: fIsCollapse ? '64px' : '220px' }">
           <Aside v-on:getIsCollapse="getIsCollapseHandle" v-bind:isCollapse="fIsCollapse" />
         </el-aside>
