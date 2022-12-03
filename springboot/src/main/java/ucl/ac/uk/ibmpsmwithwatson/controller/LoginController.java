@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import ucl.ac.uk.ibmpsmwithwatson.utils.JwtUtils;
-import ucl.ac.uk.ibmpsmwithwatson.utils.NHSLoginClient;
-import ucl.ac.uk.ibmpsmwithwatson.utils.Result;
+import ucl.ac.uk.ibmpsmwithwatson.util.JwtUtil;
+import ucl.ac.uk.ibmpsmwithwatson.util.NHSLoginClient;
+import ucl.ac.uk.ibmpsmwithwatson.util.Result;
 import ucl.ac.uk.ibmpsmwithwatson.entity.User;
 
 import javax.servlet.http.Cookie;
@@ -34,7 +34,7 @@ public class LoginController {
         String accessToken = nhsLoginClient.getAccessToken(code);
         User nhsUser = nhsLoginClient.getUserInfo(accessToken);
         nhsUser.setRole("patient");
-        nhsUser.setApp_token(JwtUtils.getToken(nhsUser.toMap(nhsUser)));
+        nhsUser.setApp_token(JwtUtil.getToken(nhsUser.toMap(nhsUser)));
         setUserInfoCookie(nhsUser, response);
         response.sendRedirect("http://" + IP + ":8080/personal");
         return Result.success(nhsUser);
@@ -42,7 +42,7 @@ public class LoginController {
 
     @PostMapping("/app")
     public Result<?> AppLogin(@RequestBody User user, HttpServletResponse response) throws JsonProcessingException, UnsupportedEncodingException {
-        if((!user.getEmail().equals("patient@test.com") && !user.getEmail().equals("pro@test.com") )
+        if((!user.getEmail().equals("patient@test.com") && !user.getEmail().equals("doctor@test.com") )
                 || !user.getPassword().equals("123")) {
             return Result.error("10001", "Incorrect email or password");
         }
@@ -53,9 +53,9 @@ public class LoginController {
         if(user.getEmail().startsWith("patient")) {
             appUser.setRole("patient");
         } else {
-            appUser.setRole("pro");
+            appUser.setRole("doctor");
         }
-        appUser.setApp_token(JwtUtils.getToken(map));
+        appUser.setApp_token(JwtUtil.getToken(map));
         setUserInfoCookie(appUser, response);
         return Result.success(appUser);
     }

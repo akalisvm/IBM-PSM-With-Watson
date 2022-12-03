@@ -7,19 +7,30 @@
       </div>
     </el-card>
     <div><br /></div>
-    <el-card style="height: 80vh;">
-      <el-tabs v-model="activeName">
-        <el-tab-pane label="Status" name="first">
-          Status
-        </el-tab-pane>
-        <el-tab-pane label="Outreach Events" name="second">
-          Outreach Events
-        </el-tab-pane>
-        <el-tab-pane label="Online Chatting" name="third">
-          Online Chatting
-        </el-tab-pane>
-      </el-tabs>
-    </el-card>
+    <div>
+      <el-card style="height: 80vh;">
+        <el-tabs v-model="activeName">
+          <el-tab-pane label="Healthcare Records" name="first">
+            <el-table :data="healthcareData" style="width: 100%">
+              <el-table-column prop="no." label="No."/>
+              <el-table-column prop="time" label="Time" />
+              <el-table-column prop="qname" label="Questionnaire Name" />
+              <el-table-column prop="result" label="Result" />
+              <el-table-column fixed="right" label="Operation">
+                <template #default>
+                  <el-button link type="primary" size="small" @click="handleClick">
+                    Detail
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="Outreach Events" name="second">
+            Outreach Events
+          </el-tab-pane>
+        </el-tabs>
+      </el-card>
+    </div>
   </div>
 </template>
 
@@ -32,7 +43,7 @@ export default {
   data() {
     return {
       user: {},
-      activeName: 'first'
+      activeName: 'first',
     }
   },
   created() {

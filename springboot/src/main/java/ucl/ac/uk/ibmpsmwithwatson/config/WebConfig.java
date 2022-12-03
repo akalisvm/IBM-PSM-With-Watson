@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import ucl.ac.uk.ibmpsmwithwatson.utils.JwtInterceptor;
+import ucl.ac.uk.ibmpsmwithwatson.util.JwtInterceptor;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {

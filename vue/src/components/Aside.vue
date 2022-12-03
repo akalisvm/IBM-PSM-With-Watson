@@ -22,7 +22,7 @@
         <el-icon v-if="!isCollapse"><Fold /></el-icon>
         <el-icon v-if="isCollapse"><Expand /></el-icon>
       </el-button>
-      <el-menu-item index="/patients" v-if="this.user.role==='pro'">
+      <el-menu-item index="/patients" v-if="this.user.role==='doctor'">
         <el-icon><UserFilled /></el-icon>
         <span>My Patients</span>
       </el-menu-item>

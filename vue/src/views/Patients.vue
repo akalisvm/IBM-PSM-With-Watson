@@ -1,9 +1,9 @@
 <template>
   <div style="font-family: Arial, sans-serif;">
-    <el-card>
+    <el-card style="height: 89vh">
       <template #header>
         <div>
-          <span>Status</span>
+          <span>Healthcare Records</span>
         </div>
       </template>
       <el-empty />
