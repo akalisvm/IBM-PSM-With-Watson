@@ -20,7 +20,7 @@ public class TableMapper {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public JSONArray runSQLLikeQuery(String sql) {
+    public JSONArray runSQLQuery(String sql) {
         URI uri = URI.create(bangDBConfig.getSQLQueryPath());
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -28,27 +28,28 @@ public class TableMapper {
         body.set("sql", sql);
         HttpEntity<String> entity = new HttpEntity<>(body.toString(), headers);
         ResponseEntity<JSONObject> response = restTemplate.exchange(uri, HttpMethod.POST, entity, JSONObject.class);
+        System.out.println(response);
         return (JSONArray) Objects.requireNonNull(response.getBody()).get("rows");
     }
 
     public JSONArray queryAllData(String table) {
-        return runSQLLikeQuery("select * from " + table);
+        return runSQLQuery("select * from " + table);
     }
 
     public JSONArray queryData(String table, String pk) {
-        return runSQLLikeQuery("select * from "+ table +" where _pk=\"" + pk + "\"");
+        return runSQLQuery("select * from "+ table +" where _pk=\"" + pk + "\"");
     }
 
     public void insertData(String table, String pk, String doc) {
-        runSQLLikeQuery("insert into " + table + " values \"" + pk + "\" " + doc);
+        runSQLQuery("insert into " + table + " values \"" + pk + "\" " + doc);
     }
 
     public JSONArray updateData(String table, String pk, String val) {
-        return runSQLLikeQuery("update " + table + " set val = " + val + "where _pk=\"" + pk + "\"");
+        return runSQLQuery("update " + table + " set val = " + val + "where _pk=\"" + pk + "\"");
     }
 
     public JSONArray deleteData(String table, String pk) {
-        return runSQLLikeQuery("delete from " + table + " where _pk=\"" + pk + "\"");
+        return runSQLQuery("delete from " + table + " where _pk=\"" + pk + "\"");
     }
 
     public int getCount(String table) {

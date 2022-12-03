@@ -2,8 +2,10 @@ package ucl.ac.uk.ibmpsmwithwatson.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import ucl.ac.uk.ibmpsmwithwatson.service.UserService;
 import ucl.ac.uk.ibmpsmwithwatson.util.JwtUtil;
 import ucl.ac.uk.ibmpsmwithwatson.util.NHSLoginClient;
 import ucl.ac.uk.ibmpsmwithwatson.util.Result;
@@ -29,6 +31,9 @@ public class LoginController {
         this.nhsLoginClient = nhsLoginClient;
     }
 
+    @Autowired
+    UserService userService;
+
     @GetMapping("/nhs")
     public Result<?> NHSLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
         String accessToken = nhsLoginClient.getAccessToken(code);
@@ -42,25 +47,16 @@ public class LoginController {
 
     @PostMapping("/app")
     public Result<?> AppLogin(@RequestBody User user, HttpServletResponse response) throws JsonProcessingException, UnsupportedEncodingException {
-        if((!user.getEmail().equals("patient@test.com") && !user.getEmail().equals("doctor@test.com") )
-                || !user.getPassword().equals("123")) {
+        User appUser = userService.getUserByEmail(user.getEmail());
+        if(appUser == null || !appUser.getPassword().equals(user.getPassword())) {
             return Result.error("10001", "Incorrect email or password");
         }
-        Map<String, String> map = new HashMap<>();
-        map.put("email", user.getEmail());
-        User appUser = new User();
-        appUser.setEmail(user.getEmail());
-        if(user.getEmail().startsWith("patient")) {
-            appUser.setRole("patient");
-        } else {
-            appUser.setRole("doctor");
-        }
-        appUser.setApp_token(JwtUtil.getToken(map));
+        appUser.setApp_token(JwtUtil.getToken(appUser.toMap(appUser)));
         setUserInfoCookie(appUser, response);
         return Result.success(appUser);
     }
 
-    private void setUserInfoCookie(@RequestBody User user, HttpServletResponse response) throws UnsupportedEncodingException, JsonProcessingException {
+    private void setUserInfoCookie(User user, HttpServletResponse response) throws UnsupportedEncodingException, JsonProcessingException {
         ObjectMapper om = new ObjectMapper();
         String userInfo = URLEncoder.encode(om.writeValueAsString(user), "UTF-8");
         Cookie cookie = new Cookie("user", userInfo);

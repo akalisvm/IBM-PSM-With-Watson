@@ -3,14 +3,20 @@ package ucl.ac.uk.ibmpsmwithwatson.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.Node;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Node("User")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
+
+    @Id
+    private String id;
     private String given_name;
     private String family_name;
     private String email;

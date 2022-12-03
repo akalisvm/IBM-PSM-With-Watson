@@ -7,23 +7,32 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class BangDBConfig {
     private String environmentUri = "http://43.157.89.132:18080";
-    private String serverStatPath = "/server/stat";
-    private String dbPath = "/db";
-    private String dbnamePath = "/mydb";
-    private String queryPath = "/query";
-    private String docPath = "/doc";
-    private String countPath = "/count";
+    private String stat = "/server/stat";
+    private String db = "/db";
+    private String dbname = "/mydb";
+    private String query = "/query";
+    private String doc = "/doc";
+    private String count = "/count";
+    private String graph = "/graph";
+    private String graph_name = "/my_graph_table";
+    private String node = "/node";
 
     public String getServerStatPath() {
-        return environmentUri + serverStatPath;
+        return environmentUri + stat;
     }
     public String getSQLQueryPath() {
-        return environmentUri + dbPath + dbnamePath + queryPath;
+        return environmentUri + db + dbname + query;
     }
     public String getInsertDataPath(String table) {
-        return environmentUri + dbPath + dbnamePath + "/" + table + docPath;
+        return environmentUri + db + dbname + "/" + table + doc;
     }
     public String getCountPath(String table) {
-        return environmentUri + dbPath + dbnamePath + "/" + table + countPath;
+        return environmentUri + db + dbname + "/" + table + count;
+    }
+    public String getAddNodePath() {
+        return environmentUri + graph + graph_name + node;
+    }
+    public String getCypherQueryPath() {
+        return environmentUri + graph + graph_name + query;
     }
 }
