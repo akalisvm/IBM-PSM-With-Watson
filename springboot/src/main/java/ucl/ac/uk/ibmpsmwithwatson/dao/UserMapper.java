@@ -12,12 +12,7 @@ public class UserMapper {
     // TableMapper tableMapper = new TableMapper(new BangDBConfig(), new RestTemplateBuilder());
     GraphMapper graphMapper = new GraphMapper(new BangDBConfig(), new RestTemplateBuilder());
 
-    public JSONArray getUserByEmail(String email) {
-        return graphMapper.runCypherQuery("S=>(Person:* {email=\""+ email +"\"})\n");
-    }
-
-    public static void main(String[] args) {
-        UserMapper userMapper = new UserMapper();
-        System.out.println(userMapper.getUserByEmail("melina.sela@gmail.com"));
+    public JSONObject getUserByEmail(String email) {
+        return graphMapper.runCypherQuery("S=>(User:* {email=\""+ email +"\"})\n");
     }
 }

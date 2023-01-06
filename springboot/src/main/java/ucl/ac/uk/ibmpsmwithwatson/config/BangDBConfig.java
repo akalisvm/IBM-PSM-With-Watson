@@ -14,8 +14,9 @@ public class BangDBConfig {
     private String doc = "/doc";
     private String count = "/count";
     private String graph = "/graph";
-    private String graph_name = "/my_graph_table";
+    private String graph_name = "/mygraph";
     private String node = "/node";
+    private String triple = "/triple";
 
     public String getServerStatPath() {
         return environmentUri + stat;
@@ -31,6 +32,9 @@ public class BangDBConfig {
     }
     public String getAddNodePath() {
         return environmentUri + graph + graph_name + node;
+    }
+    public String getAddTriplePath() {
+        return environmentUri + graph + graph_name + triple;
     }
     public String getCypherQueryPath() {
         return environmentUri + graph + graph_name + query;

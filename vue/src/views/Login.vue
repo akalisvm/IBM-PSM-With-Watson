@@ -11,10 +11,10 @@
             Welcome to <br/> IBM PSM With Watson
           </div>
           <el-form ref="form" :model="form" :rules="rules" @keyup.enter.native="login">
-            <el-form-item>
+            <el-form-item prop="email">
               <el-input prefix-icon="Message" v-model="form.email" placeholder="Enter your email" />
             </el-form-item>
-            <el-form-item>
+            <el-form-item prop="password">
               <el-input prefix-icon="Lock" v-model="form.password" type="password" autocomplete="off" show-password placeholder="Enter your password" />
             </el-form-item>
             <div style="text-align: center">
@@ -52,7 +52,7 @@ export default {
       user: {},
       form: {},
       rules: {
-        username: [
+        email: [
           { required: true, message: 'Please enter your email', trigger: 'blur' }
         ],
         password: [
@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     login() {
-      this.$refs['form'].validate((valid) => {
+      this.$refs.form.validate((valid) => {
         if(valid) {
           request.post("/login/app", this.form).then(res => {
             if(res.code === "10000") {
@@ -85,9 +85,22 @@ export default {
               })
             }
           })
+        } else {
+          this.$notify({
+            title: "Missing Information",
+            type: "error",
+            message: "Please enter required information",
+            customClass: 'font'
+          })
         }
       })
     }
   }
 }
 </script>
+
+<style>
+  .font {
+    font-family: Arial, sans-serif;
+  }
+</style>

@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import ucl.ac.uk.ibmpsmwithwatson.service.UserService;
-import ucl.ac.uk.ibmpsmwithwatson.util.JwtUtil;
-import ucl.ac.uk.ibmpsmwithwatson.util.NHSLoginClient;
+import ucl.ac.uk.ibmpsmwithwatson.service.LoginService;
 import ucl.ac.uk.ibmpsmwithwatson.util.Result;
 import ucl.ac.uk.ibmpsmwithwatson.entity.User;
 
@@ -16,8 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/login")
@@ -26,32 +22,23 @@ public class LoginController {
     @Value("${server.ip}")
     private String IP;
 
-    private final NHSLoginClient nhsLoginClient;
-    LoginController(NHSLoginClient nhsLoginClient) {
-        this.nhsLoginClient = nhsLoginClient;
-    }
-
     @Autowired
-    UserService userService;
+    LoginService loginService;
 
     @GetMapping("/nhs")
     public Result<?> NHSLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
-        String accessToken = nhsLoginClient.getAccessToken(code);
-        User nhsUser = nhsLoginClient.getUserInfo(accessToken);
-        nhsUser.setRole("patient");
-        nhsUser.setApp_token(JwtUtil.getToken(nhsUser.toMap(nhsUser)));
+        User nhsUser = loginService.checkNhsLogin(code);
         setUserInfoCookie(nhsUser, response);
         response.sendRedirect("http://" + IP + ":8080/personal");
         return Result.success(nhsUser);
     }
 
     @PostMapping("/app")
-    public Result<?> AppLogin(@RequestBody User user, HttpServletResponse response) throws JsonProcessingException, UnsupportedEncodingException {
-        User appUser = userService.getUserByEmail(user.getEmail());
-        if(appUser == null || !appUser.getPassword().equals(user.getPassword())) {
+    public Result<?> AppLogin(@RequestBody User verifyUser, HttpServletResponse response) throws JsonProcessingException, UnsupportedEncodingException {
+        User appUser = loginService.checkAppLogin(verifyUser);
+        if(appUser == null) {
             return Result.error("10001", "Incorrect email or password");
         }
-        appUser.setApp_token(JwtUtil.getToken(appUser.toMap(appUser)));
         setUserInfoCookie(appUser, response);
         return Result.success(appUser);
     }

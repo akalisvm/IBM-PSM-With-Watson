@@ -20,25 +20,16 @@ public class GraphMapper {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public JSONObject addNode(String label, String name, String prop) {
-        URI uri = URI.create(bangDBConfig.getAddNodePath());
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        JSONObject body = new JSONObject();
-        body.set("label", label);
-        body.set("name", name);
-        body.set("prop", prop);
-        HttpEntity<String> entity = new HttpEntity<>(body.toString(), headers);
-        ResponseEntity<JSONObject> response = restTemplate.exchange(uri, HttpMethod.POST, entity, JSONObject.class);
-        return response.getBody();
-    }
-
-    public JSONArray runCypherQuery(String cypher) {
+    public JSONObject runCypherQuery(String cypher) {
         URI uri = URI.create(bangDBConfig.getCypherQueryPath());
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(cypher, headers);
         ResponseEntity<JSONObject> response = restTemplate.exchange(uri, HttpMethod.POST, entity, JSONObject.class);
-        return (JSONArray) Objects.requireNonNull(response.getBody()).get("rows");
+        return Objects.requireNonNull(response.getBody());
+    }
+
+    public void addNode(String label, String name, String prop) {
+        runCypherQuery("CREATE (" + label + ":" + name + " " + prop + ")");
     }
 }

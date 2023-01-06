@@ -20,7 +20,7 @@ public class TableMapper {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public JSONArray runSQLQuery(String sql) {
+    public JSONObject runSQLQuery(String sql) {
         URI uri = URI.create(bangDBConfig.getSQLQueryPath());
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -28,15 +28,14 @@ public class TableMapper {
         body.set("sql", sql);
         HttpEntity<String> entity = new HttpEntity<>(body.toString(), headers);
         ResponseEntity<JSONObject> response = restTemplate.exchange(uri, HttpMethod.POST, entity, JSONObject.class);
-        System.out.println(response);
-        return (JSONArray) Objects.requireNonNull(response.getBody()).get("rows");
+        return Objects.requireNonNull(response.getBody());
     }
 
-    public JSONArray queryAllData(String table) {
+    public JSONObject queryAllData(String table) {
         return runSQLQuery("select * from " + table);
     }
 
-    public JSONArray queryData(String table, String pk) {
+    public JSONObject queryData(String table, String pk) {
         return runSQLQuery("select * from "+ table +" where _pk=\"" + pk + "\"");
     }
 
@@ -44,29 +43,15 @@ public class TableMapper {
         runSQLQuery("insert into " + table + " values \"" + pk + "\" " + doc);
     }
 
-    public JSONArray updateData(String table, String pk, String val) {
+    public JSONObject updateData(String table, String pk, String val) {
         return runSQLQuery("update " + table + " set val = " + val + "where _pk=\"" + pk + "\"");
     }
 
-    public JSONArray deleteData(String table, String pk) {
+    public JSONObject deleteData(String table, String pk) {
         return runSQLQuery("delete from " + table + " where _pk=\"" + pk + "\"");
     }
 
-    public int getCount(String table) {
-        URI uri = URI.create(bangDBConfig.getCountPath(table));
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        return (int) Objects.requireNonNull(restTemplate.exchange(uri, HttpMethod.GET, entity, JSONObject.class).getBody()).get("count");
-    }
-
-    public static void main(String[] args) {
-        TableMapper tableMapper = new TableMapper(new BangDBConfig(), new RestTemplateBuilder());
-        // System.out.println(mapper.queryAllData());
-        // System.out.println(mapper.insertData("test", "user4", "{\"name\":\"Arjun\",\"org\":\"Google\",\"likes\":[\"books\",\"basketball\",\"food\"]}}"));
-        // System.out.println(mapper.updateData("test", "user3", "{\"firstname\":\"sinha\",\"city\":\"delhi\"}"));
-        // System.out.println(mapper.queryData("test", "user3"));
-        // System.out.println(mapper.deleteData("test", "user1"));
-        // System.out.println(mapper.queryAllData());
-        System.out.println(tableMapper.getCount("test"));
+    public int getCount(String label) {
+        return (int) runSQLQuery("select count(*) from mygraph where label=\"" + label +"\"").get("retval");
     }
 }

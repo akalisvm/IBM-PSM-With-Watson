@@ -1,8 +1,13 @@
 package ucl.ac.uk.ibmpsmwithwatson.dao;
 
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ucl.ac.uk.ibmpsmwithwatson.entity.User;
+
+import java.util.List;
 
 @SpringBootTest
 public class UserMapperTest {
@@ -12,6 +17,12 @@ public class UserMapperTest {
 
     @Test
     void getUserByEmail() {
-        System.out.println(userMapper.getUserByEmail("melina.sela@gmail.com"));
+        JSONArray array = (JSONArray) userMapper.getUserByEmail("melina@gmail.com").get("rows");
+        List<User> userList = JSONUtil.toList(array, User.class);
+        if(userList.size() != 0) {
+            System.out.println(userList.get(0));
+        } else {
+            System.out.println("No such user");
+        }
     }
 }
