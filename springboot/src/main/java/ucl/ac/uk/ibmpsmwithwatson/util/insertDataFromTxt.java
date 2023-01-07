@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class insertDataFromTxt {
 
-    private final static String[] USER_ATTR = new String[]{"given_name", "family_name", "email", "phone_number", "password", "role", "gender", "birthdate", "address", "nhs_number", "doctor"};
+    private final static String[] USER_ATTR = new String[]{"given_name", "family_name", "email", "phone_number", "password", "role", "gender", "birthdate", "nhs_number", "doctor"};
 
     public static void insertDataToTable(String table, String filename, String[] attr) {
         try {

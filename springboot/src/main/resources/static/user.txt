@@ -1,2 +1,11 @@
-MELINA;SELA;melina.sela@gmail.com;+447777104424;123;doctor;null;null;null;null;null
-SERAPHINA;ANGELIA;seraphina.angelia@gmail.com;+447005081230;123;patient;Female;1984-09-01;4 Grove Road, BROMLEY, BR89 1KS, UK;0690715463;MELINA,SELA
+Melina;Sela;melina.sela@gmail.com;+447777104424;123;doctor;null;null;null;null
+Seraphina;Angelia;seraphina.angelia@gmail.com;+447005081230;123;patient;Female;1984-09-01;0690715463;Melina,Sela
+Alexandrea;Haylie;alexandrea.haylie@gmail.com;+441614960881;123;patient;Female;1996-07-21;7987255025;Melina,Sela
+Shawn;Cocks;shawn.cocks@gmail.com;+441614960151;123;patient;Male;1984-09-01;2334156191;Melina,Sela
+Bernard;Paternoster;bernard.paternoster@gmail.com;+441414960482;123;patient;Male;1978-01-02;3560568188;Melina,Sela
+Wayland;Butler;wayland.butler@gmail.com;+441614960593;123;patient;Male;1989-03-27;1483612236;Melina,Sela
+Joetta;Beake;joetta.beake@gmail.com;+441614960262;123;patient;Female;1987-05-15;8344899052;Melina,Sela
+Katrina;Perry;Katrina.perry@gmail.com;+441614960157;123;patient;Female;1990-12-29;2366971540;Melina,Sela
+Oralee;Rigby;Oralee.rigby@gmail.com;+441414960124;123;patient;Female;1993-01-19;0632916451;Melina,Sela
+Bertram;David;bertram.david@gmail.com;+441184960674;123;patient;Male;1956-03-07;5966150575;Melina,Sela
+Pamella;Winter;pamella.winter@gmail.com;+441314960675;123;patient;Female;2000-08-21;2451116250;Melina,Sela

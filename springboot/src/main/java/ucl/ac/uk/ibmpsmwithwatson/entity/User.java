@@ -20,7 +20,6 @@ public class User {
     private String role;
     private String gender;
     private String birthdate;
-    private String address;
     private String nhs_number;
     private String doctor;
     private String app_token;
@@ -34,7 +33,6 @@ public class User {
         map.put("role", user.getRole());
         map.put("gender", user.getGender());
         map.put("birthdate", user.getBirthdate());
-        map.put("address", user.getAddress());
         map.put("nhs_number", user.getNhs_number());
         map.put("doctor", user.getDoctor());
         return map;

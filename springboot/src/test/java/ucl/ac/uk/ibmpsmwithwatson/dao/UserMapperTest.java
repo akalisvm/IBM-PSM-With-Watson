@@ -17,7 +17,7 @@ public class UserMapperTest {
 
     @Test
     void getUserByEmail() {
-        JSONArray array = (JSONArray) userMapper.getUserByEmail("melina@gmail.com").get("rows");
+        JSONArray array = (JSONArray) userMapper.getUserByEmail("seraphina.angelia@gmail.com").get("rows");
         List<User> userList = JSONUtil.toList(array, User.class);
         if(userList.size() != 0) {
             System.out.println(userList.get(0));
