@@ -69,7 +69,11 @@ public class insertDataFromTxt {
                         map.put(attr[i], split[i].trim());
                     }
                 }
-                graphMapper.addNode(label, label.toLowerCase() + "_" + (tableMapper.getCount(label) + 1), JSONUtil.toJsonStr(map));
+                if(label.equals("User")) {
+                    graphMapper.addNode(label, split[0] + "," + split[1], JSONUtil.toJsonStr(map));
+                } else {
+                    graphMapper.addNode(label, label.toLowerCase() + "_" + (tableMapper.getCount(label) + 1), JSONUtil.toJsonStr(map));
+                }
                 line = br.readLine();
             }
             inputStream.close();

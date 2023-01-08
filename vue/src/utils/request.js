@@ -9,7 +9,7 @@ const request = axios.create({
 request.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json;charset=utf-8';
     if(getCookie("user")) {
-        config.headers['token'] = JSON.parse(getCookie("user")).token;
+        config.headers['token'] = JSON.parse(getCookie("user")).app_token;
     }
     return config
 }, error => {

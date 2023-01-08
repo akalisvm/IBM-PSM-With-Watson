@@ -25,4 +25,10 @@ public class UserMapperTest {
             System.out.println("No such user");
         }
     }
+
+    @Test
+    void getPatients() {
+        JSONArray array = (JSONArray) userMapper.getPatients("Melina,Sela").get("rows");
+        System.out.println(JSONUtil.toList(array, User.class));
+    }
 }

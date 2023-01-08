@@ -45,7 +45,6 @@
         <el-tabs v-model="activeName">
           <el-tab-pane label="Healthcare Records" name="first">
             <el-table :data="healthcareData" style="width: 100%">
-              <el-table-column prop="no." label="No."/>
               <el-table-column prop="time" label="Time" />
               <el-table-column prop="qname" label="Questionnaire Name" />
               <el-table-column prop="result" label="Result" />

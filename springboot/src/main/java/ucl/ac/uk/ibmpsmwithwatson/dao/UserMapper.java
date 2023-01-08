@@ -13,6 +13,10 @@ public class UserMapper {
     GraphMapper graphMapper = new GraphMapper(new BangDBConfig(), new RestTemplateBuilder());
 
     public JSONObject getUserByEmail(String email) {
-        return graphMapper.runCypherQuery("S=>(User:* {email=\""+ email +"\"})\n");
+        return graphMapper.runCypherQuery("S=>(User:* {email=\"" + email + "\"})");
+    }
+
+    public JSONObject getPatients(String doctor) {
+        return graphMapper.runCypherQuery("S=>(User:* {doctor=\"" + doctor + "\"})");
     }
 }

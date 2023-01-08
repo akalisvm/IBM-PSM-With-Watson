@@ -5,7 +5,7 @@
     font-family: Arial, sans-serif;
     height: 6vh
     ">
-    <div style="padding-top: 12px; padding-left: 10px">
+    <div style="padding-top: 15px; padding-left: 15px">
       <el-button link style="font-weight: bold; font-size: 20px; color: white;">
         IBM PSM With Watson
       </el-button>
