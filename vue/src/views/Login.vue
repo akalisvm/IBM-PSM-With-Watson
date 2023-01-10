@@ -75,19 +75,18 @@ export default {
               if(res.data.role === "patient") {
                 this.$router.push("/personal")
               } else {
-                this.$router.push("/patients")
+                this.$router.push("/patient")
               }
             } else {
-              this.$notify({
-                title: "Login Failed",
+              this.$message({
                 type: "error",
-                message: res.msg
+                message: res.msg,
+                customClass: 'font'
               })
             }
           })
         } else {
-          this.$notify({
-            title: "Missing Information",
+          this.$message({
             type: "error",
             message: "Please enter required information",
             customClass: 'font'

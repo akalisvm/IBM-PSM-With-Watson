@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class insertDataFromTxt {
 
-    private final static String[] USER_ATTR = new String[]{"given_name", "family_name", "email", "phone_number", "password", "role", "gender", "birthdate", "nhs_number", "doctor"};
+    private final static String[] USER_ATTR = new String[]{"id", "given_name", "family_name", "email", "phone_number", "password", "role", "gender", "birthdate", "nhs_number", "doctor"};
 
     public static void insertDataToTable(String table, String filename, String[] attr) {
         try {
@@ -69,11 +69,7 @@ public class insertDataFromTxt {
                         map.put(attr[i], split[i].trim());
                     }
                 }
-                if(label.equals("User")) {
-                    graphMapper.addNode(label, split[0] + "," + split[1], JSONUtil.toJsonStr(map));
-                } else {
-                    graphMapper.addNode(label, label.toLowerCase() + "_" + (tableMapper.getCount(label) + 1), JSONUtil.toJsonStr(map));
-                }
+                graphMapper.addNode(label, label.toLowerCase() + "_" + (tableMapper.getCount(label) + 1), JSONUtil.toJsonStr(map));
                 line = br.readLine();
             }
             inputStream.close();

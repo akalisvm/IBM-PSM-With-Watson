@@ -3,7 +3,7 @@
     <el-card>
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <span>Hi, {{ this.user.email }}</span>
-        <el-button type="info" @click="dialogVisible = true" plain>Show Personal Information</el-button>
+        <el-button type="info" @click="dialogVisible = true" plain>Show personal information</el-button>
         <el-dialog v-model="dialogVisible">
           <el-descriptions
               title="Personal Information"

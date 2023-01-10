@@ -10,7 +10,7 @@
     <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="10">
+          <list size="14">
             <item index="0" class="java.lang.String" itemvalue="nobr" />
             <item index="1" class="java.lang.String" itemvalue="noembed" />
             <item index="2" class="java.lang.String" itemvalue="comment" />
@@ -21,6 +21,10 @@
             <item index="7" class="java.lang.String" itemvalue="fold" />
             <item index="8" class="java.lang.String" itemvalue="userfilled" />
             <item index="9" class="java.lang.String" itemvalue="expand" />
+            <item index="10" class="java.lang.String" itemvalue="platform" />
+            <item index="11" class="java.lang.String" itemvalue="list" />
+            <item index="12" class="java.lang.String" itemvalue="search" />
+            <item index="13" class="java.lang.String" itemvalue="infofilled" />
           </list>
         </value>
       </option>

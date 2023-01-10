@@ -1,21 +1,46 @@
-<template>
+<template xmlns="">
   <div style="font-family: Arial, sans-serif;">
     <el-card style="height: 89vh">
-      <template #header>
-        <div>
-          <span>My Patients</span>
+      <div>
+        <div style="margin-bottom: 15px">
+          <el-input
+              v-model="searchName"
+              placeholder="Type name to search patient"
+              clearable
+              style="width: 20%"
+              @keyup.enter.native="load">
+            <template #append>
+              <el-button @click="load">
+                <el-icon><Search /></el-icon>
+              </el-button>
+            </template>
+          </el-input>
+          <el-button style="margin-left: 10px" @click="dialogVisible = true">
+            <span>Assign questionnaire to patients</span>
+          </el-button>
+          <el-dialog v-model="dialogVisible" title="Assign Questionnaire" width="20%" align-center>
+            <el-select style="width: 100%">
+
+            </el-select>
+            <template #footer>
+              <el-button @click="dialogVisible = false">Cancel</el-button>
+              <el-button type="primary" @click="assign">Confirm</el-button>
+            </template>
+          </el-dialog>
+          <el-button style="margin-left: 10px">
+            <span>Remind patients to complete questionnaire</span>
+          </el-button>
         </div>
-      </template>
-      <div v-if="this.total !== 0">
         <el-table
             :data="patientsData"
+            :table-layout="tableLayout"
             stripe
             style="width: 100%"
-            fit
         >
-          <el-table-column prop="given_name" label="Given Name" />
+          <el-table-column type="selection" />
+          <el-table-column prop="given_name" label="Given Name"/>
           <el-table-column prop="family_name" label="Family Name" />
-          <el-table-column prop="gender" label="Gender"/>
+          <el-table-column prop="gender" label="Gender" />
           <el-table-column prop="birthdate" label="Date of Birth" sortable />
           <el-table-column prop="email" label="Email" />
           <el-table-column prop="phone_number" label="Phone Number" />
@@ -27,12 +52,10 @@
               v-model:current-page="currentPage"
               background
               layout="prev, pager, next, jumper"
+              :hide-on-single-page="true"
               :page-size="pageSize"
               :total="total" />
         </div>
-      </div>
-      <div v-if="this.total === 0">
-        <el-empty />
       </div>
     </el-card>
   </div>
@@ -47,10 +70,13 @@ export default {
   data() {
     return {
       user: {},
+      tableLayout: "auto",
       patientsData : [],
+      searchName: "",
       currentPage: 1,
       pageSize: 10,
-      total: 0
+      total: 0,
+      dialogVisible: false,
     }
   },
   created() {
@@ -64,8 +90,8 @@ export default {
     load() {
       request.get("/doctor/patients", {
         params: {
-          givenName: this.user.given_name,
-          familyName: this.user.family_name,
+          id: this.user.id,
+          searchName: this.searchName,
           pageNum: this.currentPage,
           pageSize: this.pageSize
         }

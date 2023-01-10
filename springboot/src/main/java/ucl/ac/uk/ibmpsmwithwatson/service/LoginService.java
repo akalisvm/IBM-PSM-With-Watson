@@ -11,6 +11,7 @@ import ucl.ac.uk.ibmpsmwithwatson.dao.GraphMapper;
 import ucl.ac.uk.ibmpsmwithwatson.dao.TableMapper;
 import ucl.ac.uk.ibmpsmwithwatson.entity.User;
 import ucl.ac.uk.ibmpsmwithwatson.util.JwtUtil;
+import ucl.ac.uk.ibmpsmwithwatson.util.MapUtil;
 import ucl.ac.uk.ibmpsmwithwatson.util.NHSLoginClient;
 
 @Service
@@ -34,7 +35,7 @@ public class LoginService {
             graphMapper.addNode("User", "user_" + (tableMapper.getCount("User") + 1),
                     JSONUtil.parseObj(nhsUser, false).toString());
         }
-        nhsUser.setApp_token(JwtUtil.getToken(nhsUser.toMap(nhsUser)));
+        nhsUser.setApp_token(JwtUtil.getToken(MapUtil.toUserMap(nhsUser)));
         return nhsUser;
     }
 
@@ -44,7 +45,7 @@ public class LoginService {
         if(appUser == null || !appUser.getPassword().equals(md5.digestHex(verifyUser.getPassword()))) {
             return null;
         }
-        appUser.setApp_token(JwtUtil.getToken(appUser.toMap(appUser)));
+        appUser.setApp_token(JwtUtil.getToken(MapUtil.toUserMap(appUser)));
         return appUser;
     }
 }

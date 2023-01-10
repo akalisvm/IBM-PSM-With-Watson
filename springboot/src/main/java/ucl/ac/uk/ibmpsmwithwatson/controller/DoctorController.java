@@ -14,11 +14,11 @@ public class DoctorController {
     DoctorService doctorService;
 
     @GetMapping("/patients")
-    public Result<?> getPatientsList(@RequestParam(defaultValue = "") String givenName,
-                                     @RequestParam(defaultValue = "") String familyName,
+    public Result<?> getPatientsList(@RequestParam(defaultValue = "") String id,
+                                     @RequestParam(defaultValue = "") String searchName,
                                      @RequestParam(defaultValue = "0") Integer pageNum,
                                      @RequestParam(defaultValue = "10") Integer pageSize) {
-        Page patients = doctorService.getPatients(givenName, familyName, pageNum, pageSize);
+        Page patients = doctorService.getPatients(id, searchName, pageNum, pageSize);
         return Result.success(patients);
     }
 }

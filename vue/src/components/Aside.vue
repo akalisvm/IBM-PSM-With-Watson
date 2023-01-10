@@ -22,12 +22,24 @@
         <el-icon v-if="!isCollapse"><Fold /></el-icon>
         <el-icon v-if="isCollapse"><Expand /></el-icon>
       </el-button>
-      <el-menu-item index="/patients" v-if="this.user.role==='doctor'">
+      <el-menu-item index="/patient" v-if="this.user.role==='doctor'">
         <el-icon><UserFilled /></el-icon>
         <span>My Patients</span>
       </el-menu-item>
+      <el-menu-item index="/questionnaire" v-if="this.user.role==='doctor'">
+        <el-icon><List /></el-icon>
+        <span>Questionnaires</span>
+      </el-menu-item>
+      <el-menu-item index="/record" v-if="this.user.role==='doctor'">
+        <el-icon><TrendCharts /></el-icon>
+        <span>Healthcare Records</span>
+      </el-menu-item>
+      <el-menu-item index="/event" v-if="this.user.role==='doctor'">
+        <el-icon><Platform /></el-icon>
+        <span>Outreach Events</span>
+      </el-menu-item>
       <el-menu-item index="/personal" v-if="this.user.role==='patient'">
-        <el-icon><UserFilled /></el-icon>
+        <el-icon><HomeFilled /></el-icon>
         <span>Personal Center</span>
       </el-menu-item>
     </el-menu>

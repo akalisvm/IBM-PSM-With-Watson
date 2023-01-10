@@ -10,9 +10,24 @@ const routes = [
     redirect: "/login",
     children: [
       {
-        path: 'patients',
-        name: 'Patients',
-        component: () => import("@/views/Patients")
+        path: 'patient',
+        name: 'Patient',
+        component: () => import("@/views/Patient")
+      },
+      {
+        path: 'questionnaire',
+        name: 'Questionnaire',
+        component: () => import("@/views/Questionnaire")
+      },
+      {
+        path: 'record',
+        name: 'Record',
+        component: () => import("@/views/Record")
+      },
+      {
+        path: 'event',
+        name: 'Event',
+        component: () => import("@/views/Event")
       },
       {
         path: 'personal',
