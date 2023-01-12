@@ -71,7 +71,7 @@
 import { getCookie } from "@/utils/cookie.utils"
 
 export default {
-  name: "Personal",
+  name: "PersonalCenter",
   data() {
     return {
       user: {},

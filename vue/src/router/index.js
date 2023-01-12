@@ -31,8 +31,8 @@ const routes = [
       },
       {
         path: 'personal',
-        name: 'Personal',
-        component: () => import("@/views/Personal")
+        name: 'PersonalCenter',
+        component: () => import("@/views/PersonalCenter")
       },
     ]
   },

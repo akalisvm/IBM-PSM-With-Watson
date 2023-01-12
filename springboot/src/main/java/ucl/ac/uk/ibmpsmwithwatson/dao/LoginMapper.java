@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 import ucl.ac.uk.ibmpsmwithwatson.config.BangDBConfig;
 
 @Component
-public class UserMapper {
+public class LoginMapper {
 
     GraphMapper graphMapper = new GraphMapper(new BangDBConfig(), new RestTemplateBuilder());
 
-    public JSONObject queryPatients(String doctor) {
-        return graphMapper.runCypherQuery("S=>(User:* {doctor=\"" + doctor + "\"})");
+    public JSONObject queryUserByEmail(String email) {
+        return graphMapper.runCypherQuery("S=>(User:* {email=\"" + email + "\"})");
     }
 }

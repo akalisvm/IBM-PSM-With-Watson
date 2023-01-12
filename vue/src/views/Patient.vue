@@ -96,7 +96,6 @@ export default {
           pageSize: this.pageSize
         }
       }).then(res => {
-        console.log(res)
         this.patientsData = res.data.records
         this.total = res.data.total
       })

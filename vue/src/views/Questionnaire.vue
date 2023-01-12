@@ -4,8 +4,8 @@
       <el-col :span="10">
         <el-card style="height: 40vh">
           <el-input
-              v-model="searchTemplateName"
-              placeholder="Type name to search template"
+              v-model="searchTemplateTitle"
+              placeholder="Type to search template"
               clearable
               style="width: 50%"
           >
@@ -21,17 +21,28 @@
               @click="createTemplate">
             <span>Create</span>
           </el-button>
-          <el-button type="danger" style="margin-left: 10px">
-            <span>Delete</span>
-          </el-button>
           <el-table
               :data="templateData"
               :table-layout="tableLayout"
               stripe
               style="width: 100%"
+              fit
           >
-            <el-table-column prop="time" label="Time" />
-            <el-table-column prop="name" label="Template Name"/>
+            <el-table-column prop="id" label="ID"/>
+            <el-table-column prop="title" label="Template Title" />
+            <el-table-column fixed="right" label="Operations" >
+              <template #default>
+                <el-button link type="primary" size="small" @click="templateDetail">
+                  Detail
+                </el-button>
+                <el-button link type="primary" size="small" @click="templateEdit">
+                  Edit
+                </el-button>
+                <el-button type="danger" size="small" @click="templateDelete">
+                  Delete
+                </el-button>
+              </template>
+            </el-table-column>
           </el-table>
           <div style="margin: 10px 0">
             <el-pagination
@@ -46,8 +57,8 @@
         </el-card>
         <el-card style="margin-top: 20px; height: 47vh">
           <el-input
-              v-model="searchQuestionnaireName"
-              placeholder="Type name to search questionnaire"
+              v-model="searchQuestionnaireTitle"
+              placeholder="Type to search questionnaire"
               clearable
               style="width: 50%"
           >
@@ -65,9 +76,6 @@
               dialogMode = 2"
           >
             <span>Create</span>
-          </el-button>
-          <el-button type="danger" style="margin-left: 10px">
-            <span>Delete</span>
           </el-button>
         </el-card>
       </el-col>
@@ -137,8 +145,8 @@
         </el-tooltip>
       </template>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item prop="name" label="Name">
-          <el-input v-model="form.name" />
+        <el-form-item prop="title" label="Title">
+          <el-input v-model="form.title" />
         </el-form-item>
         <el-form-item
             v-for="(question, index) in form.questions"
@@ -176,16 +184,21 @@ export default {
       user: {},
       form: {},
       rules: {
-        name: [
-          { required: true, message: 'Please enter the name', trigger: 'blur' }
+        title: [
+          { required: true, message: 'Please enter the title', trigger: 'blur' }
         ],
         questions: [
           { required: true, message: 'Please enter your question', trigger: 'blur' }
         ]
       },
       tableLayout: "auto",
-      searchTemplateName: "",
-      searchQuestionnaireName: "",
+      templateData: [],
+      questionnaireData: [],
+      searchTemplateTitle: "",
+      searchQuestionnaireTitle: "",
+      templateCurrentPage: 1,
+      templatePageSize: 5,
+      templateTotal: 0,
       dialogVisible: false,
       dialogTitle: "",
       dialogMode: 0,
@@ -194,22 +207,46 @@ export default {
   },
   created() {
     this.user = JSON.parse(getCookie("user"))
+    this.load()
+    this.$nextTick(() => {
+      this.load()
+    })
   },
   methods: {
+    load() {
+      this.templateLoad()
+    },
+    templateLoad() {
+      request.get("/questionnaire/template", {
+        params: {
+          id: this.user.id,
+          searchTitle: this.searchTemplateTitle,
+          pageNum: this.templateCurrentPage,
+          pageSize: this.templatePageSize
+        }
+      }).then(res => {
+        this.templateData = res.data.records
+        this.total = res.data.total
+      })
+    },
+    templateCurrentChange(pageNum) {
+      this.templateCurrentPage = pageNum
+      this.templateLoad()
+    },
     createTemplate() {
       this.dialogVisible = true
-      this.dialogTitle = 'Create Template'
+      this.dialogTitle = "Create Template"
       this.dialogMode = 1
       this.form = {
-        id: this.user.id,
-        name: "",
+        creatorId: this.user.id,
+        title: "",
         questions: [
-          { key: Date.now(), value: "" }
+          { value: "" }
         ]
       }
     },
     addQuestion() {
-      this.form.questions.push({ key: Date.now(), value: '' })
+      this.form.questions.push({ value: "" })
     },
     removeQuestion(question) {
       const index = this.form.questions.indexOf(question)
@@ -229,7 +266,7 @@ export default {
               })
               return
             }
-            request.post("/doctor/template/create", this.form).then(res => {
+            request.post("/questionnaire/template", this.form).then(res => {
               console.log(res)
               if(res.code === '10000') {
                 this.$message({
@@ -250,7 +287,7 @@ export default {
               })
               return
             }
-            request.post("/doctor/questionnaire/create", this.form).then(res => {
+            request.post("/questionnaire", this.form).then(res => {
               console.log(res)
               if(res.code === '10000') {
                 this.$message({
@@ -272,12 +309,6 @@ export default {
         }
       })
     },
-    templateLoad() {
-
-    },
-    questionnaireLoad() {
-
-    }
   }
 }
 </script>
