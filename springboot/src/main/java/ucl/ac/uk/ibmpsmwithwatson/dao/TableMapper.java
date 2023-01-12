@@ -2,6 +2,7 @@ package ucl.ac.uk.ibmpsmwithwatson.dao;
 
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
@@ -31,27 +32,24 @@ public class TableMapper {
         return Objects.requireNonNull(response.getBody());
     }
 
-    public JSONObject queryAllData(String table) {
-        return runSQLQuery("select * from " + table);
-    }
-
-    public JSONObject queryData(String table, String pk) {
-        return runSQLQuery("select * from "+ table +" where _pk=\"" + pk + "\"");
-    }
-
     public void insertData(String table, String pk, String doc) {
         runSQLQuery("insert into " + table + " values \"" + pk + "\" " + doc);
     }
 
-    public JSONObject updateData(String table, String pk, String val) {
-        return runSQLQuery("update " + table + " set val = " + val + "where _pk=\"" + pk + "\"");
-    }
-
-    public JSONObject deleteData(String table, String pk) {
-        return runSQLQuery("delete from " + table + " where _pk=\"" + pk + "\"");
-    }
-
     public int getCount(String label) {
         return (int) runSQLQuery("select count(*) from mygraph where label=\"" + label +"\"").get("retval");
+    }
+
+    public void insertCount(String label) {
+        runSQLQuery("insert into mygraph values \"" + label + "_count\" {\"count\":\"1\"}");
+    }
+
+    public String queryCount(String label) {
+        JSONArray jsonArray = (JSONArray) runSQLQuery("select * from mygraph where _pk=\"" + label + "_count\"").get("rows");
+        return JSONUtil.parseObj(jsonArray.getByPath("[0].v")).getStr("count");
+    }
+
+    public void updateCount(String label, String count) {
+        runSQLQuery("update mygraph set val={\"count\":\"" + count + "\"} where _pk=\"" + label + "_count\"");
     }
 }

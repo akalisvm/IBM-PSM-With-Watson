@@ -13,25 +13,31 @@ public class QuestionnaireMapper {
     TableMapper tableMapper = new TableMapper(new BangDBConfig(), new RestTemplateBuilder());
     GraphMapper graphMapper = new GraphMapper(new BangDBConfig(), new RestTemplateBuilder());
 
-    public JSONObject insertCount(String label) {
-        return tableMapper.runSQLQuery("insert into mygraph values \"" + label + "_count\" {\"count\":\"1\"}");
+    private static final String QUESTIONNAIRE = "Questionnaire";
+
+    public void insertCount() {
+        tableMapper.insertCount(QUESTIONNAIRE);
     }
 
-    public String queryCount(String label) {
-        JSONArray jsonArray = (JSONArray) tableMapper.runSQLQuery("select * from mygraph where _pk=\"" + label + "_count\"").get("rows");
-        return JSONUtil.parseObj(jsonArray.getByPath("[0].v")).getStr("count");
+    public String queryCount() {
+        return tableMapper.queryCount(QUESTIONNAIRE);
     }
 
-    public JSONObject updateCount(String label, String count) {
-        return tableMapper.runSQLQuery("update mygraph set val={\"count\":\"" + count + "\"} where _pk=\"" + label + "_count\"");
+    public void updateCount(String count) {
+        tableMapper.updateCount(QUESTIONNAIRE, count);
     }
 
-    public JSONObject insertTemplate(String creatorId, String templateId, String templateJson) {
-        return graphMapper.runCypherQuery("CREATE (User:user_" + creatorId +
-                ")-[CREATED]->(Template:template_" + templateId + " " + templateJson + ")");
+    public void insert(String creatorId, String relProp, String questionnaireId, String questionnaireProp) {
+        graphMapper.runCypherQuery("CREATE (User:user_" + creatorId +
+                ")-[CREATED " + relProp + "]->(Questionnaire:questionnaire_" + questionnaireId + " " + questionnaireProp + ")");
     }
 
-    public JSONObject queryTemplates(String creatorId) {
-        return graphMapper.runCypherQuery("S=>(Template:* {creatorId=\"" + creatorId + "\"}); RETURN * SORT_DESC createTime");
+    public JSONObject query(String creatorId) {
+        return graphMapper.runCypherQuery("S=>(Questionnaire:* {creatorId=\"" + creatorId + "\"}); RETURN * SORT_DESC createTime");
+    }
+
+    public void delete(String questionnaireId) {
+        tableMapper.runSQLQuery("delete from mygraph_rel where name=\"questionnaire_" + questionnaireId + "\"");
+        tableMapper.runSQLQuery("delete from mygraph where name=\"questionnaire_" + questionnaireId + "\"");
     }
 }

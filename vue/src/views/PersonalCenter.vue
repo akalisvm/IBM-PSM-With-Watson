@@ -32,7 +32,7 @@
             <el-descriptions-item label="NHS Number">
               {{ this.user.nhs_number }}
             </el-descriptions-item>
-            <el-descriptions-item label="Supervised Doctor">
+            <el-descriptions-item label="My Doctor">
               {{ this.user.doctor }}
             </el-descriptions-item>
           </el-descriptions>

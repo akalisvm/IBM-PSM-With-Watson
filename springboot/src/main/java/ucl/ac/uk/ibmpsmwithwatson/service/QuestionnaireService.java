@@ -7,10 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ucl.ac.uk.ibmpsmwithwatson.dao.QuestionnaireMapper;
 import ucl.ac.uk.ibmpsmwithwatson.entity.Page;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Template;
-import ucl.ac.uk.ibmpsmwithwatson.entity.User;
+import ucl.ac.uk.ibmpsmwithwatson.entity.Question;
+import ucl.ac.uk.ibmpsmwithwatson.entity.Questionnaire;
 import ucl.ac.uk.ibmpsmwithwatson.util.PaginationUtil;
-import ucl.ac.uk.ibmpsmwithwatson.util.StringUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -18,35 +17,14 @@ import java.util.List;
 @Service
 public class QuestionnaireService {
 
-    private static final String TEMPLATE = "Template";
-    private static final String QUESTIONNAIRE = "Questionnaire";
-
     @Autowired
     QuestionnaireMapper questionnaireMapper;
 
-    public void insertTemplate(Template template) {
-        String id;
-        if(questionnaireMapper.queryCount(TEMPLATE) == null) {
-            questionnaireMapper.insertCount(TEMPLATE);
-            id = "1";
-        } else {
-            id = questionnaireMapper.queryCount(TEMPLATE);
-        }
-        questionnaireMapper.updateCount(TEMPLATE, String.valueOf(Integer.parseInt(id) + 1));
-        template.setId(id);
-        template.setCreateTime(new Date());
-        String creatorId = template.getCreatorId();
-        JSONObject jsonObject = JSONUtil.parseObj(template, false, true);
-        jsonObject.setDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println(JSONUtil.toJsonStr(jsonObject));
-        questionnaireMapper.insertTemplate(creatorId, id, JSONUtil.toJsonStr(jsonObject));
-    }
-
-    public Page queryTemplates(String id, String searchTitle, Integer pageNum, Integer pageSize) {
-        JSONArray array = (JSONArray) questionnaireMapper.queryTemplates(id).get("rows");
-        List<Template> list = JSONUtil.toList(array, Template.class);
+    public Page query(String id, String searchTitle, Integer pageNum, Integer pageSize) {
+        JSONArray array = (JSONArray) questionnaireMapper.query(id).get("rows");
+        List<Questionnaire> list = JSONUtil.toList(array, Questionnaire.class);
         if(!searchTitle.equals("")) {
-            Template temp;
+            Questionnaire temp;
             for(int i = list.size() - 1; i >= 0; i--) {
                 temp = list.get(i);
                 if(!temp.getTitle().contains(searchTitle)) {
@@ -55,5 +33,34 @@ public class QuestionnaireService {
             }
         }
         return PaginationUtil.pagination(list, pageNum, pageSize, list.size());
+    }
+
+    public void insert(Questionnaire questionnaire) {
+        System.out.println("service: " + questionnaire.toString());
+        String id;
+        if(questionnaireMapper.queryCount() == null) {
+            questionnaireMapper.insertCount();
+            id = "1";
+        } else {
+            id = questionnaireMapper.queryCount();
+        }
+        questionnaireMapper.updateCount(String.valueOf(Integer.parseInt(id) + 1));
+        questionnaire.setId(id);
+        questionnaire.setCreateTime(new Date());
+        Question question = new Question();
+        question.setValue("Do you need a phone call with your doctor?");
+        List<Question> list = questionnaire.getQuestions();
+        list.add(question);
+        questionnaire.setQuestions(list);
+        String creatorId = questionnaire.getCreatorId();
+        JSONObject jsonObject = JSONUtil.parseObj(questionnaire, false, true);
+        jsonObject.setDateFormat("yyyy-MM-dd HH:mm:ss");
+        questionnaireMapper.insert(creatorId,
+                JSONUtil.toJsonStr(JSONUtil.createObj().putOpt("name", "questionnaire_" + id)),
+                id, JSONUtil.toJsonStr(jsonObject));
+    }
+
+    public void delete(String id) {
+        questionnaireMapper.delete(id);
     }
 }

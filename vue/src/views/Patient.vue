@@ -5,7 +5,7 @@
         <div style="margin-bottom: 15px">
           <el-input
               v-model="searchName"
-              placeholder="Type name to search patient"
+              placeholder="Type to search patient"
               clearable
               style="width: 20%"
               @keyup.enter.native="load">
@@ -52,7 +52,6 @@
               v-model:current-page="currentPage"
               background
               layout="prev, pager, next, jumper"
-              :hide-on-single-page="true"
               :page-size="pageSize"
               :total="total" />
         </div>
@@ -88,7 +87,7 @@ export default {
   },
   methods: {
     load() {
-      request.get("/doctor/patients", {
+      request.get("/my-patients", {
         params: {
           id: this.user.id,
           searchName: this.searchName,
