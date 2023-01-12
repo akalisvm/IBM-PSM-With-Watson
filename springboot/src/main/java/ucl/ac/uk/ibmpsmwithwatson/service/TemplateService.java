@@ -1,6 +1,5 @@
 package ucl.ac.uk.ibmpsmwithwatson.service;
 
-import cn.hutool.json.JSON;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -20,8 +19,8 @@ public class TemplateService {
     @Autowired
     TemplateMapper templateMapper;
 
-    public Page query(String id, String searchTitle, Integer pageNum, Integer pageSize) {
-        JSONArray array = (JSONArray) templateMapper.query(id).get("rows");
+    public Page query(String creatorId, String searchTitle, Integer pageNum, Integer pageSize) {
+        JSONArray array = (JSONArray) templateMapper.query(creatorId).get("rows");
         List<Template> list = JSONUtil.toList(array, Template.class);
         if(!searchTitle.equals("")) {
             Template temp;
@@ -47,16 +46,17 @@ public class TemplateService {
         template.setId(id);
         template.setCreateTime(new Date());
         String creatorId = template.getCreatorId();
-        JSONObject jsonObject = JSONUtil.parseObj(template, false, true);
-        jsonObject.setDateFormat("yyyy-MM-dd HH:mm:ss");
-        templateMapper.insert(creatorId, id, JSONUtil.toJsonStr(jsonObject));
+        templateMapper.insert(creatorId, id, JSONUtil.toJsonStr(template));
     }
 
     public void update(Template template) {
-        templateMapper.update(template.getId(), JSONUtil.toJsonStr(template));
+        JSONObject jsonObject = JSONUtil.parseObj(template);
+        jsonObject.putOpt("label", "Template");
+        jsonObject.putOpt("name", "template_" + template.getId());
+        templateMapper.update(template.getId(), JSONUtil.toJsonStr(jsonObject));
     }
 
-    public void delete(String id) {
-        templateMapper.delete(id);
+    public void delete(String templateId) {
+        templateMapper.delete(templateId);
     }
 }

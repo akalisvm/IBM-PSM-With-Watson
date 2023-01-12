@@ -15,12 +15,12 @@ public class TemplateController {
     TemplateService templateService;
 
     @GetMapping
-    public Result<?> query(@RequestParam(defaultValue = "") String id,
+    public Result<?> query(@RequestParam(defaultValue = "") String creatorId,
                                    @RequestParam(defaultValue = "") String searchTitle,
                                    @RequestParam(defaultValue = "1") Integer pageNum,
                                    @RequestParam(defaultValue = "5") Integer pageSize) {
-        Page templates = templateService.query(id, searchTitle, pageNum, pageSize);
-        return Result.success(templates);
+        Page page = templateService.query(creatorId, searchTitle, pageNum, pageSize);
+        return Result.success(page);
     }
 
     @PostMapping
@@ -35,9 +35,9 @@ public class TemplateController {
         return Result.success();
     }
 
-    @DeleteMapping("/{id}")
-    public Result<?> delete(@PathVariable String id) {
-        templateService.delete(id);
+    @DeleteMapping("/{templateId}")
+    public Result<?> delete(@PathVariable String templateId) {
+        templateService.delete(templateId);
         return Result.success();
     }
 }

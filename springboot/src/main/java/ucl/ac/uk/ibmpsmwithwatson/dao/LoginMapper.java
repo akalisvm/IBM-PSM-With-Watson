@@ -10,6 +10,10 @@ public class LoginMapper {
 
     GraphMapper graphMapper = new GraphMapper(new BangDBConfig(), new RestTemplateBuilder());
 
+    public JSONObject queryUserById(String id) {
+        return graphMapper.runCypherQuery("S=>(User:* {id=\"" + id + "\"})");
+    }
+
     public JSONObject queryUserByEmail(String email) {
         return graphMapper.runCypherQuery("S=>(User:* {email=\"" + email + "\"})");
     }

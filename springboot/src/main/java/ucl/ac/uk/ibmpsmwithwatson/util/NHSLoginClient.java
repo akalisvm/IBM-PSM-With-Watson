@@ -62,5 +62,4 @@ public class NHSLoginClient {
 
         return restTemplate.exchange(userinfoUri, HttpMethod.GET, userInfoHttpEntity, User.class).getBody();
     }
-
 }

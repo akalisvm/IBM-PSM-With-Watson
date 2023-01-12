@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class Question {
-    private String value;
+    private String question;
+    private String answer;
 }

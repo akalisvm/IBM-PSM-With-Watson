@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ucl.ac.uk.ibmpsmwithwatson.dao.QuestionnaireMapper;
 import ucl.ac.uk.ibmpsmwithwatson.entity.Page;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Question;
 import ucl.ac.uk.ibmpsmwithwatson.entity.Questionnaire;
 import ucl.ac.uk.ibmpsmwithwatson.util.PaginationUtil;
 
@@ -36,7 +35,6 @@ public class QuestionnaireService {
     }
 
     public void insert(Questionnaire questionnaire) {
-        System.out.println("service: " + questionnaire.toString());
         String id;
         if(questionnaireMapper.queryCount() == null) {
             questionnaireMapper.insertCount();
@@ -47,20 +45,20 @@ public class QuestionnaireService {
         questionnaireMapper.updateCount(String.valueOf(Integer.parseInt(id) + 1));
         questionnaire.setId(id);
         questionnaire.setCreateTime(new Date());
-        Question question = new Question();
-        question.setValue("Do you need a phone call with your doctor?");
-        List<Question> list = questionnaire.getQuestions();
-        list.add(question);
-        questionnaire.setQuestions(list);
         String creatorId = questionnaire.getCreatorId();
-        JSONObject jsonObject = JSONUtil.parseObj(questionnaire, false, true);
-        jsonObject.setDateFormat("yyyy-MM-dd HH:mm:ss");
         questionnaireMapper.insert(creatorId,
                 JSONUtil.toJsonStr(JSONUtil.createObj().putOpt("name", "questionnaire_" + id)),
-                id, JSONUtil.toJsonStr(jsonObject));
+                id, JSONUtil.toJsonStr(questionnaire));
     }
 
-    public void delete(String id) {
-        questionnaireMapper.delete(id);
+    public void update(Questionnaire questionnaire) {
+        JSONObject jsonObject = JSONUtil.parseObj(questionnaire);
+        jsonObject.putOpt("label", "Questionnaire");
+        jsonObject.putOpt("name", "questionnaire_" + questionnaire.getId());
+        questionnaireMapper.update(questionnaire.getId(), JSONUtil.toJsonStr(jsonObject));
+    }
+
+    public void delete(String questionnaireId) {
+        questionnaireMapper.delete(questionnaireId);
     }
 }

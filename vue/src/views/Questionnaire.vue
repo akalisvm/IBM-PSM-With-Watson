@@ -32,13 +32,13 @@
               <el-table-column prop="title" label="Template Title" />
               <el-table-column fixed="right" label="Operations" >
                 <template #default="scope">
-                  <el-button link type="primary" size="small" @click="detailTemplate">
-                    Detail
+                  <el-button link type="primary" size="small" @click="previewTemplate(scope.row)">
+                    Preview
                   </el-button>
-                  <el-button link type="primary" size="small" @click="editTemplate">
+                  <el-button link type="primary" size="small" @click="editTemplate(scope.row)">
                     Edit
                   </el-button>
-                  <el-button link type="primary" size="small" @click="applyTemplate">
+                  <el-button link type="primary" size="small" @click="applyTemplate(scope.row)">
                     Apply
                   </el-button>
                   <el-popconfirm title="Are you sure?" @confirm="removeTemplate(scope.row.id)">
@@ -62,7 +62,7 @@
                 :total="templateTotal" />
           </div>
         </el-card>
-        <el-card style="margin-top: 20px; height: 43vh">
+        <el-card style="margin-top: 28px; height: 43vh">
           <el-input
               v-model="searchQuestionnaireTitle"
               placeholder="Type to search questionnaire"
@@ -93,10 +93,10 @@
               <el-table-column prop="title" label="Questionnaire Title" />
               <el-table-column fixed="right" label="Operations" >
                 <template #default="scope">
-                  <el-button link type="primary" size="small" @click="detailQuestionnaire">
-                    Detail
+                  <el-button link type="primary" size="small" @click="previewQuestionnaire(scope.row)">
+                    Preview
                   </el-button>
-                  <el-button link type="primary" size="small" @click="editQuestoinnaire">
+                  <el-button link type="primary" size="small" @click="editQuestionnaire(scope.row)">
                     Edit
                   </el-button>
                   <el-button link type="primary" size="small" @click="assignQuestionnaire">
@@ -125,55 +125,50 @@
         </el-card>
       </el-col>
       <el-col :span="14">
-        <div v-if="this.clickOn === ''">
+        <div>
           <el-card style="height: 89vh">
             <template #header>
-              <span>Detailed Description</span>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span>Preview</span>
+                <el-button v-if="this.clickOn !== ''" @click="this.clickOn = ''">Close</el-button>
+              </div>
             </template>
-            <el-empty description="No selected template or questionnaire" />
+            <el-empty v-if="this.clickOn === ''" description="No selected template or questionnaire" />
+            <div v-if="this.clickOn !== ''">
+              <el-alert v-if="this.clickOn === 'template'"
+                        title="Templates cannot be used directly to be assigned to patients."
+                        type="info"
+                        show-icon
+                        :closable="false"
+              />
+              <h1 style="text-align: center">{{ this.previewForm.title }}</h1>
+              <div v-if="this.previewForm.description !== ''" style="margin-bottom: 20px">
+                <span>{{ this.previewForm.description }}</span>
+              </div>
+
+              <el-form
+                  :label-position="'top'"
+              >
+                <el-scrollbar height="70vh">
+                  <el-form-item
+                      v-for="(question, index) in this.previewForm.questions"
+                      :key="index"
+                      :label="'Question ' + (parseInt(index) + 1) + ': ' + question.question"
+                      :prop="'questions.' + index + '.question'"
+                  >
+                    <el-input v-model="question.answer" autosize type="textarea" />
+                  </el-form-item>
+                  <el-form-item v-if="this.clickOn === 'questionnaire'"
+                                :label="'Question ' + (parseInt(this.previewForm.questions.length) + 1) + ': Do you need a phone call with your doctor?'">
+                    <el-radio-group v-model="this.call">
+                      <el-radio label="YES" border>YES</el-radio>
+                      <el-radio label="NO" border>NO</el-radio>
+                    </el-radio-group>
+                  </el-form-item>
+                </el-scrollbar>
+              </el-form>
+            </div>
           </el-card>
-        </div>
-        <div v-if="this.clickOn === 'template'">
-          <el-row>
-            <el-col :span="24">
-              <el-card style="height: 19vh">
-                Display Template
-              </el-card>
-            </el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="10">
-              <el-card style="margin-top: 20px; height: 68vh">
-                Display Template
-              </el-card>
-            </el-col>
-            <el-col :span="14">
-              <el-card style="margin-top: 20px; height: 68vh">
-                Display Template
-              </el-card>
-            </el-col>
-          </el-row>
-        </div>
-        <div v-if="this.clickOn === 'questionnaire'">
-          <el-row>
-            <el-col :span="24">
-              <el-card style="height: 19vh">
-                Display Template
-              </el-card>
-            </el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="10">
-              <el-card style="margin-top: 20px; height: 68vh">
-                Display Template
-              </el-card>
-            </el-col>
-            <el-col :span="14">
-              <el-card style="margin-top: 20px; height: 68vh">
-                Display Template
-              </el-card>
-            </el-col>
-          </el-row>
         </div>
       </el-col>
     </el-row>
@@ -183,8 +178,8 @@
         <el-tooltip placement="top">
           <template #content>
             The system will automatically add a question to the questionnaire: <br />
-            Do you need a phone call with your doctor? <br />
-            If the patient selected "yes", there will be an alert and you need to call the patient.
+            "Do you need a phone call with your doctor?" <br />
+            If the patient selected "YES", there will be an alert and you need to call the patient.
           </template>
           <el-icon v-if="this.dialogMode === 2" style="margin-left: 5px"><InfoFilled /></el-icon>
         </el-tooltip>
@@ -193,14 +188,17 @@
         <el-form-item prop="title" label="Title">
           <el-input v-model="form.title" />
         </el-form-item>
+        <el-form-item prop="description" label="Description">
+          <el-input v-model="form.description" />
+        </el-form-item>
         <el-form-item
             v-for="(question, index) in form.questions"
             :key="index"
             :label="'Question ' + (parseInt(index) + 1)"
-            :prop="'questions.' + index + '.value'"
+            :prop="'questions.' + index + '.question'"
             :rules="rules.questions"
         >
-          <el-input v-model="question.value">
+          <el-input v-model="question.question">
             <template #append>
               <el-button type="danger" plain @click.prevent="removeQuestion(question)">
                 Delete
@@ -212,7 +210,7 @@
       <template #footer>
         <el-button @click="dialogVisible = false">Cancel</el-button>
         <el-button @click="addQuestion">Add a new question</el-button>
-        <el-button type="primary" @click="confirm">Confirm</el-button>
+        <el-button type="primary" @click="save">Save</el-button>
       </template>
     </el-dialog>
   </div>
@@ -251,6 +249,8 @@ export default {
       dialogTitle: "",
       dialogMode: 0,
       clickOn: "",
+      previewForm: {},
+      call: "",
     }
   },
   created() {
@@ -268,7 +268,7 @@ export default {
     loadTemplate() {
       request.get("/template", {
         params: {
-          id: this.user.id,
+          creatorId: this.user.id,
           searchTitle: this.searchTemplateTitle,
           pageNum: this.templateCurrentPage,
           pageSize: this.templatePageSize
@@ -281,7 +281,7 @@ export default {
     loadQuestionnaire() {
       request.get("/questionnaire", {
         params: {
-          id: this.user.id,
+          creatorId: this.user.id,
           searchTitle: this.searchQuestionnaireTitle,
           pageNum: this.questionnaireCurrentPage,
           pageSize: this.questionnairePageSize
@@ -303,26 +303,41 @@ export default {
         creatorId: this.user.id,
         title: "",
         questions: [
-          { value: "" }
+          { question: "", answer: "" }
         ]
       }
     },
-    editTemplate() {
+    previewTemplate(row) {
+      this.clickOn = "template"
+      this.previewForm = JSON.parse(JSON.stringify(row))
+    },
+    editTemplate(row) {
       this.dialogVisible = true
       this.dialogTitle = "Edit Template"
+      this.dialogMode = 3
+      this.form = JSON.parse(JSON.stringify(row))
+    },
+    applyTemplate(row) {
+      this.dialogVisible = true
+      this.dialogTitle = "Create Questionnaire From Template"
       this.dialogMode = 4
+      this.form = JSON.parse(JSON.stringify(row))
     },
     removeTemplate(id) {
       request.delete("/template/" + id).then(res => {
         if(res.code === "10000") {
           this.$message({
             type: "success",
-            message: "You have deleted a template",
+            message: "You have been removed a template",
             customClass: 'font'
           })
           this.loadTemplate()
         }
       })
+    },
+    questionnaireCurrentChange(pageNum) {
+      this.questionnaireCurrentPage = pageNum
+      this.loadQuestionnaire()
     },
     createQuestionnaire() {
       this.dialogVisible = true
@@ -332,13 +347,32 @@ export default {
         creatorId: this.user.id,
         title: "",
         questions: [
-          { value: "" }
+          { question: "", answer: "" }
         ]
       }
     },
-    questionnaireCurrentChange(pageNum) {
-      this.questionnaireCurrentPage = pageNum
-      this.loadQuestionnaire()
+    previewQuestionnaire(row) {
+      this.clickOn = "questionnaire"
+      this.previewForm = JSON.parse(JSON.stringify(row))
+      console.log(this.previewForm)
+    },
+    editQuestionnaire(row) {
+      this.dialogVisible = true
+      this.dialogTitle = "Edit Questionnaire"
+      this.dialogMode = 4
+      this.form = JSON.parse(JSON.stringify(row))
+    },
+    removeQuestionnaire(id) {
+      request.delete("/questionnaire/" + id).then(res => {
+        if(res.code === "10000") {
+          this.$message({
+            type: "success",
+            message: "You have been removed a questionnaire",
+            customClass: 'font'
+          })
+          this.loadQuestionnaire()
+        }
+      })
     },
     addQuestion() {
       this.form.questions.push({ value: "" })
@@ -349,7 +383,7 @@ export default {
         this.form.questions.splice(index, 1)
       }
     },
-    confirm() {
+    save() {
       this.$refs.form.validate((valid) => {
         if(valid) {
           if(this.dialogMode === 1) {
@@ -362,11 +396,10 @@ export default {
               return
             }
             request.post("/template", this.form).then(res => {
-              console.log(res)
               if(res.code === '10000') {
                 this.$message({
                   type: "success",
-                  message: "You have created a new template",
+                  message: "You have been created a new template",
                   customClass: 'font'
                 })
                 this.dialogVisible = false
@@ -377,17 +410,56 @@ export default {
             if(this.form.questions.length === 0) {
               this.$message({
                 type: "error",
-                message: "The template should contain at least one question",
+                message: "The questionnaire should contain at least one question",
                 customClass: 'font'
               })
               return
             }
             request.post("/questionnaire", this.form).then(res => {
-              console.log(res)
               if(res.code === '10000') {
                 this.$message({
                   type: "success",
-                  message: "You have created a new questionnaire",
+                  message: "You have been created a new questionnaire",
+                  customClass: 'font'
+                })
+                this.dialogVisible = false
+                this.loadQuestionnaire()
+              }
+            })
+          } else if(this.dialogMode === 3) {
+            if(this.form.questions.length === 0) {
+              this.$message({
+                type: "error",
+                message: "The template should contain at least one question",
+                customClass: 'font'
+              })
+              return
+            }
+            request.put("/template", this.form).then(res => {
+              if(res.code === '10000') {
+                this.$message({
+                  type: "success",
+                  message: "You have been edited a template",
+                  customClass: 'font'
+                })
+                this.dialogVisible = false
+                this.loadTemplate()
+              }
+            })
+          } else if(this.dialogMode === 4) {
+            if(this.form.questions.length === 0) {
+              this.$message({
+                type: "error",
+                message: "The questionnaire should contain at least one question",
+                customClass: 'font'
+              })
+              return
+            }
+            request.put("/questionnaire", this.form).then(res => {
+              if(res.code === '10000') {
+                this.$message({
+                  type: "success",
+                  message: "You have been edited a questionnaire",
                   customClass: 'font'
                 })
                 this.dialogVisible = false

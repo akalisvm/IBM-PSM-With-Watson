@@ -15,37 +15,27 @@
               </el-button>
             </template>
           </el-input>
-          <el-button style="margin-left: 10px" @click="dialogVisible = true">
-            <span>Assign questionnaire to patients</span>
-          </el-button>
-          <el-dialog v-model="dialogVisible" title="Assign Questionnaire" width="20%" align-center>
-            <el-select style="width: 100%">
-
-            </el-select>
-            <template #footer>
-              <el-button @click="dialogVisible = false">Cancel</el-button>
-              <el-button type="primary" @click="assign">Confirm</el-button>
-            </template>
-          </el-dialog>
           <el-button style="margin-left: 10px">
             <span>Remind patients to complete questionnaire</span>
           </el-button>
         </div>
-        <el-table
-            :data="patientsData"
-            :table-layout="tableLayout"
-            stripe
-            style="width: 100%"
-        >
-          <el-table-column type="selection" />
-          <el-table-column prop="given_name" label="Given Name"/>
-          <el-table-column prop="family_name" label="Family Name" />
-          <el-table-column prop="gender" label="Gender" />
-          <el-table-column prop="birthdate" label="Date of Birth" sortable />
-          <el-table-column prop="email" label="Email" />
-          <el-table-column prop="phone_number" label="Phone Number" />
-          <el-table-column prop="nhs_number" label="NHS Number" />
-        </el-table>
+        <div style="margin-top: 20px; height: 45vh">
+          <el-table
+              :data="patientsData"
+              :table-layout="tableLayout"
+              stripe
+              style="width: 100%"
+          >
+            <el-table-column type="selection" />
+            <el-table-column prop="given_name" label="Given Name"/>
+            <el-table-column prop="family_name" label="Family Name" />
+            <el-table-column prop="gender" label="Gender" />
+            <el-table-column prop="birthdate" label="Date of Birth" sortable />
+            <el-table-column prop="email" label="Email" />
+            <el-table-column prop="phone_number" label="Phone Number" />
+            <el-table-column prop="nhs_number" label="NHS Number" />
+          </el-table>
+        </div>
         <div style="margin: 10px 0">
           <el-pagination
               @current-change="currentChange"
@@ -87,7 +77,7 @@ export default {
   },
   methods: {
     load() {
-      request.get("/my-patients", {
+      request.get("/mypatients", {
         params: {
           id: this.user.id,
           searchName: this.searchName,

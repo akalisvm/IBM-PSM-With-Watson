@@ -36,6 +36,10 @@ public class QuestionnaireMapper {
         return graphMapper.runCypherQuery("S=>(Questionnaire:* {creatorId=\"" + creatorId + "\"}); RETURN * SORT_DESC createTime");
     }
 
+    public void update(String questionnaireId, String questionnaireProp) {
+        tableMapper.runSQLQuery("update mygraph set val = " + questionnaireProp + " where name=\"questionnaire_" + questionnaireId + "\"");
+    }
+
     public void delete(String questionnaireId) {
         tableMapper.runSQLQuery("delete from mygraph_rel where name=\"questionnaire_" + questionnaireId + "\"");
         tableMapper.runSQLQuery("delete from mygraph where name=\"questionnaire_" + questionnaireId + "\"");

@@ -11,5 +11,6 @@ public class Questionnaire {
     private Date createTime;
     private String creatorId;
     private String title;
+    private String description;
     private List<Question> questions;
 }

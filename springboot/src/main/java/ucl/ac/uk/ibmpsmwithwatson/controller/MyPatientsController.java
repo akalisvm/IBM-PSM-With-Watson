@@ -7,7 +7,7 @@ import ucl.ac.uk.ibmpsmwithwatson.service.MyPatientsService;
 import ucl.ac.uk.ibmpsmwithwatson.util.Result;
 
 @RestController
-@RequestMapping("/my-patients")
+@RequestMapping("/mypatients")
 public class MyPatientsController {
 
     @Autowired
