@@ -31,7 +31,7 @@ public class TemplateMapper {
     }
 
     public JSONObject query(String creatorId) {
-        return graphMapper.runCypherQuery("S=>(Template:* {creatorId=\"" + creatorId + "\"}); RETURN * SORT_DESC createTime");
+        return graphMapper.runCypherQuery("S=>(Template:* {creatorId=\"" + creatorId + "\"}); RETURN * SORT_ASC createTime");
     }
 
     public void update(String templateId, String templateProp) {

@@ -1,8 +1,6 @@
 package ucl.ac.uk.ibmpsmwithwatson.dao;
 
-import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import ucl.ac.uk.ibmpsmwithwatson.config.BangDBConfig;
@@ -33,11 +31,19 @@ public class QuestionnaireMapper {
     }
 
     public JSONObject query(String creatorId) {
-        return graphMapper.runCypherQuery("S=>(Questionnaire:* {creatorId=\"" + creatorId + "\"}); RETURN * SORT_DESC createTime");
+        return graphMapper.runCypherQuery("S=>(Questionnaire:* {creatorId=\"" + creatorId + "\"}); RETURN * SORT_ASC createTime");
     }
 
     public void update(String questionnaireId, String questionnaireProp) {
         tableMapper.runSQLQuery("update mygraph set val = " + questionnaireProp + " where name=\"questionnaire_" + questionnaireId + "\"");
+    }
+
+    public JSONObject check(String questionnaireId) {
+        return graphMapper.runCypherQuery("S=>(User:* {questionnaire=\"" + questionnaireId + "\"})");
+    }
+
+    public void clear(String patientId, String patientProp) {
+        tableMapper.runSQLQuery("update mygraph set val = " + patientProp + " where name=\"user_" + patientId + "\"");
     }
 
     public void delete(String questionnaireId) {

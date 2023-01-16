@@ -8,7 +8,7 @@ import ucl.ac.uk.ibmpsmwithwatson.service.TemplateService;
 import ucl.ac.uk.ibmpsmwithwatson.util.Result;
 
 @RestController
-@RequestMapping("/template")
+@RequestMapping("/templates")
 public class TemplateController {
 
     @Autowired
@@ -16,10 +16,10 @@ public class TemplateController {
 
     @GetMapping
     public Result<?> query(@RequestParam(defaultValue = "") String creatorId,
-                                   @RequestParam(defaultValue = "") String searchTitle,
+                                   @RequestParam(defaultValue = "") String searchInput,
                                    @RequestParam(defaultValue = "1") Integer pageNum,
                                    @RequestParam(defaultValue = "5") Integer pageSize) {
-        Page page = templateService.query(creatorId, searchTitle, pageNum, pageSize);
+        Page page = templateService.query(creatorId, searchInput, pageNum, pageSize);
         return Result.success(page);
     }
 

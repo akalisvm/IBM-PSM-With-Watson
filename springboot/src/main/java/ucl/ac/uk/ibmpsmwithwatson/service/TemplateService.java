@@ -9,6 +9,7 @@ import ucl.ac.uk.ibmpsmwithwatson.dao.TemplateMapper;
 import ucl.ac.uk.ibmpsmwithwatson.entity.Page;
 import ucl.ac.uk.ibmpsmwithwatson.entity.Template;
 import ucl.ac.uk.ibmpsmwithwatson.util.PaginationUtil;
+import ucl.ac.uk.ibmpsmwithwatson.util.SearchingUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -19,18 +20,10 @@ public class TemplateService {
     @Autowired
     TemplateMapper templateMapper;
 
-    public Page query(String creatorId, String searchTitle, Integer pageNum, Integer pageSize) {
-        JSONArray array = (JSONArray) templateMapper.query(creatorId).get("rows");
-        List<Template> list = JSONUtil.toList(array, Template.class);
-        if(!searchTitle.equals("")) {
-            Template temp;
-            for(int i = list.size() - 1; i >= 0; i--) {
-                temp = list.get(i);
-                if(!temp.getTitle().contains(searchTitle)) {
-                    list.remove(temp);
-                }
-            }
-        }
+    public Page query(String creatorId, String searchInput, Integer pageNum, Integer pageSize) {
+        JSONArray jsonArray = (JSONArray) templateMapper.query(creatorId).get("rows");
+        List<Template> list = JSONUtil.toList(jsonArray, Template.class);
+        SearchingUtil.searchingTemplateByIdOrTitle(list, searchInput);
         return PaginationUtil.pagination(list, pageNum, pageSize, list.size());
     }
 

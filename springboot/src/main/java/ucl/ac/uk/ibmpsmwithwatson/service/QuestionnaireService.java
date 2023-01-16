@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import ucl.ac.uk.ibmpsmwithwatson.dao.QuestionnaireMapper;
 import ucl.ac.uk.ibmpsmwithwatson.entity.Page;
 import ucl.ac.uk.ibmpsmwithwatson.entity.Questionnaire;
+import ucl.ac.uk.ibmpsmwithwatson.entity.User;
 import ucl.ac.uk.ibmpsmwithwatson.util.PaginationUtil;
+import ucl.ac.uk.ibmpsmwithwatson.util.SearchingUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -19,18 +21,10 @@ public class QuestionnaireService {
     @Autowired
     QuestionnaireMapper questionnaireMapper;
 
-    public Page query(String id, String searchTitle, Integer pageNum, Integer pageSize) {
-        JSONArray array = (JSONArray) questionnaireMapper.query(id).get("rows");
-        List<Questionnaire> list = JSONUtil.toList(array, Questionnaire.class);
-        if(!searchTitle.equals("")) {
-            Questionnaire temp;
-            for(int i = list.size() - 1; i >= 0; i--) {
-                temp = list.get(i);
-                if(!temp.getTitle().contains(searchTitle)) {
-                    list.remove(temp);
-                }
-            }
-        }
+    public Page query(String creatorId, String searchInput, Integer pageNum, Integer pageSize) {
+        JSONArray jsonArray = (JSONArray) questionnaireMapper.query(creatorId).get("rows");
+        List<Questionnaire> list = JSONUtil.toList(jsonArray, Questionnaire.class);
+        SearchingUtil.searchingQuestionnaireByIdOrTitle(list, searchInput);
         return PaginationUtil.pagination(list, pageNum, pageSize, list.size());
     }
 
@@ -58,7 +52,21 @@ public class QuestionnaireService {
         questionnaireMapper.update(questionnaire.getId(), JSONUtil.toJsonStr(jsonObject));
     }
 
+    public List<User> check(String questionnaireId) {
+        JSONArray jsonArray = (JSONArray) questionnaireMapper.check(questionnaireId).get("rows");
+        return JSONUtil.toList(jsonArray, User.class);
+    }
+
     public void delete(String questionnaireId) {
+        JSONArray jsonArray = (JSONArray) questionnaireMapper.check(questionnaireId).get("rows");
+        List<User> list = JSONUtil.toList(jsonArray, User.class);
+        for(User user : list) {
+            user.setQuestionnaire("");
+            JSONObject jsonObject = JSONUtil.parseObj(user);
+            jsonObject.putOpt("label", "User");
+            jsonObject.putOpt("name", "user_" + user.getId());
+            questionnaireMapper.clear(user.getId(), JSONUtil.toJsonStr(jsonObject));
+        }
         questionnaireMapper.delete(questionnaireId);
     }
 }

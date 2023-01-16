@@ -15,7 +15,19 @@ import java.util.Map;
 
 public class insertDataFromTxt {
 
-    private final static String[] USER_ATTR = new String[]{"id", "given_name", "family_name", "email", "phone_number", "password", "role", "gender", "birthdate", "nhs_number", "doctor"};
+    private final static String[] USER_ATTR = new String[]{"id",
+            "given_name",
+            "family_name",
+            "email",
+            "phone_number",
+            "password",
+            "role",
+            "gender",
+            "birthdate",
+            "nhs_number",
+            "doctor",
+            "questionnaire"
+    };
 
     public static void insertDataToTable(String table, String filename, String[] attr) {
         try {
@@ -62,12 +74,15 @@ public class insertDataFromTxt {
             while(line != null) {
                 String[] split = line.split(";");
                 Map<String, String> map = new LinkedHashMap<>();
-                for(int i = 0; i < attr.length; i++) {
+                for(int i = 0; i < split.length; i++) {
                     if(attr[i].equals("password")) {
                         map.put(attr[i], md5.digestHex(split[i].trim()));
                     } else {
                         map.put(attr[i], split[i].trim());
                     }
+                }
+                for(int i = split.length; i < attr.length; i++) {
+                    map.put(attr[i], "");
                 }
                 graphMapper.addNode(label, label.toLowerCase() + "_" + (tableMapper.getCount(label) + 1), JSONUtil.toJsonStr(map));
                 line = br.readLine();

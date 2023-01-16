@@ -73,9 +73,9 @@ export default {
           request.post("/login/app", this.form).then(res => {
             if(res.code === "10000") {
               if(res.data.role === "patient") {
-                this.$router.push("/personal")
+                this.$router.push("/personalcenter")
               } else {
-                this.$router.push("/patient")
+                this.$router.push("/mypatients")
               }
             } else {
               this.$message({
@@ -99,7 +99,7 @@ export default {
 </script>
 
 <style>
-  .font {
-    font-family: Arial, sans-serif;
-  }
+.font {
+  font-family: Arial, sans-serif;
+}
 </style>

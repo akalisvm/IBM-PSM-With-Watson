@@ -15,5 +15,6 @@ public class User {
     private String birthdate;
     private String nhs_number;
     private String doctor;
+    private String questionnaire;
     private String app_token;
 }

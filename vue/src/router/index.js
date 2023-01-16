@@ -10,27 +10,27 @@ const routes = [
     redirect: "/login",
     children: [
       {
-        path: 'patient',
-        name: 'Patient',
-        component: () => import("@/views/Patient")
+        path: 'mypatients',
+        name: 'MyPatients',
+        component: () => import("@/views/MyPatients")
       },
       {
-        path: 'questionnaire',
-        name: 'Questionnaire',
-        component: () => import("@/views/Questionnaire")
+        path: 'questionnaires',
+        name: 'Questionnaires',
+        component: () => import("@/views/Questionnaires")
       },
       {
-        path: 'record',
-        name: 'Record',
-        component: () => import("@/views/Record")
+        path: 'records',
+        name: 'Records',
+        component: () => import("@/views/Records")
       },
       {
-        path: 'event',
-        name: 'Event',
-        component: () => import("@/views/Event")
+        path: 'events',
+        name: 'Events',
+        component: () => import("@/views/Events")
       },
       {
-        path: 'personal',
+        path: 'personalcenter',
         name: 'PersonalCenter',
         component: () => import("@/views/PersonalCenter")
       },

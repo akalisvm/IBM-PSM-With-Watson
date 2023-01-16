@@ -4,7 +4,7 @@
       <el-col :span="10">
         <el-card style="height: 43vh">
           <el-input
-              v-model="searchTemplateTitle"
+              v-model="searchTemplateInput"
               placeholder="Type to search template"
               clearable
               style="width: 50%"
@@ -15,6 +15,11 @@
               </el-button>
             </template>
           </el-input>
+          <el-button
+              style="margin-left: 10px"
+              @click="this.searchTemplateInput = ''; this.loadTemplate()">
+            <span>Reset</span>
+          </el-button>
           <el-button
               type="primary"
               style="margin-left: 10px"
@@ -64,9 +69,8 @@
         </el-card>
         <el-card style="margin-top: 28px; height: 43vh">
           <el-input
-              v-model="searchQuestionnaireTitle"
+              v-model="searchQuestionnaireInput"
               placeholder="Type to search questionnaire"
-              clearable
               style="width: 50%"
           >
             <template #append>
@@ -75,6 +79,11 @@
               </el-button>
             </template>
           </el-input>
+          <el-button
+              style="margin-left: 10px"
+              @click="this.searchQuestionnaireInput = ''; this.loadQuestionnaire()">
+            <span>Reset</span>
+          </el-button>
           <el-button
               type="primary"
               style="margin-left: 10px"
@@ -99,8 +108,8 @@
                   <el-button link type="primary" size="small" @click="editQuestionnaire(scope.row)">
                     Edit
                   </el-button>
-                  <el-button link type="primary" size="small" @click="assignQuestionnaire">
-                    Assign
+                  <el-button link type="primary" size="small" @click="checkQuestionnaire(scope.row.id)">
+                    Check
                   </el-button>
                   <el-popconfirm title="Are you sure?" @confirm="removeQuestionnaire(scope.row.id)">
                     <template #reference>
@@ -146,9 +155,7 @@
                 <span>{{ this.previewForm.description }}</span>
               </div>
 
-              <el-form
-                  :label-position="'top'"
-              >
+              <el-form :label-position="'top'">
                 <el-scrollbar height="70vh">
                   <el-form-item
                       v-for="(question, index) in this.previewForm.questions"
@@ -158,13 +165,30 @@
                   >
                     <el-input v-model="question.answer" autosize type="textarea" />
                   </el-form-item>
-                  <el-form-item v-if="this.clickOn === 'questionnaire'"
-                                :label="'Question ' + (parseInt(this.previewForm.questions.length) + 1) + ': Do you need a phone call with your doctor?'">
-                    <el-radio-group v-model="this.call">
-                      <el-radio label="YES" border>YES</el-radio>
-                      <el-radio label="NO" border>NO</el-radio>
-                    </el-radio-group>
-                  </el-form-item>
+                  <div v-if="this.clickOn === 'questionnaire'">
+                    <el-form-item :label="'Question ' + (parseInt(this.previewForm.questions.length) + 1) +
+                    ': Overall, do you think better, same or worse than the last time you give us a feedback?'">
+                      <el-radio-group v-model="this.feel" @change="this.needCall = ''; this.callTime = ''">
+                        <el-radio label="better" border>Better</el-radio>
+                        <el-radio label="same" border>Same</el-radio>
+                        <el-radio label="worse" border>Worse</el-radio>
+                      </el-radio-group>
+                    </el-form-item>
+                    <div v-if="this.feel === 'worse'">
+                      <el-form-item :label="'Question ' + (parseInt(this.previewForm.questions.length) + 2) +
+                        ': Do you need a meeting with your doctor?'">
+                        <el-radio-group v-model="this.needCall" @change="this.callTime = ''">
+                          <el-radio label="yes" border>Yes</el-radio>
+                          <el-radio label="no" border>No</el-radio>
+                        </el-radio-group>
+                      </el-form-item>
+                      <el-form-item v-if="this.needCall === 'yes'"
+                                    :label="'Question ' + (parseInt(this.previewForm.questions.length) + 2) +
+                      ': What time is good for you to have a meeting?'">
+                        <el-date-picker v-model="this.callTime" type="datetime" placeholder="Select date and time" />
+                      </el-form-item>
+                    </div>
+                  </div>
                 </el-scrollbar>
               </el-form>
             </div>
@@ -177,39 +201,51 @@
         <span>{{ this.dialogTitle }}</span>
         <el-tooltip placement="top">
           <template #content>
-            The system will automatically add a question to the questionnaire: <br />
-            "Do you need a phone call with your doctor?" <br />
-            If the patient selected "YES", there will be an alert and you need to call the patient.
+            The system will automatically add questions to ask patients how the patient feels and if he needs a meeting.
           </template>
           <el-icon v-if="this.dialogMode === 2" style="margin-left: 5px"><InfoFilled /></el-icon>
         </el-tooltip>
       </template>
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item prop="title" label="Title">
-          <el-input v-model="form.title" />
-        </el-form-item>
-        <el-form-item prop="description" label="Description">
-          <el-input v-model="form.description" />
-        </el-form-item>
-        <el-form-item
-            v-for="(question, index) in form.questions"
-            :key="index"
-            :label="'Question ' + (parseInt(index) + 1)"
-            :prop="'questions.' + index + '.question'"
-            :rules="rules.questions"
+      <div v-if="this.dialogMode !== 5">
+        <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+          <el-form-item prop="title" label="Title">
+            <el-input v-model="form.title" />
+          </el-form-item>
+          <el-form-item prop="description" label="Description">
+            <el-input v-model="form.description" />
+          </el-form-item>
+          <el-form-item
+              v-for="(question, index) in form.questions"
+              :key="index"
+              :label="'Question ' + (parseInt(index) + 1)"
+              :prop="'questions.' + index + '.question'"
+              :rules="rules.questions"
+          >
+            <el-input v-model="question.question">
+              <template #append>
+                <el-button type="danger" plain @click.prevent="removeQuestion(question)">
+                  Delete
+                </el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div v-else-if="this.dialogMode === 5">
+        <el-table
+            :data="patientData"
+            :table-layout="tableLayout"
+            stripe
+            style="width: 100%"
+            height="300"
         >
-          <el-input v-model="question.question">
-            <template #append>
-              <el-button type="danger" plain @click.prevent="removeQuestion(question)">
-                Delete
-              </el-button>
-            </template>
-          </el-input>
-        </el-form-item>
-      </el-form>
+          <el-table-column prop="given_name" label="Given Name" />
+          <el-table-column prop="family_name" label="Family Name" />
+        </el-table>
+      </div>
       <template #footer>
         <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button @click="addQuestion">Add a new question</el-button>
+        <el-button v-if="this.dialogMode !== 5" @click="addQuestion">Add a new question</el-button>
         <el-button type="primary" @click="save">Save</el-button>
       </template>
     </el-dialog>
@@ -221,7 +257,7 @@ import { getCookie } from "@/utils/cookie.utils";
 import request from "@/utils/request";
 
 export default {
-  name: "Questionnaire",
+  name: "Questionnaires",
   data() {
     return {
       user: {},
@@ -236,21 +272,24 @@ export default {
       },
       tableLayout: "auto",
       templateData: [],
-      searchTemplateTitle: "",
+      searchTemplateInput: "",
       templateCurrentPage: 1,
       templatePageSize: 5,
       templateTotal: 0,
       questionnaireData: [],
-      searchQuestionnaireTitle: "",
+      searchQuestionnaireInput: "",
       questionnaireCurrentPage: 1,
       questionnairePageSize: 5,
       questionnaireTotal: 0,
+      patientData: [],
       dialogVisible: false,
       dialogTitle: "",
       dialogMode: 0,
       clickOn: "",
       previewForm: {},
-      call: "",
+      feel: "",
+      needCall: "",
+      callTime: "",
     }
   },
   created() {
@@ -266,10 +305,10 @@ export default {
       this.loadQuestionnaire()
     },
     loadTemplate() {
-      request.get("/template", {
+      request.get("/templates", {
         params: {
           creatorId: this.user.id,
-          searchTitle: this.searchTemplateTitle,
+          searchInput: this.searchTemplateInput,
           pageNum: this.templateCurrentPage,
           pageSize: this.templatePageSize
         }
@@ -279,10 +318,10 @@ export default {
       })
     },
     loadQuestionnaire() {
-      request.get("/questionnaire", {
+      request.get("/questionnaires", {
         params: {
           creatorId: this.user.id,
-          searchTitle: this.searchQuestionnaireTitle,
+          searchInput: this.searchQuestionnaireInput,
           pageNum: this.questionnaireCurrentPage,
           pageSize: this.questionnairePageSize
         }
@@ -320,11 +359,11 @@ export default {
     applyTemplate(row) {
       this.dialogVisible = true
       this.dialogTitle = "Create Questionnaire From Template"
-      this.dialogMode = 4
+      this.dialogMode = 2
       this.form = JSON.parse(JSON.stringify(row))
     },
     removeTemplate(id) {
-      request.delete("/template/" + id).then(res => {
+      request.delete("/templates/" + id).then(res => {
         if(res.code === "10000") {
           this.$message({
             type: "success",
@@ -362,8 +401,20 @@ export default {
       this.dialogMode = 4
       this.form = JSON.parse(JSON.stringify(row))
     },
+    checkQuestionnaire(id) {
+      this.dialogVisible = true
+      this.dialogTitle = "Check All Patients Assigned To This Questionnaire"
+      this.dialogMode = 5
+      request.get("/questionnaires/check", {
+        params: {
+          questionnaireId: id,
+        }
+      }).then(res => {
+        this.patientData = res.data
+      })
+    },
     removeQuestionnaire(id) {
-      request.delete("/questionnaire/" + id).then(res => {
+      request.delete("/questionnaires/" + id).then(res => {
         if(res.code === "10000") {
           this.$message({
             type: "success",
@@ -395,7 +446,7 @@ export default {
               })
               return
             }
-            request.post("/template", this.form).then(res => {
+            request.post("/templates", this.form).then(res => {
               if(res.code === '10000') {
                 this.$message({
                   type: "success",
@@ -415,7 +466,7 @@ export default {
               })
               return
             }
-            request.post("/questionnaire", this.form).then(res => {
+            request.post("/questionnaires", this.form).then(res => {
               if(res.code === '10000') {
                 this.$message({
                   type: "success",
@@ -435,7 +486,7 @@ export default {
               })
               return
             }
-            request.put("/template", this.form).then(res => {
+            request.put("/templates", this.form).then(res => {
               if(res.code === '10000') {
                 this.$message({
                   type: "success",
@@ -455,7 +506,7 @@ export default {
               })
               return
             }
-            request.put("/questionnaire", this.form).then(res => {
+            request.put("/questionnaires", this.form).then(res => {
               if(res.code === '10000') {
                 this.$message({
                   type: "success",
@@ -466,6 +517,8 @@ export default {
                 this.loadQuestionnaire()
               }
             })
+          } else if(this.dialogMode === 5) {
+
           }
         } else {
           this.$message({
@@ -481,7 +534,7 @@ export default {
 </script>
 
 <style>
-  .font {
-    font-family: Arial, sans-serif;
-  }
+.font {
+  font-family: Arial, sans-serif;
+}
 </style>

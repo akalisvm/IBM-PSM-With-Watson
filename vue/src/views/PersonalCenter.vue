@@ -89,6 +89,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+.font {
+  font-family: Arial, sans-serif;
+}
 </style>

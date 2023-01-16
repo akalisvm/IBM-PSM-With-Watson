@@ -1,15 +1,17 @@
 <template>
   <div style="font-family: Arial, sans-serif;">
-    <span>Outreach Events</span>
+    <span>Healthcare Records</span>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Event"
+  name: "Records"
 }
 </script>
 
-<style scoped>
-
+<style>
+.font {
+  font-family: Arial, sans-serif;
+}
 </style>

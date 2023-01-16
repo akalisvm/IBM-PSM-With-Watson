@@ -13,4 +13,7 @@ public class Questionnaire {
     private String title;
     private String description;
     private List<Question> questions;
+    private String feel;
+    private String needCall;
+    private Date callTime;
 }

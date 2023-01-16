@@ -53,18 +53,9 @@ public class LoginService {
         return appUser;
     }
 
-    private User queryUserById(String id) {
-        JSONArray array = (JSONArray) loginMapper.queryUserById(id).get("rows");
-        List<User> userList = JSONUtil.toList(array, User.class);
-        if(userList.size() == 0) {
-            return null;
-        }
-        return userList.get(0);
-    }
-
     private User queryUserByEmail(String email) {
-        JSONArray array = (JSONArray) loginMapper.queryUserByEmail(email).get("rows");
-        List<User> userList = JSONUtil.toList(array, User.class);
+        JSONArray jsonArray = (JSONArray) loginMapper.queryUserByEmail(email).get("rows");
+        List<User> userList = JSONUtil.toList(jsonArray, User.class);
         if(userList.size() == 0) {
             return null;
         }
