@@ -31,7 +31,7 @@
               <el-option
                   v-for="item in options"
                   :key="item.id"
-                  :label="item.title"
+                  :label="item.id + ': ' + item.title"
                   :value="item.id"
               />
             </el-select>
@@ -46,7 +46,7 @@
         </div>
         <div style="margin-top: 20px; height: 45vh">
           <el-table
-              :data="patientsData"
+              :data="data"
               :table-layout="tableLayout"
               stripe
               style="width: 100%"
@@ -82,12 +82,12 @@ import request from "@/utils/request";
 import { getCookie } from "@/utils/cookie.utils"
 
 export default {
-  name: "MyPatients",
+  name: "Patients",
   data() {
     return {
       user: {},
       tableLayout: "auto",
-      patientsData : [],
+      data : [],
       searchInput: "",
       currentPage: 1,
       pageSize: 10,
@@ -95,7 +95,7 @@ export default {
       dialogVisible: false,
       questionnaireId: "",
       options: [],
-      ids: [],
+      patientIds: [],
     }
   },
   created() {
@@ -107,27 +107,30 @@ export default {
   },
   methods: {
     load() {
-      request.get("/mypatients", {
+      request.get("/patients", {
         params: {
-          id: this.user.id,
+          doctorId: this.user.id,
           searchInput: this.searchInput,
           pageNum: this.currentPage,
           pageSize: this.pageSize
         }
       }).then(res => {
-        this.patientsData = res.data.records
+        this.data = res.data.records
         this.total = res.data.total
       });
-      request.get("/mypatients/questionnaires", {
+      request.get("/questionnaires", {
         params: {
-          id: this.user.id
+          doctorId: this.user.id,
+          searchInput: "",
+          pageNum: 1,
+          pageSize: 0
         }
       }).then(res => {
-        this.options = res.data
+        this.options = res.data.records
       })
     },
     assign() {
-      if(this.ids.length === 0) {
+      if(this.patientIds.length === 0) {
         this.$message({
           type: "error",
           message: "Please select at least one patient",
@@ -138,6 +141,8 @@ export default {
       this.dialogVisible = true
     },
     save() {
+      console.log(this.questionnaireId)
+      console.log(this.patientIds)
       if(this.questionnaireId === '') {
         this.$message({
           type: "error",
@@ -146,7 +151,7 @@ export default {
         })
         return
       }
-      request.post("/mypatients/assign/" + this.questionnaireId, this.ids).then(res => {
+      request.post("/questionnaires/assign/" + this.questionnaireId, this.patientIds).then(res => {
         if(res.code === '10000') {
           this.load()
         }
@@ -154,7 +159,7 @@ export default {
       })
     },
     handleSelectionChange(val) {
-      this.ids = val.map(v => v.id)
+      this.patientIds = val.map(v => v.id)
     },
     currentChange(pageNum) {
       this.currentPage = pageNum

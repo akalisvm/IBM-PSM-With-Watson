@@ -48,7 +48,9 @@ public class insertDataFromTxt {
                         map.put(attr[i], split[i].trim());
                     }
                 }
-                tableMapper.insertData(table, String.valueOf(tableMapper.getCount(table) + 1), JSONUtil.toJsonStr(map));
+                tableMapper.insertData(table,
+                        String.valueOf(tableMapper.getRetvalCount(table) + 1),
+                        JSONUtil.toJsonStr(map));
                 line = br.readLine();
             }
             inputStream.close();
@@ -84,7 +86,9 @@ public class insertDataFromTxt {
                 for(int i = split.length; i < attr.length; i++) {
                     map.put(attr[i], "");
                 }
-                graphMapper.addNode(label, label.toLowerCase() + "_" + (tableMapper.getCount(label) + 1), JSONUtil.toJsonStr(map));
+                graphMapper.addNode(label,
+                        label.toLowerCase() + "_" + (tableMapper.getRetvalCount(label) + 1),
+                        JSONUtil.toJsonStr(map));
                 line = br.readLine();
             }
             inputStream.close();

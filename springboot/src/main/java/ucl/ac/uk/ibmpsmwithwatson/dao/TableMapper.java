@@ -36,7 +36,7 @@ public class TableMapper {
         runSQLQuery("insert into " + table + " values \"" + pk + "\" " + doc);
     }
 
-    public int getCount(String label) {
+    public int getRetvalCount(String label) {
         return (int) runSQLQuery("select count(*) from mygraph where label=\"" + label +"\"").get("retval");
     }
 
@@ -44,7 +44,7 @@ public class TableMapper {
         runSQLQuery("insert into mygraph values \"" + label + "_count\" {\"count\":\"1\"}");
     }
 
-    public String queryCount(String label) {
+    public String getCount(String label) {
         JSONArray jsonArray = (JSONArray) runSQLQuery("select * from mygraph where _pk=\"" + label + "_count\"").get("rows");
         return JSONUtil.parseObj(jsonArray.getByPath("[0].v")).getStr("count");
     }

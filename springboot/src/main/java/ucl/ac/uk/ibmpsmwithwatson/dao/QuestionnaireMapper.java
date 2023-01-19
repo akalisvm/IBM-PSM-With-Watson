@@ -1,6 +1,6 @@
 package ucl.ac.uk.ibmpsmwithwatson.dao;
 
-import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONArray;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import ucl.ac.uk.ibmpsmwithwatson.config.BangDBConfig;
@@ -17,37 +17,50 @@ public class QuestionnaireMapper {
         tableMapper.insertCount(QUESTIONNAIRE);
     }
 
-    public String queryCount() {
-        return tableMapper.queryCount(QUESTIONNAIRE);
+    public String getCount() {
+        return tableMapper.getCount(QUESTIONNAIRE);
     }
 
     public void updateCount(String count) {
         tableMapper.updateCount(QUESTIONNAIRE, count);
     }
 
-    public void insert(String creatorId, String relProp, String questionnaireId, String questionnaireProp) {
-        graphMapper.runCypherQuery("CREATE (User:user_" + creatorId +
-                ")-[CREATED " + relProp + "]->(Questionnaire:questionnaire_" + questionnaireId + " " + questionnaireProp + ")");
+    public void insert(String doctorId, String relProp, String questionnaireId, String questionnaireProp) {
+        graphMapper.runCypherQuery("CREATE (User:user_" + doctorId +
+                ")-[CREATED " + relProp + "]->(Questionnaire:questionnaire_" +
+                questionnaireId + " " + questionnaireProp + ")");
     }
 
-    public JSONObject query(String creatorId) {
-        return graphMapper.runCypherQuery("S=>(Questionnaire:* {creatorId=\"" + creatorId + "\"}); RETURN * SORT_ASC createTime");
+    public JSONArray getQuestionnaires(String doctorId) {
+        return (JSONArray) graphMapper.runCypherQuery(
+                "S=>(Questionnaire:* {creatorId=\"" + doctorId + "\"}); RETURN * SORT_ASC createTime").get("rows");
+    }
+
+    public JSONArray getQuestionnaireById(String questionnaireId) {
+        return (JSONArray) graphMapper.runCypherQuery("S=>(Questionnaire:* {id=\"" + questionnaireId + "\"})").get("rows");
+    }
+
+    public JSONArray getTitle(String questionnaireId) {
+        return (JSONArray) graphMapper.runCypherQuery(
+                "S=>(@q Questionnaire:* {id=\"" + questionnaireId + "\"}); RETURN q.title").get("rows");
     }
 
     public void update(String questionnaireId, String questionnaireProp) {
-        tableMapper.runSQLQuery("update mygraph set val = " + questionnaireProp + " where name=\"questionnaire_" + questionnaireId + "\"");
+        tableMapper.runSQLQuery("update mygraph set val = " +
+                questionnaireProp + " where name=\"questionnaire_" + questionnaireId + "\"");
     }
 
-    public JSONObject check(String questionnaireId) {
-        return graphMapper.runCypherQuery("S=>(User:* {questionnaire=\"" + questionnaireId + "\"})");
-    }
-
-    public void clear(String patientId, String patientProp) {
-        tableMapper.runSQLQuery("update mygraph set val = " + patientProp + " where name=\"user_" + patientId + "\"");
+    public JSONArray check(String questionnaireId) {
+        return (JSONArray) graphMapper.runCypherQuery(
+                "S=>(User:* {questionnaire=\"" + questionnaireId + "\"})").get("rows");
     }
 
     public void delete(String questionnaireId) {
         tableMapper.runSQLQuery("delete from mygraph_rel where name=\"questionnaire_" + questionnaireId + "\"");
         tableMapper.runSQLQuery("delete from mygraph where name=\"questionnaire_" + questionnaireId + "\"");
+    }
+
+    public void assign(String questionnaireProp, String questionnaireId) {
+        tableMapper.runSQLQuery("update mygraph set val = " + questionnaireProp + " where name=\"user_" + questionnaireId + "\"");
     }
 }

@@ -15,11 +15,11 @@ public class TemplateController {
     TemplateService templateService;
 
     @GetMapping
-    public Result<?> query(@RequestParam(defaultValue = "") String creatorId,
-                                   @RequestParam(defaultValue = "") String searchInput,
-                                   @RequestParam(defaultValue = "1") Integer pageNum,
-                                   @RequestParam(defaultValue = "5") Integer pageSize) {
-        Page page = templateService.query(creatorId, searchInput, pageNum, pageSize);
+    public Result<?> getTemplates(@RequestParam(defaultValue = "") String doctorId,
+                           @RequestParam(defaultValue = "") String searchInput,
+                           @RequestParam(defaultValue = "1") Integer pageNum,
+                           @RequestParam(defaultValue = "5") Integer pageSize) {
+        Page page = templateService.getTemplates(doctorId, searchInput, pageNum, pageSize);
         return Result.success(page);
     }
 

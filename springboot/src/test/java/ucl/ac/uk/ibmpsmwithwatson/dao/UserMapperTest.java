@@ -8,14 +8,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ucl.ac.uk.ibmpsmwithwatson.entity.User;
 
 @SpringBootTest
-public class MyPatientsMapperTest {
+public class UserMapperTest {
 
     @Autowired
-    MyPatientsMapper myPatientsMapper;
+    UserMapper userMapper;
 
     @Test
     void getPatients() {
-        JSONArray array = (JSONArray) myPatientsMapper.queryPatient("1").get("rows");
+        JSONArray array = userMapper.getPatientsByDoctorId("1");
         System.out.println(JSONUtil.toList(array, User.class));
     }
 }

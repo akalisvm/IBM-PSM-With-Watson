@@ -27,15 +27,15 @@ public class LoginController {
 
     @GetMapping("/nhs")
     public Result<?> NHSLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
-        User nhsUser = loginService.checkNhsLogin(code);
+        User nhsUser = loginService.checkNHSLogin(code);
         setUserInfoCookie(nhsUser, response);
-        response.sendRedirect("http://" + IP + ":8080/personal");
+        response.sendRedirect("http://" + IP + ":8080/personalcenter");
         return Result.success(nhsUser);
     }
 
     @PostMapping("/app")
-    public Result<?> AppLogin(@RequestBody User verifyUser, HttpServletResponse response) throws JsonProcessingException, UnsupportedEncodingException {
-        User appUser = loginService.checkAppLogin(verifyUser);
+    public Result<?> AppLogin(@RequestBody User requestUser, HttpServletResponse response) throws JsonProcessingException, UnsupportedEncodingException {
+        User appUser = loginService.checkAppLogin(requestUser);
         if(appUser == null) {
             return Result.error("10001", "Incorrect email or password");
         }

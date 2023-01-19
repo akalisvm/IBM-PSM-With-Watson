@@ -167,25 +167,26 @@
                   </el-form-item>
                   <div v-if="this.clickOn === 'questionnaire'">
                     <el-form-item :label="'Question ' + (parseInt(this.previewForm.questions.length) + 1) +
-                    ': Overall, do you think better, same or worse than the last time you give us a feedback?'">
-                      <el-radio-group v-model="this.feel" @change="this.needCall = ''; this.callTime = ''">
-                        <el-radio label="better" border>Better</el-radio>
-                        <el-radio label="same" border>Same</el-radio>
-                        <el-radio label="worse" border>Worse</el-radio>
+                    ': As a result, do you think better, same or worse than the last time you give us a feedback?'">
+                      <el-radio-group v-model="this.result"
+                                      @change="this.needMeeting = ''; this.suggestedMeetingTime = ''">
+                        <el-radio label="Better" border>Better</el-radio>
+                        <el-radio label="Same" border>Same</el-radio>
+                        <el-radio label="Worse" border>Worse</el-radio>
                       </el-radio-group>
                     </el-form-item>
-                    <div v-if="this.feel === 'worse'">
+                    <div v-if="this.result === 'Worse'">
                       <el-form-item :label="'Question ' + (parseInt(this.previewForm.questions.length) + 2) +
-                        ': Do you need a meeting with your doctor?'">
-                        <el-radio-group v-model="this.needCall" @change="this.callTime = ''">
-                          <el-radio label="yes" border>Yes</el-radio>
-                          <el-radio label="no" border>No</el-radio>
+                        ': Do you want a meeting with your doctor?'">
+                        <el-radio-group v-model="this.needMeeting" @change="this.suggestedMeetingTime = ''">
+                          <el-radio label="Yes" border>Yes</el-radio>
+                          <el-radio label="No" border>No</el-radio>
                         </el-radio-group>
                       </el-form-item>
-                      <el-form-item v-if="this.needCall === 'yes'"
+                      <el-form-item v-if="this.needMeeting === 'Yes'"
                                     :label="'Question ' + (parseInt(this.previewForm.questions.length) + 2) +
                       ': What time is good for you to have a meeting?'">
-                        <el-date-picker v-model="this.callTime" type="datetime" placeholder="Select date and time" />
+                        <el-date-picker v-model="this.suggestedMeetingTime" type="datetime" placeholder="Select date and time" />
                       </el-form-item>
                     </div>
                   </div>
@@ -287,9 +288,9 @@ export default {
       dialogMode: 0,
       clickOn: "",
       previewForm: {},
-      feel: "",
-      needCall: "",
-      callTime: "",
+      result: "",
+      needMeeting: "",
+      suggestedMeetingTime: "",
     }
   },
   created() {
@@ -307,7 +308,7 @@ export default {
     loadTemplate() {
       request.get("/templates", {
         params: {
-          creatorId: this.user.id,
+          doctorId: this.user.id,
           searchInput: this.searchTemplateInput,
           pageNum: this.templateCurrentPage,
           pageSize: this.templatePageSize
@@ -320,7 +321,7 @@ export default {
     loadQuestionnaire() {
       request.get("/questionnaires", {
         params: {
-          creatorId: this.user.id,
+          doctorId: this.user.id,
           searchInput: this.searchQuestionnaireInput,
           pageNum: this.questionnaireCurrentPage,
           pageSize: this.questionnairePageSize

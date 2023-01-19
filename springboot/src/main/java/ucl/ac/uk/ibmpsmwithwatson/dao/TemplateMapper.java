@@ -1,6 +1,6 @@
 package ucl.ac.uk.ibmpsmwithwatson.dao;
 
-import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONArray;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import ucl.ac.uk.ibmpsmwithwatson.config.BangDBConfig;
@@ -17,21 +17,22 @@ public class TemplateMapper {
         tableMapper.insertCount(TEMPLATE);
     }
 
-    public String queryCount() {
-        return tableMapper.queryCount(TEMPLATE);
+    public String getCount() {
+        return tableMapper.getCount(TEMPLATE);
     }
 
     public void updateCount(String count) {
         tableMapper.updateCount(TEMPLATE, count);
     }
 
-    public void insert(String creatorId, String templateId, String templateProp) {
-        graphMapper.runCypherQuery("CREATE (User:user_" + creatorId +
-                ")-[CREATED {\"name\":\"template_" + templateId + "\"}]->(Template:template_" + templateId + " " + templateProp + ")");
+    public JSONArray getTemplates(String doctorId) {
+        return (JSONArray) graphMapper.runCypherQuery(
+                "S=>(Template:* {creatorId=\"" + doctorId + "\"}); RETURN * SORT_ASC createTime").get("rows");
     }
 
-    public JSONObject query(String creatorId) {
-        return graphMapper.runCypherQuery("S=>(Template:* {creatorId=\"" + creatorId + "\"}); RETURN * SORT_ASC createTime");
+    public void insert(String doctorId, String templateId, String templateProp) {
+        graphMapper.runCypherQuery("CREATE (User:user_" + doctorId +
+                ")-[CREATED {\"name\":\"template_" + templateId + "\"}]->(Template:template_" + templateId + " " + templateProp + ")");
     }
 
     public void update(String templateId, String templateProp) {

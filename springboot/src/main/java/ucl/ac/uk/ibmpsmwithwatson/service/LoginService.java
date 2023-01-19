@@ -9,8 +9,8 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import ucl.ac.uk.ibmpsmwithwatson.config.BangDBConfig;
 import ucl.ac.uk.ibmpsmwithwatson.dao.GraphMapper;
-import ucl.ac.uk.ibmpsmwithwatson.dao.LoginMapper;
 import ucl.ac.uk.ibmpsmwithwatson.dao.TableMapper;
+import ucl.ac.uk.ibmpsmwithwatson.dao.UserMapper;
 import ucl.ac.uk.ibmpsmwithwatson.entity.User;
 import ucl.ac.uk.ibmpsmwithwatson.util.JwtUtil;
 import ucl.ac.uk.ibmpsmwithwatson.util.MapUtil;
@@ -27,13 +27,13 @@ public class LoginService {
     }
 
     @Autowired
-    LoginMapper loginMapper;
+    UserMapper userMapper;
 
-    public User checkNhsLogin(String code) {
+    public User checkNHSLogin(String code) {
         String accessToken = nhsLoginClient.getAccessToken(code);
         User nhsUser = nhsLoginClient.getUserInfo(accessToken);
         nhsUser.setRole("patient");
-        if(queryUserByEmail(nhsUser.getEmail()) == null) {
+        if(getUserByEmail(nhsUser.getEmail()) == null) {
             TableMapper tableMapper = new TableMapper(new BangDBConfig(), new RestTemplateBuilder());
             GraphMapper graphMapper = new GraphMapper(new BangDBConfig(), new RestTemplateBuilder());
             graphMapper.addNode("User", "user_" + (tableMapper.getCount("User") + 1),
@@ -43,18 +43,18 @@ public class LoginService {
         return nhsUser;
     }
 
-    public User checkAppLogin(User verifyUser) {
-        User appUser = queryUserByEmail(verifyUser.getEmail());
+    public User checkAppLogin(User requestUser) {
+        User appUser = getUserByEmail(requestUser.getEmail());
         Digester md5 = new Digester(DigestAlgorithm.MD5);
-        if(appUser == null || !appUser.getPassword().equals(md5.digestHex(verifyUser.getPassword()))) {
+        if(appUser == null || !appUser.getPassword().equals(md5.digestHex(requestUser.getPassword()))) {
             return null;
         }
         appUser.setApp_token(JwtUtil.getToken(MapUtil.toUserMap(appUser)));
         return appUser;
     }
 
-    private User queryUserByEmail(String email) {
-        JSONArray jsonArray = (JSONArray) loginMapper.queryUserByEmail(email).get("rows");
+    private User getUserByEmail(String email) {
+        JSONArray jsonArray = userMapper.getUserByEmail(email);
         List<User> userList = JSONUtil.toList(jsonArray, User.class);
         if(userList.size() == 0) {
             return null;

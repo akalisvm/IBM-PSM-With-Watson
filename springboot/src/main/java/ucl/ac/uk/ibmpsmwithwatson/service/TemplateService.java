@@ -20,8 +20,8 @@ public class TemplateService {
     @Autowired
     TemplateMapper templateMapper;
 
-    public Page query(String creatorId, String searchInput, Integer pageNum, Integer pageSize) {
-        JSONArray jsonArray = (JSONArray) templateMapper.query(creatorId).get("rows");
+    public Page getTemplates(String doctorId, String searchInput, Integer pageNum, Integer pageSize) {
+        JSONArray jsonArray = templateMapper.getTemplates(doctorId);
         List<Template> list = JSONUtil.toList(jsonArray, Template.class);
         SearchingUtil.searchingTemplateByIdOrTitle(list, searchInput);
         return PaginationUtil.pagination(list, pageNum, pageSize, list.size());
@@ -29,11 +29,11 @@ public class TemplateService {
 
     public void insert(Template template) {
         String id;
-        if(templateMapper.queryCount() == null) {
+        if(templateMapper.getCount() == null) {
             templateMapper.insertCount();
             id = "1";
         } else {
-            id = templateMapper.queryCount();
+            id = templateMapper.getCount();
         }
         templateMapper.updateCount(String.valueOf(Integer.parseInt(id) + 1));
         template.setId(id);

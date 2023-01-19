@@ -7,6 +7,8 @@ import ucl.ac.uk.ibmpsmwithwatson.entity.Questionnaire;
 import ucl.ac.uk.ibmpsmwithwatson.service.QuestionnaireService;
 import ucl.ac.uk.ibmpsmwithwatson.util.Result;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/questionnaires")
 public class QuestionnaireController {
@@ -15,12 +17,22 @@ public class QuestionnaireController {
     QuestionnaireService questionnaireService;
 
     @GetMapping
-    public Result<?> query(@RequestParam(defaultValue = "") String creatorId,
-                           @RequestParam(defaultValue = "") String searchInput,
-                           @RequestParam(defaultValue = "1") Integer pageNum,
-                           @RequestParam(defaultValue = "5") Integer pageSize) {
-        Page page = questionnaireService.query(creatorId, searchInput, pageNum, pageSize);
+    public Result<?> getQuestionnaires(@RequestParam(defaultValue = "") String doctorId,
+                         @RequestParam(defaultValue = "") String searchInput,
+                         @RequestParam(defaultValue = "1") Integer pageNum,
+                         @RequestParam(defaultValue = "5") Integer pageSize) {
+        Page page = questionnaireService.getQuestionnaires(doctorId, searchInput, pageNum, pageSize);
         return Result.success(page);
+    }
+
+    @GetMapping("/{id}")
+    public Result<?> getQuestionnaireById(@PathVariable String id) {
+        return Result.success(questionnaireService.getQuestionnaireById(id));
+    }
+
+    @GetMapping("/check")
+    public Result<?> check(@RequestParam(defaultValue = "") String questionnaireId) {
+        return Result.success(questionnaireService.check(questionnaireId));
     }
 
     @PostMapping
@@ -29,15 +41,16 @@ public class QuestionnaireController {
         return Result.success();
     }
 
+    @PostMapping("/assign/{questionnaireId}")
+    public Result<?> assign(@PathVariable String questionnaireId, @RequestBody List<String> patientIds) {
+        questionnaireService.assign(questionnaireId, patientIds);
+        return Result.success();
+    }
+
     @PutMapping
     public Result<?> update(@RequestBody Questionnaire questionnaire) {
         questionnaireService.update(questionnaire);
         return Result.success();
-    }
-
-    @GetMapping("/check")
-    public Result<?> check(@RequestParam(defaultValue = "") String questionnaireId) {
-        return Result.success(questionnaireService.check(questionnaireId));
     }
 
     @DeleteMapping("/{questionnaireId}")

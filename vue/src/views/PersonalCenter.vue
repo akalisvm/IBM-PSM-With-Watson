@@ -2,7 +2,7 @@
   <div style="font-family: Arial, sans-serif;">
     <el-card>
       <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span>Hi, {{ this.user.email }}</span>
+        <span>Hi, {{ this.user.given_name }}  {{ this.user.family_name }}</span>
         <el-button type="info" @click="dialogVisible = true" plain>Show personal information</el-button>
         <el-dialog v-model="dialogVisible">
           <el-descriptions
@@ -33,7 +33,10 @@
               {{ this.user.nhs_number }}
             </el-descriptions-item>
             <el-descriptions-item label="My Doctor">
-              {{ this.user.doctor }}
+              {{ this.doctor.given_name }}  {{ this.doctor.family_name }}
+            </el-descriptions-item>
+            <el-descriptions-item label="My Questionnaire">
+              {{ this.questionnaire.title }}
             </el-descriptions-item>
           </el-descriptions>
         </el-dialog>
@@ -44,13 +47,16 @@
       <el-card style="height: 80vh;">
         <el-tabs v-model="activeName">
           <el-tab-pane label="Healthcare Records" name="first">
-            <el-table :data="healthcareData" style="width: 100%">
+            <el-table :data="recordData" style="width: 100%">
+              <el-table-column prop="id" label="ID" />
               <el-table-column prop="time" label="Time" />
-              <el-table-column prop="qname" label="Questionnaire Name" />
+              <el-table-column prop="qname" label="Questionnaire Title" />
               <el-table-column prop="result" label="Result" />
+              <el-table-column prop="needMeeting" label="Need Meeting" />
+              <el-table-column prop="meetingTime" label="Suggested Meeting Time" />
               <el-table-column fixed="right" label="Operation">
                 <template #default>
-                  <el-button link type="primary" size="small" @click="handleClick">
+                  <el-button link type="primary" size="small" @click="detail">
                     Detail
                   </el-button>
                 </template>
@@ -69,6 +75,7 @@
 <script>
 
 import { getCookie } from "@/utils/cookie.utils"
+import request from "@/utils/request";
 
 export default {
   name: "PersonalCenter",
@@ -76,15 +83,27 @@ export default {
     return {
       user: {},
       activeName: 'first',
+      doctor: {},
+      questionnaire: {},
       dialogVisible: false,
     }
   },
   created() {
     this.user = JSON.parse(getCookie("user"))
-    console.log(this.user)
+    this.load()
+    this.$nextTick(() => {
+      this.load()
+    })
   },
   methods: {
-
+    load() {
+      request.get("/user/" + this.user.doctor).then(res => {
+        this.doctor = res.data
+      });
+      request.get("/questionnaires/" + this.user.questionnaire).then(res => {
+        this.questionnaire = res.data
+      })
+    },
   }
 }
 </script>

@@ -75,7 +75,7 @@ export default {
               if(res.data.role === "patient") {
                 this.$router.push("/personalcenter")
               } else {
-                this.$router.push("/mypatients")
+                this.$router.push("/patients")
               }
             } else {
               this.$message({
