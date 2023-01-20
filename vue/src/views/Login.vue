@@ -29,7 +29,6 @@
           </div>
         </el-card>
       </div>
-
     </div>
     <div>
       <p>Copyright &copy 2022-2023 by Tianang Chen. All rights reserved.</p>
@@ -38,9 +37,9 @@
 </template>
 
 <script>
-import request from "@/utils/request";
-import Header from "@/components/Header";
-import { getCookie, delCookie } from "@/utils/cookie.utils";
+import request from "@/utils/request"
+import Header from "@/components/Header"
+import { getCookie, delCookie } from "@/utils/cookie.utils"
 
 export default {
   name: 'Login',
@@ -73,7 +72,7 @@ export default {
           request.post("/login/app", this.form).then(res => {
             if(res.code === "10000") {
               if(res.data.role === "patient") {
-                this.$router.push("/personalcenter")
+                this.$router.push("/center")
               } else {
                 this.$router.push("/patients")
               }

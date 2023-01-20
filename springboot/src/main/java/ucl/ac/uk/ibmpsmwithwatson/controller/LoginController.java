@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import ucl.ac.uk.ibmpsmwithwatson.service.LoginService;
-import ucl.ac.uk.ibmpsmwithwatson.util.Result;
+import ucl.ac.uk.ibmpsmwithwatson.entity.Result;
 import ucl.ac.uk.ibmpsmwithwatson.entity.User;
 
 import javax.servlet.http.Cookie;
@@ -29,7 +29,7 @@ public class LoginController {
     public Result<?> NHSLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
         User nhsUser = loginService.checkNHSLogin(code);
         setUserInfoCookie(nhsUser, response);
-        response.sendRedirect("http://" + IP + ":8080/personalcenter");
+        response.sendRedirect("http://" + IP + ":8080/center");
         return Result.success(nhsUser);
     }
 

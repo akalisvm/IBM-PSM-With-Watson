@@ -1,4 +1,4 @@
-package ucl.ac.uk.ibmpsmwithwatson.util;
+package ucl.ac.uk.ibmpsmwithwatson.entity;
 
 import lombok.Data;
 

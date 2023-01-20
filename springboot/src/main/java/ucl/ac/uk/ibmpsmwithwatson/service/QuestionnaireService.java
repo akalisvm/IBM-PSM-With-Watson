@@ -57,8 +57,7 @@ public class QuestionnaireService {
         questionnaireMapper.updateCount(String.valueOf(Integer.parseInt(id) + 1));
         questionnaire.setId(id);
         questionnaire.setCreateTime(new Date());
-        String creatorId = questionnaire.getCreatorId();
-        questionnaireMapper.insert(creatorId,
+        questionnaireMapper.insert(questionnaire.getCreatorId(),
                 JSONUtil.toJsonStr(JSONUtil.createObj().putOpt("name", "questionnaire_" + id)),
                 id, JSONUtil.toJsonStr(questionnaire));
     }

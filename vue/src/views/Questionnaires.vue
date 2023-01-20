@@ -5,7 +5,7 @@
         <el-card style="height: 43vh">
           <el-input
               v-model="searchTemplateInput"
-              placeholder="Type to search template"
+              placeholder="Type id or title to search template"
               clearable
               style="width: 50%"
           >
@@ -46,7 +46,7 @@
                   <el-button link type="primary" size="small" @click="applyTemplate(scope.row)">
                     Apply
                   </el-button>
-                  <el-popconfirm title="Are you sure?" @confirm="removeTemplate(scope.row.id)">
+                  <el-popconfirm title="Are you sure?" @confirm="deleteTemplate(scope.row.id)">
                     <template #reference>
                       <el-button type="danger" size="small">
                         Delete
@@ -70,7 +70,7 @@
         <el-card style="margin-top: 28px; height: 43vh">
           <el-input
               v-model="searchQuestionnaireInput"
-              placeholder="Type to search questionnaire"
+              placeholder="Type id or title to search questionnaire"
               style="width: 50%"
           >
             <template #append>
@@ -111,7 +111,7 @@
                   <el-button link type="primary" size="small" @click="checkQuestionnaire(scope.row.id)">
                     Check
                   </el-button>
-                  <el-popconfirm title="Are you sure?" @confirm="removeQuestionnaire(scope.row.id)">
+                  <el-popconfirm title="Are you sure?" @confirm="deleteQuestionnaire(scope.row.id)">
                     <template #reference>
                       <el-button type="danger" size="small">
                         Delete
@@ -151,10 +151,10 @@
                         :closable="false"
               />
               <h1 style="text-align: center">{{ this.previewForm.title }}</h1>
-              <div v-if="this.previewForm.description !== ''" style="margin-bottom: 20px">
+              <div v-if="this.previewForm.description !== ''"
+                   style="margin-bottom: 20px; text-align: center">
                 <span>{{ this.previewForm.description }}</span>
               </div>
-
               <el-form :label-position="'top'">
                 <el-scrollbar height="70vh">
                   <el-form-item
@@ -168,8 +168,10 @@
                   <div v-if="this.clickOn === 'questionnaire'">
                     <el-form-item :label="'Question ' + (parseInt(this.previewForm.questions.length) + 1) +
                     ': As a result, do you think better, same or worse than the last time you give us a feedback?'">
-                      <el-radio-group v-model="this.result"
-                                      @change="this.needMeeting = ''; this.suggestedMeetingTime = ''">
+                      <el-radio-group
+                          v-model="this.result"
+                          @change="this.needMeeting = ''; this.meetingTime = ''"
+                      >
                         <el-radio label="Better" border>Better</el-radio>
                         <el-radio label="Same" border>Same</el-radio>
                         <el-radio label="Worse" border>Worse</el-radio>
@@ -177,16 +179,22 @@
                     </el-form-item>
                     <div v-if="this.result === 'Worse'">
                       <el-form-item :label="'Question ' + (parseInt(this.previewForm.questions.length) + 2) +
-                        ': Do you want a meeting with your doctor?'">
-                        <el-radio-group v-model="this.needMeeting" @change="this.suggestedMeetingTime = ''">
+                        ': Do you need a meeting with your doctor?'">
+                        <el-radio-group v-model="this.needMeeting" @change="this.meetingTime = ''">
                           <el-radio label="Yes" border>Yes</el-radio>
                           <el-radio label="No" border>No</el-radio>
                         </el-radio-group>
                       </el-form-item>
-                      <el-form-item v-if="this.needMeeting === 'Yes'"
-                                    :label="'Question ' + (parseInt(this.previewForm.questions.length) + 2) +
-                      ': What time is good for you to have a meeting?'">
-                        <el-date-picker v-model="this.suggestedMeetingTime" type="datetime" placeholder="Select date and time" />
+                      <el-form-item
+                          v-if="this.needMeeting === 'Yes'"
+                          :label="'Question ' + (parseInt(this.previewForm.questions.length) + 3) +
+                          ': What time is good for you to have a meeting?'"
+                      >
+                        <el-date-picker
+                            v-model="this.meetingTime"
+                            type="datetime"
+                            placeholder="Select date and time"
+                        />
                       </el-form-item>
                     </div>
                   </div>
@@ -224,7 +232,7 @@
           >
             <el-input v-model="question.question">
               <template #append>
-                <el-button type="danger" plain @click.prevent="removeQuestion(question)">
+                <el-button type="danger" plain @click.prevent="deleteQuestion(question)">
                   Delete
                 </el-button>
               </template>
@@ -254,8 +262,8 @@
 </template>
 
 <script>
-import { getCookie } from "@/utils/cookie.utils";
-import request from "@/utils/request";
+import { getCookie } from "@/utils/cookie.utils"
+import request from "@/utils/request"
 
 export default {
   name: "Questionnaires",
@@ -290,7 +298,7 @@ export default {
       previewForm: {},
       result: "",
       needMeeting: "",
-      suggestedMeetingTime: "",
+      meetingTime: "",
     }
   },
   created() {
@@ -363,7 +371,7 @@ export default {
       this.dialogMode = 2
       this.form = JSON.parse(JSON.stringify(row))
     },
-    removeTemplate(id) {
+   deleteTemplate(id) {
       request.delete("/templates/" + id).then(res => {
         if(res.code === "10000") {
           this.$message({
@@ -414,7 +422,7 @@ export default {
         this.patientData = res.data
       })
     },
-    removeQuestionnaire(id) {
+    deleteQuestionnaire(id) {
       request.delete("/questionnaires/" + id).then(res => {
         if(res.code === "10000") {
           this.$message({
@@ -427,9 +435,9 @@ export default {
       })
     },
     addQuestion() {
-      this.form.questions.push({ value: "" })
+      this.form.questions.push({ question: "", answer: "" })
     },
-    removeQuestion(question) {
+    deleteQuestion(question) {
       const index = this.form.questions.indexOf(question)
       if(index !== -1) {
         this.form.questions.splice(index, 1)
@@ -518,8 +526,6 @@ export default {
                 this.loadQuestionnaire()
               }
             })
-          } else if(this.dialogMode === 5) {
-
           }
         } else {
           this.$message({

@@ -2,10 +2,10 @@
   <div style="font-family: Arial, sans-serif;">
     <el-card style="height: 89vh">
       <div>
-        <div style="margin-bottom: 15px">
+        <div>
           <el-input
               v-model="searchInput"
-              placeholder="Type to search patient"
+              placeholder="Type name to search patient"
               style="width: 20%"
               @keyup.enter.native="load">
             <template #append>
@@ -17,9 +17,7 @@
           <el-button style="margin-left: 10px" @click="this.searchInput = ''; this.load()">
             <span>Reset</span>
           </el-button>
-          <el-button style="margin-left: 10px" @click="assign">
-            <span>Assign questionnaire to patients</span>
-          </el-button>
+          <el-button style="margin-left: 10px" @click="assign">Assign Questionnaire</el-button>
           <el-dialog v-model="dialogVisible" title="Assign Questionnaire To Patients" width="40%" align-center>
             <el-select
                 v-model="questionnaireId"
@@ -40,9 +38,7 @@
               <el-button type="primary" @click="save">Save</el-button>
             </template>
           </el-dialog>
-          <el-button style="margin-left: 10px">
-            <span>Remind patients to complete questionnaire</span>
-          </el-button>
+          <el-button style="margin-left: 10px">Remind Patients</el-button>
         </div>
         <div style="margin-top: 20px; height: 45vh">
           <el-table
@@ -78,7 +74,7 @@
 </template>
 
 <script>
-import request from "@/utils/request";
+import request from "@/utils/request"
 import { getCookie } from "@/utils/cookie.utils"
 
 export default {
@@ -141,8 +137,6 @@ export default {
       this.dialogVisible = true
     },
     save() {
-      console.log(this.questionnaireId)
-      console.log(this.patientIds)
       if(this.questionnaireId === '') {
         this.$message({
           type: "error",

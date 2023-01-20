@@ -30,9 +30,9 @@ const routes = [
         component: () => import("@/views/Events")
       },
       {
-        path: 'personalcenter',
-        name: 'PersonalCenter',
-        component: () => import("@/views/PersonalCenter")
+        path: 'center',
+        name: 'Center',
+        component: () => import("@/views/Center")
       },
     ]
   },

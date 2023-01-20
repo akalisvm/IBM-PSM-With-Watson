@@ -15,5 +15,5 @@ public class Questionnaire {
     private List<Question> questions;
     private String result;
     private String needMeeting;
-    private Date suggestedMeetingTime;
+    private Date meetingTime;
 }

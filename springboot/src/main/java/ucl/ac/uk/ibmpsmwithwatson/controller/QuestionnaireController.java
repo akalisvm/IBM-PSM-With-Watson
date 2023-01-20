@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ucl.ac.uk.ibmpsmwithwatson.entity.Page;
 import ucl.ac.uk.ibmpsmwithwatson.entity.Questionnaire;
 import ucl.ac.uk.ibmpsmwithwatson.service.QuestionnaireService;
-import ucl.ac.uk.ibmpsmwithwatson.util.Result;
+import ucl.ac.uk.ibmpsmwithwatson.entity.Result;
 
 import java.util.List;
 
@@ -18,9 +18,9 @@ public class QuestionnaireController {
 
     @GetMapping
     public Result<?> getQuestionnaires(@RequestParam(defaultValue = "") String doctorId,
-                         @RequestParam(defaultValue = "") String searchInput,
-                         @RequestParam(defaultValue = "1") Integer pageNum,
-                         @RequestParam(defaultValue = "5") Integer pageSize) {
+                                       @RequestParam(defaultValue = "") String searchInput,
+                                       @RequestParam(defaultValue = "1") Integer pageNum,
+                                       @RequestParam(defaultValue = "5") Integer pageSize) {
         Page page = questionnaireService.getQuestionnaires(doctorId, searchInput, pageNum, pageSize);
         return Result.success(page);
     }

@@ -38,7 +38,7 @@
         <el-icon><Platform /></el-icon>
         <span>Outreach Events</span>
       </el-menu-item>
-      <el-menu-item index="/personalcenter" v-if="this.user.role==='patient'">
+      <el-menu-item index="/center" v-if="this.user.role==='patient'">
         <el-icon><HomeFilled /></el-icon>
         <span>Personal Center</span>
       </el-menu-item>
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import {getCookie} from "@/utils/cookie.utils";
+import { getCookie } from "@/utils/cookie.utils"
 
 export default {
   name: "Aside",

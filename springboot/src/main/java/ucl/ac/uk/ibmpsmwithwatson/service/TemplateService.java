@@ -38,8 +38,7 @@ public class TemplateService {
         templateMapper.updateCount(String.valueOf(Integer.parseInt(id) + 1));
         template.setId(id);
         template.setCreateTime(new Date());
-        String creatorId = template.getCreatorId();
-        templateMapper.insert(creatorId, id, JSONUtil.toJsonStr(template));
+        templateMapper.insert(template.getCreatorId(), id, JSONUtil.toJsonStr(template));
     }
 
     public void update(Template template) {

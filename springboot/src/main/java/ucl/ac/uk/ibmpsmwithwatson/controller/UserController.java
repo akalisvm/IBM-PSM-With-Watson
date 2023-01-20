@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ucl.ac.uk.ibmpsmwithwatson.entity.Page;
 import ucl.ac.uk.ibmpsmwithwatson.service.UserService;
-import ucl.ac.uk.ibmpsmwithwatson.util.Result;
+import ucl.ac.uk.ibmpsmwithwatson.entity.Result;
 
 @RestController
 public class UserController {

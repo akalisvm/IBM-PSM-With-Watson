@@ -23,7 +23,8 @@
 </template>
 
 <script>
-import { getCookie } from "@/utils/cookie.utils";
+import { getCookie } from "@/utils/cookie.utils"
+
 export default {
   name: "Header",
   data() {

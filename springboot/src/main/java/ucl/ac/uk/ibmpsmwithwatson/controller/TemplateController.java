@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ucl.ac.uk.ibmpsmwithwatson.entity.Page;
 import ucl.ac.uk.ibmpsmwithwatson.entity.Template;
 import ucl.ac.uk.ibmpsmwithwatson.service.TemplateService;
-import ucl.ac.uk.ibmpsmwithwatson.util.Result;
+import ucl.ac.uk.ibmpsmwithwatson.entity.Result;
 
 @RestController
 @RequestMapping("/templates")
@@ -16,9 +16,9 @@ public class TemplateController {
 
     @GetMapping
     public Result<?> getTemplates(@RequestParam(defaultValue = "") String doctorId,
-                           @RequestParam(defaultValue = "") String searchInput,
-                           @RequestParam(defaultValue = "1") Integer pageNum,
-                           @RequestParam(defaultValue = "5") Integer pageSize) {
+                                  @RequestParam(defaultValue = "") String searchInput,
+                                  @RequestParam(defaultValue = "1") Integer pageNum,
+                                  @RequestParam(defaultValue = "5") Integer pageSize) {
         Page page = templateService.getTemplates(doctorId, searchInput, pageNum, pageSize);
         return Result.success(page);
     }
