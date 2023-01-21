@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { getCookie } from "@/utils/cookie.utils"
+import { getCookie } from "@/utils/cookie"
 
 export default {
   name: "Aside",
@@ -60,7 +60,6 @@ export default {
   },
   created() {
     this.user = JSON.parse(getCookie("user"))
-    console.log(this.user.role)
   },
   methods: {
     toggleCollapse() {

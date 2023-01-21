@@ -74,8 +74,8 @@
 </template>
 
 <script>
-import request from "@/utils/request"
-import { getCookie } from "@/utils/cookie.utils"
+import request from "@/utils/request";
+import { getCookie } from "@/utils/cookie";
 
 export default {
   name: "Patients",

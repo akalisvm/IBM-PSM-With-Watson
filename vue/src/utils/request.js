@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getCookie } from "@/utils/cookie.utils";
+import { getCookie } from "@/utils/cookie";
 
 const request = axios.create({
     baseURL: '/api',

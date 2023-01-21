@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Layout from '../layout/Layout.vue'
-import { getCookie } from "@/utils/cookie.utils";
+import { getCookie } from "@/utils/cookie";
 
 const routes = [
   {

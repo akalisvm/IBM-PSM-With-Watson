@@ -5,6 +5,10 @@
 </template>
 
 <script>
+import request from "@/utils/request";
+import { getCookie } from "@/utils/cookie";
+import { formatDate } from "@/utils/date";
+
 export default {
   name: "Records"
 }

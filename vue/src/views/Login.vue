@@ -37,9 +37,9 @@
 </template>
 
 <script>
-import request from "@/utils/request"
-import Header from "@/components/Header"
-import { getCookie, delCookie } from "@/utils/cookie.utils"
+import request from "@/utils/request";
+import Header from "@/components/Header";
+import { getCookie, delCookie } from "@/utils/cookie";
 
 export default {
   name: 'Login',

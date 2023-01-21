@@ -37,13 +37,13 @@
               <el-table-column prop="title" label="Template Title" />
               <el-table-column fixed="right" label="Operations" >
                 <template #default="scope">
-                  <el-button link type="primary" size="small" @click="previewTemplate(scope.row)">
+                  <el-button plain size="small" @click="previewTemplate(scope.row)">
                     Preview
                   </el-button>
-                  <el-button link type="primary" size="small" @click="editTemplate(scope.row)">
+                  <el-button plain size="small" @click="editTemplate(scope.row)">
                     Edit
                   </el-button>
-                  <el-button link type="primary" size="small" @click="applyTemplate(scope.row)">
+                  <el-button plain size="small" @click="applyTemplate(scope.row)">
                     Apply
                   </el-button>
                   <el-popconfirm title="Are you sure?" @confirm="deleteTemplate(scope.row.id)">
@@ -102,13 +102,13 @@
               <el-table-column prop="title" label="Questionnaire Title" />
               <el-table-column fixed="right" label="Operations" >
                 <template #default="scope">
-                  <el-button link type="primary" size="small" @click="previewQuestionnaire(scope.row)">
+                  <el-button plain size="small" @click="previewQuestionnaire(scope.row)">
                     Preview
                   </el-button>
-                  <el-button link type="primary" size="small" @click="editQuestionnaire(scope.row)">
+                  <el-button plain size="small" @click="editQuestionnaire(scope.row)">
                     Edit
                   </el-button>
-                  <el-button link type="primary" size="small" @click="checkQuestionnaire(scope.row.id)">
+                  <el-button plain size="small" @click="checkQuestionnaire(scope.row.id)">
                     Check
                   </el-button>
                   <el-popconfirm title="Are you sure?" @confirm="deleteQuestionnaire(scope.row.id)">
@@ -262,8 +262,8 @@
 </template>
 
 <script>
-import { getCookie } from "@/utils/cookie.utils"
-import request from "@/utils/request"
+import request from "@/utils/request";
+import { getCookie } from "@/utils/cookie";
 
 export default {
   name: "Questionnaires",
