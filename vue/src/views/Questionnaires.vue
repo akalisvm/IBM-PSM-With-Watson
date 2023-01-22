@@ -23,11 +23,10 @@
               @click="createTemplate">
             <span>Create</span>
           </el-button>
-          <div style="margin-top: 20px; height: 25vh">
+          <div v-loading="templateLoading" style="margin-top: 20px; min-height: 25vh">
             <el-table
                 :data="templateData"
                 :table-layout="tableLayout"
-                stripe
                 style="width: 100%"
             >
               <el-table-column prop="id" label="ID"/>
@@ -89,11 +88,10 @@
           >
             <span>Create</span>
           </el-button>
-          <div style="margin-top: 20px; height: 25vh">
+          <div v-loading="questionnaireLoading" style="margin-top: 20px; min-height: 25vh">
             <el-table
                 :data="questionnaireData"
                 :table-layout="tableLayout"
-                stripe
                 style="width: 100%"
             >
               <el-table-column prop="id" label="ID"/>
@@ -286,11 +284,13 @@ export default {
       templateCurrentPage: 1,
       templatePageSize: 5,
       templateTotal: 0,
+      templateLoading: false,
       questionnaireData: [],
       searchQuestionnaireInput: "",
       questionnaireCurrentPage: 1,
       questionnairePageSize: 5,
       questionnaireTotal: 0,
+      questionnaireLoading: false,
       patientData: [],
       dialogVisible: false,
       dialogTitle: "",
@@ -314,6 +314,7 @@ export default {
       this.loadQuestionnaire()
     },
     loadTemplate() {
+      this.templateLoading = true
       request.post("/templates/get", {
         doctorId: this.user.id,
         searchInput: this.searchTemplateInput,
@@ -322,9 +323,11 @@ export default {
       }).then(res => {
         this.templateData = res.data.records
         this.templateTotal = res.data.total
+        this.templateLoading = false
       })
     },
     loadQuestionnaire() {
+      this.questionnaireLoading = true
       request.post("/questionnaires/get", {
         doctorId: this.user.id,
         searchInput: this.searchQuestionnaireInput,
@@ -333,6 +336,7 @@ export default {
       }).then(res => {
         this.questionnaireData = res.data.records
         this.questionnaireTotal = res.data.total
+        this.questionnaireLoading = false
       })
     },
     templateCurrentChange(pageNum) {

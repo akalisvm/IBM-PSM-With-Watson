@@ -61,58 +61,56 @@
         </el-popconfirm>
       </div>
       <!-- Healthcare Records Table Area -->
-      <div style="margin-top: 20px; height: 47vh">
-        <div style="margin-top: 20px">
-          <el-table
-              :data="data"
-              style="width: 100%"
-              :table-layout="tableLayout"
-              @selection-change="handleSelectionChange"
-          >
-            <el-table-column type="selection" />
-            <el-table-column prop="id" label="ID" />
-            <el-table-column prop="createTime" label="Time">
-              <template #default="scope">
-                {{ formatDate(scope.row.createTime) }}
-              </template>
-            </el-table-column>
-            <el-table-column prop="creatorName" label="Patient Name" />
-            <el-table-column prop="questionnaire.title" label="Questionnaire Title" show-overflow-tooltip>
-              <template #default="scope">
-                <el-button link @click="detail(scope.row)">
-                  {{ scope.row.questionnaire.title }}
+      <div v-loading="loading" style="margin-top: 20px; min-height: 47vh">
+        <el-table
+            :data="data"
+            style="width: 100%"
+            :table-layout="tableLayout"
+            @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection" />
+          <el-table-column prop="id" label="ID" />
+          <el-table-column prop="createTime" label="Time">
+            <template #default="scope">
+              {{ formatDate(scope.row.createTime) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="creatorName" label="Patient Name" />
+          <el-table-column prop="questionnaire.title" label="Questionnaire Title" show-overflow-tooltip>
+            <template #default="scope">
+              <el-button link @click="detail(scope.row)">
+                {{ scope.row.questionnaire.title }}
+              </el-button>
+            </template>
+          </el-table-column>
+          <el-table-column prop="questionnaire.result" label="Result">
+            <template #default="scope">
+              <el-tag
+                  :type="scope.row.questionnaire.result === 'Worse' ? 'danger' : 'success'"
+                  disable-transitions
+              >
+                {{ scope.row.questionnaire.result }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="questionnaire.needMeeting" label="Need Meeting" />
+          <el-table-column prop="questionnaire.meetingTime" label="Suggested Meeting Time">
+            <template #default="scope">
+              <div v-if="formatDate(scope.row.questionnaire.meetingTime) !== '1970-01-01 01:00:00'">
+                {{ formatDate(scope.row.questionnaire.meetingTime) }}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column fixed="right" label="Operation">
+            <template #default="scope">
+              <div v-if="scope.row.questionnaire.result === 'Worse'">
+                <el-button  type="primary" plain size="small" @click="schedule(scope.row.id)">
+                  Schedule
                 </el-button>
-              </template>
-            </el-table-column>
-            <el-table-column prop="questionnaire.result" label="Result">
-              <template #default="scope">
-                <el-tag
-                    :type="scope.row.questionnaire.result === 'Worse' ? 'danger' : 'success'"
-                    disable-transitions
-                >
-                  {{ scope.row.questionnaire.result }}
-                </el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column prop="questionnaire.needMeeting" label="Need Meeting" />
-            <el-table-column prop="questionnaire.meetingTime" label="Suggested Meeting Time">
-              <template #default="scope">
-                <div v-if="formatDate(scope.row.questionnaire.meetingTime) !== '1970-01-01 01:00:00'">
-                  {{ formatDate(scope.row.questionnaire.meetingTime) }}
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column fixed="right" label="Operation">
-              <template #default="scope">
-                <div v-if="scope.row.questionnaire.result === 'Worse'">
-                  <el-button  type="primary" plain size="small" @click="schedule(scope.row.id)">
-                    Schedule
-                  </el-button>
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
       </div>
       <div style="margin: 10px 0">
         <el-pagination
@@ -203,6 +201,7 @@ export default {
       pageSize: 10,
       total: 0,
       loading: false,
+      remoteLoading: false,
       drawerVisible: false,
     }
   },
@@ -218,6 +217,7 @@ export default {
       this.loadRemote()
     },
     loadRecord() {
+      this.loading = true
       request.post("/records/get", {
         userId: this.user.id,
         userRole: this.user.role,
@@ -230,6 +230,7 @@ export default {
       }).then(res => {
         this.data = res.data.records
         this.total = res.data.total
+        this.loading = false
       })
     },
     loadRemote() {
@@ -247,9 +248,9 @@ export default {
     },
     remote(query) {
       if(query !== '') {
-        this.loading = true
+        this.remoteLoading = true
         setTimeout(() => {
-          this.loading = false
+          this.remoteLoading = false
           this.options = this.remoteList.filter(patient => {
             const fullname = patient.given_name + " " + patient.family_name
             return fullname.toLowerCase().indexOf(query.toLowerCase()) > -1
@@ -264,14 +265,14 @@ export default {
       this.form = row
     },
     deleteBatch() {
-      request.post("/records/delete/batch" + this.recordIdList).then(res => {
+      request.post("/records/delete/batch", this.recordIdList).then(res => {
         if(res.code === "10000") {
           this.$message({
             type: "success",
             message: "You have deleted selected records",
             customClass: 'font'
           })
-          this.loadRecord()
+          this.load()
         }
       })
     },

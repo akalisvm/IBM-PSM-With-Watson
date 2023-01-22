@@ -39,11 +39,10 @@
         </el-dialog>
       </div>
       <!-- My Patients Table Area -->
-      <div style="margin-top: 20px; height: 45vh">
+      <div v-loading="loading"  style="margin-top: 20px; min-height: 45vh">
         <el-table
             :data="data"
             :table-layout="tableLayout"
-            stripe
             style="width: 100%"
             @selection-change="handleSelectionChange"
         >
@@ -86,6 +85,7 @@ export default {
       currentPage: 1,
       pageSize: 10,
       total: 0,
+      loading: false,
       dialogVisible: false,
       questionnaireId: "",
       options: [],
@@ -100,6 +100,7 @@ export default {
   },
   methods: {
     load() {
+      this.loading = true
       request.post("/patients", {
         doctorId: this.user.id,
         searchInput: this.searchInput,
@@ -108,6 +109,7 @@ export default {
       }).then(res => {
         this.data = res.data.records
         this.total = res.data.total
+        this.loading = false
       });
       request.post("/questionnaires/get", {
         doctorId: this.user.id,

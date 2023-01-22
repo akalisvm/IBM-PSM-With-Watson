@@ -45,7 +45,7 @@
     <div><br /></div>
     <div>
       <el-card v-if="this.clickOn === ''" style="height: 80vh;">
-        <div style="height: 60vh">
+        <div style="min-height: 57vh">
           <el-tabs v-model="activeName">
             <el-tab-pane label="Healthcare Records" name="first">
               <!-- Healthcare Records Functional Area -->
@@ -86,7 +86,7 @@
                 </el-button>
               </div>
               <!-- Healthcare Records Table Area -->
-              <div style="margin-top: 20px">
+              <div v-loading="loading" style="margin-top: 20px">
                 <el-table
                     :data="recordData"
                     style="width: 100%"
@@ -98,8 +98,7 @@
                       {{ formatDate(scope.row.createTime) }}
                     </template>
                   </el-table-column>
-                  <el-table-column prop="creatorId" label="Patient ID" />
-                  <el-table-column prop="questionnaire.title" label="Questionnaire Title">
+                  <el-table-column prop="questionnaire.title" label="Questionnaire Title" show-overflow-tooltip>
                     <template #default="scope">
                       <el-button link @click="detail(scope.row)">
                         {{ scope.row.questionnaire.title }}
@@ -281,6 +280,7 @@ export default {
       user: {},
       activeName: "first",
       tableLayout: "auto",
+      clickOn: "",
       form: {},
       doctor: {},
       questionnaire: {},
@@ -319,7 +319,7 @@ export default {
       recordCurrentPage: 1,
       recordPageSize: 10,
       recordTotal: 0,
-      clickOn: "",
+      loading: false,
       infoDialogVisible: false,
       drawerVisible: false,
     }
@@ -349,17 +349,20 @@ export default {
       })
     },
     loadRecord() {
-      request.post("/records/get/patient", {
+      this.loading = true
+      request.post("/records/get", {
         userId: this.user.id,
         userRole: this.user.role,
         searchInput: this.searchRecordInput,
+        patientFilter: "",
         resultFilter: this.resultFilter,
         needMeetingFilter: this.needMeetingFilter,
         pageNum: this.recordCurrentPage,
         pageSize: this.recordPageSize
       }).then(res => {
         this.recordData = res.data.records
-        this.recordTotal = res.data.total
+        this.total = res.data.total
+        this.loading = false
       })
     },
     fill() {
