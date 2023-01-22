@@ -45,89 +45,90 @@
     <div><br /></div>
     <div>
       <el-card v-if="this.clickOn === ''" style="height: 80vh;">
-        <div>
-          <el-input
-              v-model="searchRecordInput"
-              placeholder="Type id to search record"
-              style="width: 15%"
-              clearable
-              @keyup.enter.native="loadRecord">
-          </el-input>
-          <el-select
-              v-model="resultFilter"
-              placeholder="Result filter"
-              clearable
-              style="margin-left: 10px; width: 10%"
-          >
-            <el-option label="Better" value="Better" />
-            <el-option label="Same" value="Same" />
-            <el-option label="Worse" value="Worse" />
-          </el-select>
-          <el-select
-              v-model="needMeetingFilter"
-              placeholder="Need meeting filter"
-              clearable
-              style="margin-left: 10px; width: 10%">
-            <el-option label="Yes" value="Yes" />
-            <el-option label="No" value="No" />
-          </el-select>
-          <el-button type="info" @click="loadRecord" style="margin-left: 10px;">
-            <el-icon><Search /></el-icon>
-          </el-button>
-          <el-button style="margin-left: 10px" @click="this.searchRecordInput = ''; this.load()">
-            Reset
-          </el-button>
-          <el-button style="margin-left: 10px" @click="fill">
-            Fill Questionnaire
-          </el-button>
-        </div>
-        <div style="margin-top: 20px; height: 55vh">
+        <div style="height: 60vh">
           <el-tabs v-model="activeName">
             <el-tab-pane label="Healthcare Records" name="first">
-              <el-table
-                  :data="recordData"
-                  style="width: 100%"
-                  :table-layout="tableLayout"
-              >
-                <el-table-column prop="id" label="ID" />
-                <el-table-column prop="createTime" label="Time">
-                  <template #default="scope">
-                    {{ formatDate(scope.row.createTime) }}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="questionnaire.title" label="Questionnaire Title" />
-                <el-table-column prop="questionnaire.result" label="Result">
-                  <template #default="scope">
-                    <el-tag
-                        :type="scope.row.questionnaire.result === 'Worse' ? 'danger' : 'success'"
-                        disable-transitions
-                    >
-                      {{ scope.row.questionnaire.result }}
-                    </el-tag>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="questionnaire.needMeeting" label="Need Meeting" />
-                <el-table-column prop="questionnaire.meetingTime" label="Suggested Meeting Time">
-                  <template #default="scope">
-                    <div v-if="formatDate(scope.row.questionnaire.meetingTime) !== '1970-01-01 01:00:00'">
-                      {{ formatDate(scope.row.questionnaire.meetingTime) }}
-                    </div>
-                  </template>
-                </el-table-column>
-                <el-table-column fixed="right" label="Operation">
-                  <template #default="scope">
-                    <el-button plain size="small" @click="detail(scope.row)">
-                      Detail
-                    </el-button>
-                    <el-button type="danger" size="small" @click="deleteRecord(scope.row.id)">
-                      Delete
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
+              <!-- Healthcare Records Functional Area -->
+              <div>
+                <el-input
+                    v-model="searchRecordInput"
+                    placeholder="Type id to search record"
+                    style="width: 15%"
+                    clearable
+                    @keyup.enter.native="loadRecord">
+                </el-input>
+                <el-select
+                    v-model="resultFilter"
+                    placeholder="Result filter"
+                    clearable
+                    style="margin-left: 10px; width: 10%"
+                >
+                  <el-option label="Better" value="Better" />
+                  <el-option label="Same" value="Same" />
+                  <el-option label="Worse" value="Worse" />
+                </el-select>
+                <el-select
+                    v-model="needMeetingFilter"
+                    placeholder="Need meeting filter"
+                    clearable
+                    style="margin-left: 10px; width: 10%">
+                  <el-option label="Yes" value="Yes" />
+                  <el-option label="No" value="No" />
+                </el-select>
+                <el-button type="info" plain @click="loadRecord" style="margin-left: 10px;">
+                  <el-icon><Search /></el-icon>
+                </el-button>
+                <el-button style="margin-left: 10px" @click="this.searchRecordInput = ''; this.load()">
+                  Reset
+                </el-button>
+                <el-button style="margin-left: 10px" @click="fill">
+                  Fill Questionnaire
+                </el-button>
+              </div>
+              <!-- Healthcare Records Table Area -->
+              <div style="margin-top: 20px">
+                <el-table
+                    :data="recordData"
+                    style="width: 100%"
+                    :table-layout="tableLayout"
+                >
+                  <el-table-column prop="id" label="ID" />
+                  <el-table-column prop="createTime" label="Time">
+                    <template #default="scope">
+                      {{ formatDate(scope.row.createTime) }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="creatorId" label="Patient ID" />
+                  <el-table-column prop="questionnaire.title" label="Questionnaire Title">
+                    <template #default="scope">
+                      <el-button link @click="detail(scope.row)">
+                        {{ scope.row.questionnaire.title }}
+                      </el-button>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="questionnaire.result" label="Result">
+                    <template #default="scope">
+                      <el-tag
+                          :type="scope.row.questionnaire.result === 'Worse' ? 'danger' : 'success'"
+                          disable-transitions
+                      >
+                        {{ scope.row.questionnaire.result }}
+                      </el-tag>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="questionnaire.needMeeting" label="Need Meeting" />
+                  <el-table-column prop="questionnaire.meetingTime" label="Suggested Meeting Time">
+                    <template #default="scope">
+                      <div v-if="formatDate(scope.row.questionnaire.meetingTime) !== '1970-01-01 01:00:00'">
+                        {{ formatDate(scope.row.questionnaire.meetingTime) }}
+                      </div>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
             </el-tab-pane>
-            <el-tab-pane label="Outreach Events" name="second">
-              Outreach Events
+            <el-tab-pane label="Appointments" name="second">
+              Appointments
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -215,7 +216,7 @@
 
       <el-drawer
           v-model="drawerVisible"
-          title="Healthcare Record Details"
+          title="Questionnaire Details"
           direction="rtl"
           size="30%"
       >
@@ -224,33 +225,8 @@
             :column="1"
             border
         >
-          <el-descriptions-item label="Healthcare Record ID">
-            {{ this.form.id }}
-          </el-descriptions-item>
-          <el-descriptions-item label="Healthcare Record Time">
-            {{ formatDate(this.form.createTime) }}
-          </el-descriptions-item>
-          <el-descriptions-item label="Patient Name">
-            {{ this.user.given_name }} {{ this.user.family_name }}
-          </el-descriptions-item>
           <el-descriptions-item label="Questionnaire Title">
             {{ this.form.questionnaire.title }}
-          </el-descriptions-item>
-          <el-descriptions-item label="Result">
-            <el-tag
-                :type="this.form.questionnaire.result === 'Worse' ? 'danger' : 'success'"
-                disable-transitions
-            >
-              {{ this.form.questionnaire.result }}
-            </el-tag>
-          </el-descriptions-item>
-          <el-descriptions-item label="Need Meeting">
-            {{ this.form.questionnaire.needMeeting }}
-          </el-descriptions-item>
-          <el-descriptions-item label="Suggested Meeting Time">
-            <div v-if="formatDate(this.form.questionnaire.meetingTime) !== '1970-01-01 01:00:00'">
-              {{ formatDate(this.form.questionnaire.meetingTime) }}
-            </div>
           </el-descriptions-item>
           <el-descriptions-item label="Questions and Answers">
             <el-form label-position="top">
@@ -312,27 +288,29 @@ export default {
         answers: [
           { required: true, message: 'Please enter your answer', trigger: 'blur' }
         ],
-        result: [
-          {
-            required: true,
-            message: 'Please select a result',
-            trigger: 'change',
-          },
-        ],
-        needMeeting: [
-          {
-            required: true,
-            message: 'Please tell us whether you need a meeting',
-            trigger: 'change',
-          },
-        ],
-        meetingTime: [
-          {
-            required: true,
-            message: 'Please select date and time',
-            trigger: 'change',
-          },
-        ],
+        questionnaire: {
+          result: [
+            {
+              required: true,
+              message: 'Please select a result',
+              trigger: 'change',
+            },
+          ],
+          needMeeting: [
+            {
+              required: true,
+              message: 'Please tell us whether you need a meeting',
+              trigger: 'change',
+            },
+          ],
+          meetingTime: [
+            {
+              required: true,
+              message: 'Please select date and time',
+              trigger: 'change',
+            },
+          ],
+        }
       },
       recordData: [],
       searchRecordInput: "",
@@ -348,7 +326,6 @@ export default {
   },
   created() {
     this.user = JSON.parse(getCookie("user"))
-    this.load()
     this.$nextTick(() => {
       this.load()
     })
@@ -372,7 +349,7 @@ export default {
       })
     },
     loadRecord() {
-      request.get("/records", {
+      request.get("/records/patient", {
         params: {
           patientId: this.user.id,
           searchInput: this.searchRecordInput,
@@ -432,24 +409,9 @@ export default {
       this.drawerVisible = true
       this.form = row
     },
-    deleteRecord(id) {
-      request.delete("/records/" + id).then(res => {
-        if(res.code === "10000") {
-          this.$message({
-            type: "success",
-            message: "You have been removed a record",
-            customClass: 'font'
-          })
-          this.loadRecord()
-        }
-      })
-    },
     recordCurrentChange(pageNum) {
       this.recordCurrentPage = pageNum
       this.load()
-    },
-    save() {
-
     },
     formatDate(ts) {
       return formatDate(new Date(ts), "yyyy-MM-dd hh:mm:ss")

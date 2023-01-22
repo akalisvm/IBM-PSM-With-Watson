@@ -34,9 +34,9 @@
         <el-icon><TrendCharts /></el-icon>
         <span>Healthcare Records</span>
       </el-menu-item>
-      <el-menu-item index="/events" v-if="this.user.role==='doctor'">
+      <el-menu-item index="/appointments" v-if="this.user.role==='doctor'">
         <el-icon><Platform /></el-icon>
-        <span>Outreach Events</span>
+        <span>Appointments</span>
       </el-menu-item>
       <el-menu-item index="/center" v-if="this.user.role==='patient'">
         <el-icon><HomeFilled /></el-icon>

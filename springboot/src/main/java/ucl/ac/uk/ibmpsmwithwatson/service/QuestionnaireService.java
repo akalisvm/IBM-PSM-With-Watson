@@ -62,8 +62,8 @@ public class QuestionnaireService {
                 id, JSONUtil.toJsonStr(questionnaire));
     }
 
-    public void assign(String questionnaireId, List<String> patientIds) {
-        for(String id : patientIds) {
+    public void assign(String questionnaireId, List<String> patientIdList) {
+        for(String id : patientIdList) {
             User patient = getPatientById(id);
             if(patient != null) {
                 patient.setQuestionnaire(questionnaireId);

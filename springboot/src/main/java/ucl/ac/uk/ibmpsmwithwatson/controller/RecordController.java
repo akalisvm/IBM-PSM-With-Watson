@@ -14,14 +14,28 @@ public class RecordController {
     @Autowired
     RecordService recordService;
 
-    @GetMapping
-    public Result<?> getRecords(@RequestParam(defaultValue = "") String patientId,
-                                @RequestParam(defaultValue = "") String searchInput,
-                                @RequestParam(defaultValue = "") String resultFilter,
-                                @RequestParam(defaultValue = "") String needMeetingFilter,
-                                @RequestParam(defaultValue = "1") Integer pageNum,
-                                @RequestParam(defaultValue = "10") Integer pageSize) {
-        Page page = recordService.getRecords(patientId, searchInput, resultFilter, needMeetingFilter, pageNum, pageSize);
+    @GetMapping("/patient")
+    public Result<?> getRecordsForPatient(@RequestParam(defaultValue = "") String patientId,
+                                          @RequestParam(defaultValue = "") String searchInput,
+                                          @RequestParam(defaultValue = "") String resultFilter,
+                                          @RequestParam(defaultValue = "") String needMeetingFilter,
+                                          @RequestParam(defaultValue = "1") Integer pageNum,
+                                          @RequestParam(defaultValue = "10") Integer pageSize) {
+        Page page = recordService.getRecordsForPatient(
+                patientId, searchInput, resultFilter, needMeetingFilter, pageNum, pageSize);
+        return Result.success(page);
+    }
+
+    @GetMapping("/doctor")
+    public Result<?> getRecordsForDoctor(@RequestParam(defaultValue = "") String doctorId,
+                                         @RequestParam(defaultValue = "") String searchInput,
+                                         @RequestParam(defaultValue = "") String patientFilter,
+                                         @RequestParam(defaultValue = "") String resultFilter,
+                                         @RequestParam(defaultValue = "") String needMeetingFilter,
+                                         @RequestParam(defaultValue = "1") Integer pageNum,
+                                         @RequestParam(defaultValue = "10") Integer pageSize) {
+        Page page = recordService.getRecordsForDoctor(
+                doctorId, searchInput, patientFilter, resultFilter, needMeetingFilter, pageNum, pageSize);
         return Result.success(page);
     }
 

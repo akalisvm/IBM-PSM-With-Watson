@@ -6,6 +6,8 @@ import ucl.ac.uk.ibmpsmwithwatson.entity.Page;
 import ucl.ac.uk.ibmpsmwithwatson.service.UserService;
 import ucl.ac.uk.ibmpsmwithwatson.entity.Result;
 
+import java.util.List;
+
 @RestController
 public class UserController {
 
@@ -24,5 +26,10 @@ public class UserController {
     @GetMapping("/user/{id}")
     public Result<?> getUserById(@PathVariable String id) {
         return Result.success(userService.getUserById(id));
+    }
+
+    @PostMapping("/user/names")
+    public Result<?> getUserNameListByIdList(@RequestBody List<String> idList) {
+        return Result.success(userService.getUserNameListByIdList(idList));
     }
 }

@@ -11,6 +11,8 @@ import ucl.ac.uk.ibmpsmwithwatson.entity.User;
 import ucl.ac.uk.ibmpsmwithwatson.util.PaginationUtil;
 import ucl.ac.uk.ibmpsmwithwatson.util.SearchingUtil;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -43,5 +45,18 @@ public class UserService {
             return null;
         }
         return list.get(0);
+    }
+
+    public List<String> getUserNameListByIdList(List<String> idList) {
+        HashMap<String, String> map = new HashMap<>();
+        List<String> nameList = new ArrayList<>();
+        for(String id : idList) {
+            if(!map.containsKey(id)) {
+                User user = getUserById(id);
+                map.put(id, user.getGiven_name() + " " + user.getFamily_name());
+            }
+            nameList.add(map.get(id));
+        }
+        return nameList;
     }
 }

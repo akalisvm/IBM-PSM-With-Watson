@@ -42,8 +42,8 @@ public class QuestionnaireController {
     }
 
     @PostMapping("/assign/{questionnaireId}")
-    public Result<?> assign(@PathVariable String questionnaireId, @RequestBody List<String> patientIds) {
-        questionnaireService.assign(questionnaireId, patientIds);
+    public Result<?> assign(@PathVariable String questionnaireId, @RequestBody List<String> patientIdList) {
+        questionnaireService.assign(questionnaireId, patientIdList);
         return Result.success();
     }
 

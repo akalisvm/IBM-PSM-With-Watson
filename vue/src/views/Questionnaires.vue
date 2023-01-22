@@ -6,15 +6,12 @@
           <el-input
               v-model="searchTemplateInput"
               placeholder="Type id or title to search template"
+              style="width: 40%"
               clearable
-              style="width: 50%"
-          >
-            <template #append>
-              <el-button @click="loadTemplate">
-                <el-icon><Search /></el-icon>
-              </el-button>
-            </template>
-          </el-input>
+          />
+          <el-button type="info" plain @click="loadTemplate" style="margin-left: 10px;">
+            <el-icon><Search /></el-icon>
+          </el-button>
           <el-button
               style="margin-left: 10px"
               @click="this.searchTemplateInput = ''; this.loadTemplate()">
@@ -34,12 +31,15 @@
                 style="width: 100%"
             >
               <el-table-column prop="id" label="ID"/>
-              <el-table-column prop="title" label="Template Title" />
+              <el-table-column prop="title" label="Template Title" show-overflow-tooltip>
+                <template #default="scope">
+                  <el-button link @click="previewTemplate(scope.row)">
+                    {{ scope.row.title }}
+                  </el-button>
+                </template>
+              </el-table-column>
               <el-table-column fixed="right" label="Operations" >
                 <template #default="scope">
-                  <el-button plain size="small" @click="previewTemplate(scope.row)">
-                    Preview
-                  </el-button>
                   <el-button plain size="small" @click="editTemplate(scope.row)">
                     Edit
                   </el-button>
@@ -71,14 +71,12 @@
           <el-input
               v-model="searchQuestionnaireInput"
               placeholder="Type id or title to search questionnaire"
-              style="width: 50%"
-          >
-            <template #append>
-              <el-button @click="loadQuestionnaire">
-                <el-icon><Search /></el-icon>
-              </el-button>
-            </template>
-          </el-input>
+              style="width: 40%"
+              clearable
+          />
+          <el-button type="info" plain @click="loadQuestionnaire" style="margin-left: 10px;">
+            <el-icon><Search /></el-icon>
+          </el-button>
           <el-button
               style="margin-left: 10px"
               @click="this.searchQuestionnaireInput = ''; this.loadQuestionnaire()">
@@ -99,12 +97,15 @@
                 style="width: 100%"
             >
               <el-table-column prop="id" label="ID"/>
-              <el-table-column prop="title" label="Questionnaire Title" />
+              <el-table-column prop="title" label="Questionnaire Title" show-overflow-tooltip>
+                <template #default="scope">
+                  <el-button link @click="previewQuestionnaire(scope.row)">
+                    {{ scope.row.title }}
+                  </el-button>
+                </template>
+              </el-table-column>
               <el-table-column fixed="right" label="Operations" >
                 <template #default="scope">
-                  <el-button plain size="small" @click="previewQuestionnaire(scope.row)">
-                    Preview
-                  </el-button>
                   <el-button plain size="small" @click="editQuestionnaire(scope.row)">
                     Edit
                   </el-button>
@@ -153,7 +154,7 @@
               <h1 style="text-align: center">{{ this.previewForm.title }}</h1>
               <div v-if="this.previewForm.description !== ''"
                    style="margin-bottom: 20px; text-align: center">
-                <span>{{ this.previewForm.description }}</span>
+                {{ this.previewForm.description }}
               </div>
               <el-form :label-position="'top'">
                 <el-scrollbar height="70vh">
@@ -303,7 +304,6 @@ export default {
   },
   created() {
     this.user = JSON.parse(getCookie("user"))
-    this.load()
     this.$nextTick(() => {
       this.load()
     })
@@ -376,7 +376,7 @@ export default {
         if(res.code === "10000") {
           this.$message({
             type: "success",
-            message: "You have been removed a template",
+            message: "You have been deleted a template",
             customClass: 'font'
           })
           this.loadTemplate()
@@ -427,7 +427,7 @@ export default {
         if(res.code === "10000") {
           this.$message({
             type: "success",
-            message: "You have been removed a questionnaire",
+            message: "You have been deleted a questionnaire",
             customClass: 'font'
           })
           this.loadQuestionnaire()

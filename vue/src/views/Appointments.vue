@@ -1,6 +1,6 @@
 <template>
   <div style="font-family: Arial, sans-serif;">
-    <span>Outreach Events</span>
+    <span>Appointments</span>
   </div>
 </template>
 
@@ -10,7 +10,7 @@ import { getCookie } from "@/utils/cookie";
 import { formatDate } from "@/utils/date";
 
 export default {
-  name: "Events"
+  name: "Appointments"
 }
 </script>
 

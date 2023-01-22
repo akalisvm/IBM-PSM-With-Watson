@@ -50,10 +50,10 @@ public class SearchingUtil {
         }
     }
 
-    public static void searchingRecordByIdAndFilters(List<Record> list, String searchInput, String resultFilter, String needMeetingFilter) {
+    public static void searchingRecordByIdAndFilters(List<Record> list, String searchInput, String patientFilter,
+                                                     String resultFilter, String needMeetingFilter) {
         if(!searchInput.equals("")) {
             if(searchInput.matches("[0-9]+")) {
-                System.out.println(searchInput);
                 for(int i = list.size() - 1; i >= 0; i--) {
                     Record record = list.get(i);
                     if(!record.getId().equals(searchInput)) {
@@ -63,6 +63,14 @@ public class SearchingUtil {
             } else {
                 list.clear();
                 return;
+            }
+        }
+        if(!patientFilter.equals("")) {
+            for(int i = list.size() - 1; i >= 0; i--) {
+                Record record = list.get(i);
+                if(!record.getCreatorId().equals(patientFilter)) {
+                    list.remove(record);
+                }
             }
         }
         if(!resultFilter.equals("")) {
