@@ -2,10 +2,11 @@ package ucl.ac.uk.ibmpsmwithwatson.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Page;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Template;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.dto.TemplateQueryDTO;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.Page;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Template;
 import ucl.ac.uk.ibmpsmwithwatson.service.TemplateService;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Result;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.Result;
 
 @RestController
 @RequestMapping("/templates")
@@ -14,12 +15,9 @@ public class TemplateController {
     @Autowired
     TemplateService templateService;
 
-    @GetMapping
-    public Result<?> getTemplates(@RequestParam(defaultValue = "") String doctorId,
-                                  @RequestParam(defaultValue = "") String searchInput,
-                                  @RequestParam(defaultValue = "1") Integer pageNum,
-                                  @RequestParam(defaultValue = "5") Integer pageSize) {
-        Page page = templateService.getTemplates(doctorId, searchInput, pageNum, pageSize);
+    @PostMapping("/get")
+    public Result<?> getTemplates(@RequestBody TemplateQueryDTO dto) {
+        Page page = templateService.getTemplates(dto);
         return Result.success(page);
     }
 

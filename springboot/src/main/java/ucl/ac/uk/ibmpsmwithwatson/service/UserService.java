@@ -6,8 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ucl.ac.uk.ibmpsmwithwatson.dao.UserMapper;
 import ucl.ac.uk.ibmpsmwithwatson.dao.QuestionnaireMapper;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Page;
-import ucl.ac.uk.ibmpsmwithwatson.entity.User;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.dto.UserQueryDTO;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.Page;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.po.User;
 import ucl.ac.uk.ibmpsmwithwatson.util.PaginationUtil;
 import ucl.ac.uk.ibmpsmwithwatson.util.SearchingUtil;
 
@@ -24,10 +25,10 @@ public class UserService {
     @Autowired
     QuestionnaireMapper questionnaireMapper;
 
-    public Page getPatientsByDoctorId(String doctorId, String searchInput, Integer pageNum, Integer pageSize) {
-        JSONArray jsonArray = userMapper.getPatientsByDoctorId(doctorId);
+    public Page getPatientsByDoctorId(UserQueryDTO dto) {
+        JSONArray jsonArray = userMapper.getPatientsByDoctorId(dto.getDoctorId());
         List<User> list = JSONUtil.toList(jsonArray, User.class);
-        SearchingUtil.searchingUserByName(list, searchInput);
+        SearchingUtil.searchingUserByName(list, dto.getSearchInput());
         for(User patient : list) {
             if(!patient.getQuestionnaire().equals("")) {
                 String title = String.valueOf(questionnaireMapper.getTitle(patient.getQuestionnaire())
@@ -35,7 +36,7 @@ public class UserService {
                 patient.setQuestionnaire(patient.getQuestionnaire() + ": " + title);
             }
         }
-        return PaginationUtil.pagination(list, pageNum, pageSize, list.size());
+        return PaginationUtil.pagination(list, dto.getPageNum(), dto.getPageSize());
     }
 
     public User getUserById(String id) {
@@ -45,18 +46,5 @@ public class UserService {
             return null;
         }
         return list.get(0);
-    }
-
-    public List<String> getUserNameListByIdList(List<String> idList) {
-        HashMap<String, String> map = new HashMap<>();
-        List<String> nameList = new ArrayList<>();
-        for(String id : idList) {
-            if(!map.containsKey(id)) {
-                User user = getUserById(id);
-                map.put(id, user.getGiven_name() + " " + user.getFamily_name());
-            }
-            nameList.add(map.get(id));
-        }
-        return nameList;
     }
 }

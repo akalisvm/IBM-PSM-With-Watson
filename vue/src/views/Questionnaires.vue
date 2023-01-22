@@ -314,26 +314,22 @@ export default {
       this.loadQuestionnaire()
     },
     loadTemplate() {
-      request.get("/templates", {
-        params: {
-          doctorId: this.user.id,
-          searchInput: this.searchTemplateInput,
-          pageNum: this.templateCurrentPage,
-          pageSize: this.templatePageSize
-        }
+      request.post("/templates/get", {
+        doctorId: this.user.id,
+        searchInput: this.searchTemplateInput,
+        pageNum: this.templateCurrentPage,
+        pageSize: this.templatePageSize
       }).then(res => {
         this.templateData = res.data.records
         this.templateTotal = res.data.total
       })
     },
     loadQuestionnaire() {
-      request.get("/questionnaires", {
-        params: {
-          doctorId: this.user.id,
-          searchInput: this.searchQuestionnaireInput,
-          pageNum: this.questionnaireCurrentPage,
-          pageSize: this.questionnairePageSize
-        }
+      request.post("/questionnaires/get", {
+        doctorId: this.user.id,
+        searchInput: this.searchQuestionnaireInput,
+        pageNum: this.questionnaireCurrentPage,
+        pageSize: this.questionnairePageSize
       }).then(res => {
         this.questionnaireData = res.data.records
         this.questionnaireTotal = res.data.total
@@ -376,7 +372,7 @@ export default {
         if(res.code === "10000") {
           this.$message({
             type: "success",
-            message: "You have been deleted a template",
+            message: "You have deleted a template",
             customClass: 'font'
           })
           this.loadTemplate()
@@ -427,7 +423,7 @@ export default {
         if(res.code === "10000") {
           this.$message({
             type: "success",
-            message: "You have been deleted a questionnaire",
+            message: "You have deleted a questionnaire",
             customClass: 'font'
           })
           this.loadQuestionnaire()
@@ -459,7 +455,7 @@ export default {
               if(res.code === '10000') {
                 this.$message({
                   type: "success",
-                  message: "You have been created a new template",
+                  message: "You have created a new template",
                   customClass: 'font'
                 })
                 this.dialogVisible = false
@@ -479,7 +475,7 @@ export default {
               if(res.code === '10000') {
                 this.$message({
                   type: "success",
-                  message: "You have been created a new questionnaire",
+                  message: "You have created a new questionnaire",
                   customClass: 'font'
                 })
                 this.dialogVisible = false
@@ -499,7 +495,7 @@ export default {
               if(res.code === '10000') {
                 this.$message({
                   type: "success",
-                  message: "You have been edited a template",
+                  message: "You have edited a template",
                   customClass: 'font'
                 })
                 this.dialogVisible = false
@@ -519,7 +515,7 @@ export default {
               if(res.code === '10000') {
                 this.$message({
                   type: "success",
-                  message: "You have been edited a questionnaire",
+                  message: "You have edited a questionnaire",
                   customClass: 'font'
                 })
                 this.dialogVisible = false

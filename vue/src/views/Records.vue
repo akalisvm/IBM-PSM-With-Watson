@@ -52,6 +52,13 @@
         <el-button style="margin-left: 10px" @click="this.searchInput = ''; this.loadRecord()">
           Reset
         </el-button>
+        <el-popconfirm title="Are you sure?" @confirm="deleteBatch">
+          <template #reference>
+            <el-button type="danger" style="margin-left: 10px">
+              Delete
+            </el-button>
+          </template>
+        </el-popconfirm>
       </div>
       <!-- Healthcare Records Table Area -->
       <div style="margin-top: 20px; height: 47vh">
@@ -60,18 +67,16 @@
               :data="data"
               style="width: 100%"
               :table-layout="tableLayout"
+              @selection-change="handleSelectionChange"
           >
+            <el-table-column type="selection" />
             <el-table-column prop="id" label="ID" />
             <el-table-column prop="createTime" label="Time">
               <template #default="scope">
                 {{ formatDate(scope.row.createTime) }}
               </template>
             </el-table-column>
-            <el-table-column prop="creatorId" label="Patient Name">
-              <template #default="scope">
-                {{ this.nameList[scope.$index] }}
-              </template>
-            </el-table-column>
+            <el-table-column prop="creatorName" label="Patient Name" />
             <el-table-column prop="questionnaire.title" label="Questionnaire Title" show-overflow-tooltip>
               <template #default="scope">
                 <el-button link @click="detail(scope.row)">
@@ -99,9 +104,11 @@
             </el-table-column>
             <el-table-column fixed="right" label="Operation">
               <template #default="scope">
-                <el-button type="danger" size="small" @click="deleteRecord(scope.row.id)">
-                  Delete
-                </el-button>
+                <div v-if="scope.row.questionnaire.result === 'Worse'">
+                  <el-button  type="primary" plain size="small" @click="schedule(scope.row.id)">
+                    Schedule
+                  </el-button>
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -185,8 +192,7 @@ export default {
       tableLayout: "auto",
       form: {},
       data: [],
-      idList: [],
-      nameList: [],
+      recordIdList: [],
       remoteList: [],
       options: [],
       searchInput: "",
@@ -212,38 +218,29 @@ export default {
       this.loadRemote()
     },
     loadRecord() {
-      request.get("/records/doctor", {
-        params: {
-          doctorId: this.user.id,
-          searchInput: this.searchInput,
-          patientFilter: this.patientFilter,
-          resultFilter: this.resultFilter,
-          needMeetingFilter: this.needMeetingFilter,
-          pageNum: this.currentPage,
-          pageSize: this.pageSize
-        }
+      request.post("/records/get", {
+        userId: this.user.id,
+        userRole: this.user.role,
+        searchInput: this.searchInput,
+        patientFilter: this.patientFilter,
+        resultFilter: this.resultFilter,
+        needMeetingFilter: this.needMeetingFilter,
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
       }).then(res => {
         this.data = res.data.records
-        this.idList = this.data.map(({ creatorId }) => creatorId)
-        request.post("/user/names", this.idList).then(res => {
-          if(res.code === '10000') {
-            this.nameList = res.data
-          }
-        })
         this.total = res.data.total
       })
     },
     loadRemote() {
-      request.get("/patients", {
-        params: {
-          doctorId: this.user.id,
-          searchInput: this.patientFilter,
-          patientFilter: "",
-          resultFilter: this.resultFilter,
-          needMeetingFilter: this.needMeetingFilter,
-          pageNum: 1,
-          pageSize: 0
-        }
+      request.post("/patients", {
+        doctorId: this.user.id,
+        searchInput: this.patientFilter,
+        patientFilter: "",
+        resultFilter: this.resultFilter,
+        needMeetingFilter: this.needMeetingFilter,
+        pageNum: 1,
+        pageSize: 0
       }).then(res => {
         this.remoteList = res.data.records
       })
@@ -266,12 +263,12 @@ export default {
       this.drawerVisible = true
       this.form = row
     },
-    deleteRecord(id) {
-      request.delete("/records/" + id).then(res => {
+    deleteBatch() {
+      request.post("/records/delete/batch" + this.recordIdList).then(res => {
         if(res.code === "10000") {
           this.$message({
             type: "success",
-            message: "You have been deleted a record",
+            message: "You have deleted selected records",
             customClass: 'font'
           })
           this.loadRecord()
@@ -281,6 +278,9 @@ export default {
     currentChange(pageNum) {
       this.currentPage = pageNum
       this.load()
+    },
+    handleSelectionChange(val) {
+      this.recordIdList = val.map(v => v.id)
     },
     formatDate(ts) {
       return formatDate(new Date(ts), "yyyy-MM-dd hh:mm:ss")

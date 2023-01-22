@@ -100,24 +100,20 @@ export default {
   },
   methods: {
     load() {
-      request.get("/patients", {
-        params: {
-          doctorId: this.user.id,
-          searchInput: this.searchInput,
-          pageNum: this.currentPage,
-          pageSize: this.pageSize
-        }
+      request.post("/patients", {
+        doctorId: this.user.id,
+        searchInput: this.searchInput,
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
       }).then(res => {
         this.data = res.data.records
         this.total = res.data.total
       });
-      request.get("/questionnaires", {
-        params: {
-          doctorId: this.user.id,
-          searchInput: "",
-          pageNum: 1,
-          pageSize: 0
-        }
+      request.post("/questionnaires/get", {
+        doctorId: this.user.id,
+        searchInput: "",
+        pageNum: 1,
+        pageSize: 0
       }).then(res => {
         this.options = res.data.records
       })

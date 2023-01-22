@@ -2,10 +2,11 @@ package ucl.ac.uk.ibmpsmwithwatson.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Page;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Questionnaire;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.dto.QuestionnaireQueryDTO;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.Page;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Questionnaire;
 import ucl.ac.uk.ibmpsmwithwatson.service.QuestionnaireService;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Result;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.Result;
 
 import java.util.List;
 
@@ -16,12 +17,9 @@ public class QuestionnaireController {
     @Autowired
     QuestionnaireService questionnaireService;
 
-    @GetMapping
-    public Result<?> getQuestionnaires(@RequestParam(defaultValue = "") String doctorId,
-                                       @RequestParam(defaultValue = "") String searchInput,
-                                       @RequestParam(defaultValue = "1") Integer pageNum,
-                                       @RequestParam(defaultValue = "5") Integer pageSize) {
-        Page page = questionnaireService.getQuestionnaires(doctorId, searchInput, pageNum, pageSize);
+    @PostMapping("/get")
+    public Result<?> getQuestionnaires(@RequestBody QuestionnaireQueryDTO dto) {
+        Page page = questionnaireService.getQuestionnaires(dto);
         return Result.success(page);
     }
 

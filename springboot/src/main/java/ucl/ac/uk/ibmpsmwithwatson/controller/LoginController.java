@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import ucl.ac.uk.ibmpsmwithwatson.service.LoginService;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Result;
-import ucl.ac.uk.ibmpsmwithwatson.entity.User;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.Result;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.po.User;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +26,7 @@ public class LoginController {
     LoginService loginService;
 
     @GetMapping("/nhs")
-    public Result<?> NHSLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
+    public Result<?> checkNHSLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
         User nhsUser = loginService.checkNHSLogin(code);
         setUserInfoCookie(nhsUser, response);
         response.sendRedirect("http://" + IP + ":8080/center");
@@ -34,7 +34,7 @@ public class LoginController {
     }
 
     @PostMapping("/app")
-    public Result<?> AppLogin(@RequestBody User requestUser, HttpServletResponse response) throws JsonProcessingException, UnsupportedEncodingException {
+    public Result<?> checkAppLogin(@RequestBody User requestUser, HttpServletResponse response) throws JsonProcessingException, UnsupportedEncodingException {
         User appUser = loginService.checkAppLogin(requestUser);
         if(appUser == null) {
             return Result.error("10001", "Incorrect email or password");

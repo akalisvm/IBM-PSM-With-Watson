@@ -5,7 +5,7 @@ import cn.hutool.json.JSONUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ucl.ac.uk.ibmpsmwithwatson.entity.User;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.po.User;
 
 @SpringBootTest
 public class UserMapperTest {

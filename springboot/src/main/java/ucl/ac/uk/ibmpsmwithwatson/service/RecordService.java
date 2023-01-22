@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ucl.ac.uk.ibmpsmwithwatson.dao.RecordMapper;
 import ucl.ac.uk.ibmpsmwithwatson.dao.UserMapper;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Page;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Record;
-import ucl.ac.uk.ibmpsmwithwatson.entity.User;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.dto.RecordQueryDTO;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.Page;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Record;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.po.User;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.RecordVO;
 import ucl.ac.uk.ibmpsmwithwatson.util.PaginationUtil;
 import ucl.ac.uk.ibmpsmwithwatson.util.SearchingUtil;
 
@@ -23,25 +25,23 @@ public class RecordService {
     @Autowired
     RecordMapper recordMapper;
 
-    public Page getRecordsForPatient(String patientId, String searchInput, String resultFilter,
-                           String needMeetingFilter, Integer pageNum, Integer pageSize) {
-        JSONArray jsonArray = recordMapper.getRecords(patientId);
-        List<Record> list = JSONUtil.toList(jsonArray, Record.class);
-        SearchingUtil.searchingRecordByIdAndFilters(list, searchInput, "", resultFilter, needMeetingFilter);
-        return PaginationUtil.pagination(list, pageNum, pageSize, list.size());
-    }
-
-    public Page getRecordsForDoctor(String doctorId, String searchInput, String patientFilter,
-                                    String resultFilter, String needMeetingFilter, Integer pageNum, Integer pageSize) {
-        JSONArray jsonArray = userMapper.getPatientsByDoctorId(doctorId);
-        List<User> userList = JSONUtil.toList(jsonArray, User.class);
-        List<Record> recordList = new ArrayList<>();
-        for(User user : userList) {
-            recordList.addAll(JSONUtil.toList(recordMapper.getRecords(user.getId()), Record.class));
+    public Page getRecords(RecordQueryDTO dto) {
+        List<RecordVO> recordVOList = new ArrayList<>();
+        if(dto.getUserRole().equals("patient")) {
+            recordVOList = JSONUtil.toList(recordMapper.getRecords(dto.getUserId()), RecordVO.class);
+        } else if(dto.getUserRole().equals("doctor")) {
+            List<User> userList = JSONUtil.toList(userMapper.getPatientsByDoctorId(dto.getUserId()), User.class);
+            for(User user : userList) {
+                List<RecordVO> tempList = JSONUtil.toList(recordMapper.getRecords(user.getId()), RecordVO.class);
+                for(RecordVO recordVO : tempList) {
+                    recordVO.setCreatorName(user.getGiven_name() + " " + user.getFamily_name());
+                }
+                recordVOList.addAll(tempList);
+            }
+            recordVOList.sort((o1, o2) -> o2.getCreateTime().compareTo(o1.getCreateTime()));
         }
-        SearchingUtil.searchingRecordByIdAndFilters(recordList, searchInput, patientFilter, resultFilter, needMeetingFilter);
-        recordList.sort((o1, o2) -> o2.getCreateTime().compareTo(o1.getCreateTime()));
-        return PaginationUtil.pagination(recordList, pageNum, pageSize, recordList.size());
+        SearchingUtil.searchingRecordByIdAndFilters(recordVOList, dto);
+        return PaginationUtil.pagination(recordVOList, dto.getPageNum(), dto.getPageSize());
     }
 
     public void insert(Record record) {
@@ -61,7 +61,9 @@ public class RecordService {
         recordMapper.insert(record.getCreatorId(), id, JSONUtil.toJsonStr(record));
     }
 
-    public void delete(String recordId) {
-        recordMapper.delete(recordId);
+    public void deleteBatch(List<String> recordIdList) {
+        for(String recordId : recordIdList) {
+            recordMapper.delete(recordId);
+        }
     }
 }

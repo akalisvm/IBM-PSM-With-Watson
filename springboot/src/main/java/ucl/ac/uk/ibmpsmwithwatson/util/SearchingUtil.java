@@ -1,9 +1,11 @@
 package ucl.ac.uk.ibmpsmwithwatson.util;
 
-import ucl.ac.uk.ibmpsmwithwatson.entity.Questionnaire;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Record;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Template;
-import ucl.ac.uk.ibmpsmwithwatson.entity.User;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.dto.RecordQueryDTO;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Questionnaire;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Record;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Template;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.po.User;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.RecordVO;
 
 import java.util.List;
 
@@ -50,13 +52,12 @@ public class SearchingUtil {
         }
     }
 
-    public static void searchingRecordByIdAndFilters(List<Record> list, String searchInput, String patientFilter,
-                                                     String resultFilter, String needMeetingFilter) {
-        if(!searchInput.equals("")) {
-            if(searchInput.matches("[0-9]+")) {
+    public static void searchingRecordByIdAndFilters(List<RecordVO> list, RecordQueryDTO dto) {
+        if(!dto.getSearchInput().equals("")) {
+            if(dto.getSearchInput().matches("[0-9]+")) {
                 for(int i = list.size() - 1; i >= 0; i--) {
-                    Record record = list.get(i);
-                    if(!record.getId().equals(searchInput)) {
+                    RecordVO record = list.get(i);
+                    if(!record.getId().equals(dto.getSearchInput())) {
                         list.remove(record);
                     }
                 }
@@ -65,27 +66,27 @@ public class SearchingUtil {
                 return;
             }
         }
-        if(!patientFilter.equals("")) {
+        if(!dto.getPatientFilter().equals("")) {
             for(int i = list.size() - 1; i >= 0; i--) {
-                Record record = list.get(i);
-                if(!record.getCreatorId().equals(patientFilter)) {
-                    list.remove(record);
+                RecordVO recordVO = list.get(i);
+                if(!recordVO.getCreatorId().equals(dto.getPatientFilter())) {
+                    list.remove(recordVO);
                 }
             }
         }
-        if(!resultFilter.equals("")) {
+        if(!dto.getResultFilter().equals("")) {
             for(int i = list.size() - 1; i >= 0; i--) {
-                Record record = list.get(i);
-                if(!record.getQuestionnaire().getResult().equals(resultFilter)) {
-                    list.remove(record);
+                RecordVO recordVO = list.get(i);
+                if(!recordVO.getQuestionnaire().getResult().equals(dto.getResultFilter())) {
+                    list.remove(recordVO);
                 }
             }
         }
-        if(!needMeetingFilter.equals("")) {
+        if(!dto.getNeedMeetingFilter().equals("")) {
             for(int i = list.size() - 1; i >= 0; i--) {
-                Record record = list.get(i);
-                if(!record.getQuestionnaire().getNeedMeeting().equals(needMeetingFilter)) {
-                    list.remove(record);
+                RecordVO recordVO = list.get(i);
+                if(!recordVO.getQuestionnaire().getNeedMeeting().equals(dto.getNeedMeetingFilter())) {
+                    list.remove(recordVO);
                 }
             }
         }

@@ -1,5 +1,6 @@
 package ucl.ac.uk.ibmpsmwithwatson.util;
 
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -13,8 +14,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import ucl.ac.uk.ibmpsmwithwatson.config.NHSLoginConfig;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Token;
-import ucl.ac.uk.ibmpsmwithwatson.entity.User;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.po.User;
 
 import java.net.URI;
 import java.util.Objects;
@@ -31,6 +31,11 @@ public class NHSLoginClient {
     NHSLoginClient(NHSLoginConfig nhsLoginConfig, RestTemplateBuilder restTemplateBuilder) {
         this.nhsLoginConfig = nhsLoginConfig;
         this.restTemplate = restTemplateBuilder.build();
+    }
+
+    @Data
+    private static class Token {
+        private String access_token;
     }
 
     public String getAccessToken(@RequestParam("code") String code) {

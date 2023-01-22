@@ -11,7 +11,7 @@ import ucl.ac.uk.ibmpsmwithwatson.config.BangDBConfig;
 import ucl.ac.uk.ibmpsmwithwatson.dao.GraphMapper;
 import ucl.ac.uk.ibmpsmwithwatson.dao.TableMapper;
 import ucl.ac.uk.ibmpsmwithwatson.dao.UserMapper;
-import ucl.ac.uk.ibmpsmwithwatson.entity.User;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.po.User;
 import ucl.ac.uk.ibmpsmwithwatson.util.JwtUtil;
 import ucl.ac.uk.ibmpsmwithwatson.util.MapUtil;
 import ucl.ac.uk.ibmpsmwithwatson.util.NHSLoginClient;

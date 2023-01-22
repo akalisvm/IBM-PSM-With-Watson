@@ -6,8 +6,9 @@ import cn.hutool.json.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ucl.ac.uk.ibmpsmwithwatson.dao.TemplateMapper;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Page;
-import ucl.ac.uk.ibmpsmwithwatson.entity.Template;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.dto.TemplateQueryDTO;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.Page;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Template;
 import ucl.ac.uk.ibmpsmwithwatson.util.PaginationUtil;
 import ucl.ac.uk.ibmpsmwithwatson.util.SearchingUtil;
 
@@ -20,11 +21,11 @@ public class TemplateService {
     @Autowired
     TemplateMapper templateMapper;
 
-    public Page getTemplates(String doctorId, String searchInput, Integer pageNum, Integer pageSize) {
-        JSONArray jsonArray = templateMapper.getTemplates(doctorId);
+    public Page getTemplates(TemplateQueryDTO dto) {
+        JSONArray jsonArray = templateMapper.getTemplates(dto.getDoctorId());
         List<Template> list = JSONUtil.toList(jsonArray, Template.class);
-        SearchingUtil.searchingTemplateByIdOrTitle(list, searchInput);
-        return PaginationUtil.pagination(list, pageNum, pageSize, list.size());
+        SearchingUtil.searchingTemplateByIdOrTitle(list, dto.getSearchInput());
+        return PaginationUtil.pagination(list, dto.getPageNum(), dto.getPageSize());
     }
 
     public void insert(Template template) {

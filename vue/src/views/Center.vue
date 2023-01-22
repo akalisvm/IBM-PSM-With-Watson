@@ -349,15 +349,14 @@ export default {
       })
     },
     loadRecord() {
-      request.get("/records/patient", {
-        params: {
-          patientId: this.user.id,
-          searchInput: this.searchRecordInput,
-          resultFilter: this.resultFilter,
-          needMeetingFilter: this.needMeetingFilter,
-          pageNum: this.recordCurrentPage,
-          pageSize: this.recordPageSize
-        }
+      request.post("/records/get/patient", {
+        userId: this.user.id,
+        userRole: this.user.role,
+        searchInput: this.searchRecordInput,
+        resultFilter: this.resultFilter,
+        needMeetingFilter: this.needMeetingFilter,
+        pageNum: this.recordCurrentPage,
+        pageSize: this.recordPageSize
       }).then(res => {
         this.recordData = res.data.records
         this.recordTotal = res.data.total
@@ -373,7 +372,7 @@ export default {
       } else {
         this.$message({
           type: "error",
-          message: "You haven't been assigned a questionnaire",
+          message: "You haven't assigned a questionnaire",
           customClass: 'font'
         })
       }
@@ -388,7 +387,7 @@ export default {
             if(res.code === '10000') {
               this.$message({
                 type: "success",
-                message: "You have been created a new healthcare record",
+                message: "You have created a new healthcare record",
                 customClass: 'font'
               })
               this.clickOn = ""
