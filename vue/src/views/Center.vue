@@ -4,150 +4,153 @@
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <span>Hi, {{ this.user.given_name }}  {{ this.user.family_name }}</span>
         <el-button type="info" @click="infoDialogVisible = true" plain>Show personal information</el-button>
-        <el-dialog v-model="infoDialogVisible">
-          <el-descriptions
-              title="Personal Information"
-              direction="vertical"
-              :column="4"
-              border
-          >
-            <el-descriptions-item label="Given Name">
-              {{ this.user.given_name }}
-            </el-descriptions-item>
-            <el-descriptions-item label="Family Name">
-              {{ this.user.family_name }}
-            </el-descriptions-item>
-            <el-descriptions-item label="Gender">
-              {{ this.user.gender }}
-            </el-descriptions-item>
-            <el-descriptions-item label="Date of Birth">
-              {{ this.user.birthdate }}
-            </el-descriptions-item>
-            <el-descriptions-item label="Email">
-              {{ this.user.email }}
-            </el-descriptions-item>
-            <el-descriptions-item label="Phone Number">
-              {{ this.user.phone_number }}
-            </el-descriptions-item>
-            <el-descriptions-item label="NHS Number">
-              {{ this.user.nhs_number }}
-            </el-descriptions-item>
-            <el-descriptions-item label="My Doctor">
-              {{ this.doctor.given_name }}  {{ this.doctor.family_name }}
-            </el-descriptions-item>
-            <el-descriptions-item label="My Questionnaire">
-              {{ this.questionnaire.title }}
-            </el-descriptions-item>
-          </el-descriptions>
-        </el-dialog>
       </div>
     </el-card>
     <div><br /></div>
-    <div>
+    <div v-loading="fillLoading">
       <el-card v-if="this.clickOn === ''" style="height: 80vh;">
-        <div style="min-height: 57vh">
-          <el-tabs v-model="activeName">
-            <el-tab-pane label="Healthcare Records" name="first">
-              <!-- Healthcare Records Functional Area -->
-              <div>
-                <el-input
-                    v-model="searchRecordInput"
-                    placeholder="Type id to search record"
-                    style="width: 15%"
-                    clearable
-                    @keyup.enter.native="loadRecord">
-                </el-input>
-                <el-select
-                    v-model="resultFilter"
-                    placeholder="Result filter"
-                    clearable
-                    style="margin-left: 10px; width: 10%"
-                >
-                  <el-option label="Better" value="Better" />
-                  <el-option label="Same" value="Same" />
-                  <el-option label="Worse" value="Worse" />
-                </el-select>
-                <el-select
-                    v-model="needMeetingFilter"
-                    placeholder="Need meeting filter"
-                    clearable
-                    style="margin-left: 10px; width: 10%">
-                  <el-option label="Yes" value="Yes" />
-                  <el-option label="No" value="No" />
-                </el-select>
-                <el-button type="info" plain @click="loadRecord" style="margin-left: 10px;">
-                  <el-icon><Search /></el-icon>
-                </el-button>
-                <el-button style="margin-left: 10px" @click="this.searchRecordInput = ''; this.load()">
-                  Reset
-                </el-button>
-                <el-button style="margin-left: 10px" @click="fill">
-                  Fill Questionnaire
-                </el-button>
-              </div>
-              <!-- Healthcare Records Table Area -->
-              <div v-loading="loading" style="margin-top: 20px">
-                <el-table
-                    :data="recordData"
-                    style="width: 100%"
-                    :table-layout="tableLayout"
-                >
-                  <el-table-column prop="id" label="ID" />
-                  <el-table-column prop="createTime" label="Time">
-                    <template #default="scope">
-                      {{ formatDate(scope.row.createTime) }}
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="questionnaire.title" label="Questionnaire Title" show-overflow-tooltip>
-                    <template #default="scope">
-                      <el-button link @click="detail(scope.row)">
-                        {{ scope.row.questionnaire.title }}
-                      </el-button>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="questionnaire.result" label="Result">
-                    <template #default="scope">
-                      <el-tag
-                          :type="scope.row.questionnaire.result === 'Worse' ? 'danger' : 'success'"
-                          disable-transitions
-                      >
-                        {{ scope.row.questionnaire.result }}
-                      </el-tag>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="questionnaire.needMeeting" label="Need Meeting" />
-                  <el-table-column prop="questionnaire.meetingTime" label="Suggested Meeting Time">
-                    <template #default="scope">
-                      <div v-if="formatDate(scope.row.questionnaire.meetingTime) !== '1970-01-01 01:00'">
-                        {{ formatDate(scope.row.questionnaire.meetingTime) }}
-                      </div>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </div>
-            </el-tab-pane>
-            <el-tab-pane label="Appointments" name="second">
-              Appointments
-            </el-tab-pane>
-          </el-tabs>
-        </div>
-        <div style="margin: 10px 0">
-          <el-pagination
-              @current-change="recordCurrentChange"
-              v-model:current-page="recordCurrentPage"
-              background
-              layout="prev, pager, next, jumper"
-              :page-size="recordPageSize"
-              :total="recordTotal" />
-        </div>
+        <el-tabs v-model="activeName">
+          <el-tab-pane label="Healthcare Records" name="first">
+            <!-- Healthcare Records Functional Area -->
+            <div>
+              <el-input
+                  v-model="searchRecordInput"
+                  placeholder="Type id to search record"
+                  style="width: 15%"
+                  clearable
+                  @keyup.enter.native="loadRecord">
+              </el-input>
+              <el-select
+                  v-model="resultFilter"
+                  placeholder="Select result"
+                  clearable
+                  style="margin-left: 10px; width: 10%"
+              >
+                <el-option label="Better" value="Better" />
+                <el-option label="Same" value="Same" />
+                <el-option label="Worse" value="Worse" />
+              </el-select>
+              <el-select
+                  v-model="needMeetingFilter"
+                  placeholder="select need meeting"
+                  clearable
+                  style="margin-left: 10px; width: 11%">
+                <el-option label="Yes" value="Yes" />
+                <el-option label="No" value="No" />
+              </el-select>
+              <el-button type="info" plain @click="loadRecord" style="margin-left: 10px;">
+                <el-icon><Search /></el-icon>
+              </el-button>
+              <el-button style="margin-left: 10px" @click="this.searchRecordInput = ''; this.load()">
+                Reset
+              </el-button>
+              <el-button type="primary" style="margin-left: 10px" @click="fill">
+                Fill Questionnaire
+              </el-button>
+            </div>
+            <!-- Healthcare Records Table Area -->
+            <div v-loading="loading" style="margin-top: 20px; min-height: 46vh">
+              <el-table
+                  :data="recordData"
+                  style="width: 100%"
+                  :table-layout="tableLayout"
+              >
+                <el-table-column prop="id" label="ID" />
+                <el-table-column prop="createTime" label="Create Time">
+                  <template #default="scope">
+                    {{ formatDate(scope.row.createTime) }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="questionnaire.title" label="Questionnaire Title" show-overflow-tooltip>
+                  <template #default="scope">
+                    <el-button link @click="detail(scope.row)">
+                      {{ scope.row.questionnaire.title }}
+                    </el-button>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="questionnaire.result" label="Result">
+                  <template #default="scope">
+                    <el-tag
+                        :type="scope.row.questionnaire.result === 'Worse' ? 'danger' : 'success'"
+                        disable-transitions
+                    >
+                      {{ scope.row.questionnaire.result }}
+                    </el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="questionnaire.needMeeting" label="Need Meeting" />
+                <el-table-column prop="questionnaire.meetingTime" label="Suggested Meeting Time">
+                  <template #default="scope">
+                    <div v-if="formatDate(scope.row.questionnaire.meetingTime) !== '1970-01-01 01:00'">
+                      {{ formatDate(scope.row.questionnaire.meetingTime) }}
+                    </div>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <div style="margin: 10px 0">
+              <el-pagination
+                  @current-change="recordCurrentChange"
+                  v-model:current-page="recordCurrentPage"
+                  background
+                  layout="prev, pager, next, jumper"
+                  :page-size="recordPageSize"
+                  :total="recordTotal" />
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="Outreach Events" name="second">
+            <!-- Outreach Events Functional Area -->
+            <div>
+              <el-input
+                  v-model="searchEventInput"
+                  placeholder="Type id to search event"
+                  style="width: 15%"
+                  clearable
+                  @keyup.enter.native="loadEvent">
+              </el-input>
+            </div>
+            <!-- Outreach Events Table Area -->
+            <div v-loading="loading" style="margin-top: 20px; min-height: 46vh">
+              <el-table
+                  :data="eventData"
+                  style="width: 100%"
+                  :table-layout="tableLayout"
+              >
+                <el-table-column prop="id" label="ID" />
+                <el-table-column prop="createTime" label="Create Time" />
+                <el-table-column prop="title" label="Title" />
+                <el-table-column prop="platform" label="Platform" />
+                <el-table-column prop="meetingTime" label="Scheduled Meeting Time" sortable />
+                <el-table-column fixed="right" label="Operation">
+                  <template #default="scope">
+                    <el-button v-if="scope.row.feedback !== ''" type="primary" plain size="small" @click="review(scope.row.id)">
+                      Review Feedback
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <div style="margin: 10px 0">
+              <el-pagination
+                  @current-change="eventCurrentChange"
+                  v-model:current-page="eventCurrentPage"
+                  background
+                  layout="prev, pager, next, jumper"
+                  :page-size="eventPageSize"
+                  :total="eventTotal" />
+            </div>
+          </el-tab-pane>
+        </el-tabs>
       </el-card>
-
       <!-- Questionnaire Form -->
       <el-card v-if="this.clickOn === 'fill'" style="height: 80vh;">
         <template #header>
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <el-button @click="back">Back</el-button>
-            <el-button type="primary" @click="submit">Submit</el-button>
+            <div>
+              <el-button @click="reset">Reset</el-button>
+              <el-button type="primary" @click="submit">Submit</el-button>
+            </div>
           </div>
         </template>
         <h1 style="text-align: center">{{ this.form.questionnaire.title }}</h1>
@@ -214,6 +217,43 @@
           </el-scrollbar>
         </el-form>
       </el-card>
+      <!-- Personal Information Demonstration Dialog -->
+      <el-dialog v-model="infoDialogVisible">
+        <el-descriptions
+            title="Personal Information"
+            direction="vertical"
+            :column="4"
+            border
+        >
+          <el-descriptions-item label="Given Name">
+            {{ this.user.given_name }}
+          </el-descriptions-item>
+          <el-descriptions-item label="Family Name">
+            {{ this.user.family_name }}
+          </el-descriptions-item>
+          <el-descriptions-item label="Gender">
+            {{ this.user.gender }}
+          </el-descriptions-item>
+          <el-descriptions-item label="Date of Birth">
+            {{ this.user.birthdate }}
+          </el-descriptions-item>
+          <el-descriptions-item label="Email">
+            {{ this.user.email }}
+          </el-descriptions-item>
+          <el-descriptions-item label="Phone Number">
+            {{ this.user.phone_number }}
+          </el-descriptions-item>
+          <el-descriptions-item label="NHS Number">
+            {{ this.user.nhs_number }}
+          </el-descriptions-item>
+          <el-descriptions-item label="My Doctor">
+            {{ this.doctor.given_name }}  {{ this.doctor.family_name }}
+          </el-descriptions-item>
+          <el-descriptions-item label="My Questionnaire">
+            {{ this.questionnaire.title }}
+          </el-descriptions-item>
+        </el-descriptions>
+      </el-dialog>
       <!-- Questionnaire Detail Drawer -->
       <el-drawer
           v-model="drawerVisible"
@@ -321,7 +361,15 @@ export default {
       recordCurrentPage: 1,
       recordPageSize: 10,
       recordTotal: 0,
+      eventData: [],
+      searchEventInput: "",
+      platformFilter: "",
+      attendanceFilter: "",
+      eventCurrentPage: 1,
+      eventPageSize: 10,
+      eventTotal: 0,
       loading: false,
+      fillLoading: false,
       infoDialogVisible: false,
       drawerVisible: false,
     }
@@ -363,27 +411,49 @@ export default {
         pageSize: this.recordPageSize
       }).then(res => {
         this.recordData = res.data.records
-        this.total = res.data.total
+        this.recordTotal = res.data.total
         this.loading = false
       })
     },
     fill() {
       if(this.user.questionnaire !== '') {
-        this.clickOn = "fill"
-        this.form = {
-          creatorId: this.user.id,
-          questionnaire: this.questionnaire
-        }
+        this.fillLoading = true
+        setTimeout(() => {
+          this.clickOn = "fill"
+          this.form = {
+            creatorId: this.user.id,
+            questionnaire: this.questionnaire
+          }
+          this.fillLoading = false
+        }, 200)
+
       } else {
         this.$message({
           type: "error",
-          message: "You haven't assigned a questionnaire",
+          message: "You haven't been assigned a questionnaire",
           customClass: 'font'
         })
       }
     },
     back() {
-      this.clickOn = ""
+      this.fillLoading = true
+      setTimeout(() => {
+        this.clickOn = ""
+        this.fillLoading = false
+      }, 200)
+    },
+    reset() {
+      this.fillLoading = true
+      setTimeout(() => {
+        request.get("/questionnaires/" + this.user.questionnaire).then(res => {
+          this.questionnaire = res.data
+          this.form = {
+            creatorId: this.user.id,
+            questionnaire: res.data
+          }
+        })
+        this.fillLoading = false
+      }, 200)
     },
     submit() {
       this.$refs.form.validate((valid) => {
@@ -415,6 +485,10 @@ export default {
     },
     recordCurrentChange(pageNum) {
       this.recordCurrentPage = pageNum
+      this.load()
+    },
+    eventCurrentChange(pageNum) {
+      this.eventCurrentPage = pageNum
       this.load()
     },
     disabledDate(time) {

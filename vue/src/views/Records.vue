@@ -6,13 +6,13 @@
         <el-input
             v-model="searchInput"
             placeholder="Type id to search record"
-            style="width: 20%"
+            style="width: 11%"
             clearable
             @keyup.enter.native="loadRecord"
         />
         <el-select
             v-model="patientFilter"
-            placeholder="Patient name filter"
+            placeholder="Select patient name"
             clearable
             filterable
             remote
@@ -30,7 +30,7 @@
         </el-select>
         <el-select
             v-model="resultFilter"
-            placeholder="Result filter"
+            placeholder="Select result"
             clearable
             style="margin-left: 10px; width: 10%"
         >
@@ -40,16 +40,16 @@
         </el-select>
         <el-select
             v-model="needMeetingFilter"
-            placeholder="Need meeting filter"
+            placeholder="Select need meeting"
             clearable
-            style="margin-left: 10px; width: 10%">
+            style="margin-left: 10px; width: 11%">
           <el-option label="Yes" value="Yes" />
           <el-option label="No" value="No" />
         </el-select>
         <el-button type="info" plain @click="loadRecord" style="margin-left: 10px;">
           <el-icon><Search /></el-icon>
         </el-button>
-        <el-button style="margin-left: 10px" @click="this.searchInput = ''; this.loadRecord()">
+        <el-button style="margin-left: 10px" @click="reset">
           Reset
         </el-button>
         <el-popconfirm title="Are you sure?" @confirm="deleteBatch">
@@ -70,7 +70,7 @@
         >
           <el-table-column type="selection" />
           <el-table-column prop="id" label="ID" />
-          <el-table-column prop="createTime" label="Time">
+          <el-table-column prop="createTime" label="Create Time">
             <template #default="scope">
               {{ formatDate(scope.row.createTime) }}
             </template>
@@ -263,6 +263,13 @@ export default {
     detail(row) {
       this.drawerVisible = true
       this.form = row
+    },
+    reset() {
+      this.searchInput = ""
+      this.patientFilter = ""
+      this.resultFilter = ""
+      this.needMeetingFilter = ""
+      this.loadRecord()
     },
     deleteBatch() {
       request.post("/records/delete/batch", this.recordIdList).then(res => {

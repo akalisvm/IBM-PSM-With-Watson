@@ -1,6 +1,5 @@
 package ucl.ac.uk.ibmpsmwithwatson.service;
 
-import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

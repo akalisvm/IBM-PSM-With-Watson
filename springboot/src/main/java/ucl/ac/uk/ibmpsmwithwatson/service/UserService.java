@@ -12,8 +12,6 @@ import ucl.ac.uk.ibmpsmwithwatson.pojo.po.User;
 import ucl.ac.uk.ibmpsmwithwatson.util.PaginationUtil;
 import ucl.ac.uk.ibmpsmwithwatson.util.SearchingUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Service

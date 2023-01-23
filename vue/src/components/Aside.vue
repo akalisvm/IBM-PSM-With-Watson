@@ -22,6 +22,10 @@
         <el-icon v-if="!isCollapse"><Fold /></el-icon>
         <el-icon v-if="isCollapse"><Expand /></el-icon>
       </el-button>
+      <el-menu-item index="/center" v-if="this.user.role==='patient'">
+        <el-icon><HomeFilled /></el-icon>
+        <span>Personal Center</span>
+      </el-menu-item>
       <el-menu-item index="/patients" v-if="this.user.role==='doctor'">
         <el-icon><UserFilled /></el-icon>
         <span>My Patients</span>
@@ -34,13 +38,9 @@
         <el-icon><TrendCharts /></el-icon>
         <span>Healthcare Records</span>
       </el-menu-item>
-      <el-menu-item index="/appointments" v-if="this.user.role==='doctor'">
+      <el-menu-item index="/events" v-if="this.user.role==='doctor'">
         <el-icon><Platform /></el-icon>
-        <span>Appointments</span>
-      </el-menu-item>
-      <el-menu-item index="/center" v-if="this.user.role==='patient'">
-        <el-icon><HomeFilled /></el-icon>
-        <span>Personal Center</span>
+        <span>Outreach Events</span>
       </el-menu-item>
     </el-menu>
   </div>
