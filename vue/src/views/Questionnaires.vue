@@ -193,6 +193,8 @@
                             v-model="this.meetingTime"
                             type="datetime"
                             placeholder="Select date and time"
+                            format="YYYY-MM-DD HH:mm"
+                            :disabled-date="disabledDate"
                         />
                       </el-form-item>
                     </div>
@@ -263,6 +265,7 @@
 <script>
 import request from "@/utils/request";
 import { getCookie } from "@/utils/cookie";
+import {formatDate} from "@/utils/date";
 
 export default {
   name: "Questionnaires",
@@ -536,6 +539,9 @@ export default {
         }
       })
     },
+    disabledDate(time) {
+      return new Date(time).getTime() < Date.now() - 8.64e7
+    }
   }
 }
 </script>

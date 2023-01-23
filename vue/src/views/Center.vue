@@ -118,7 +118,7 @@
                   <el-table-column prop="questionnaire.needMeeting" label="Need Meeting" />
                   <el-table-column prop="questionnaire.meetingTime" label="Suggested Meeting Time">
                     <template #default="scope">
-                      <div v-if="formatDate(scope.row.questionnaire.meetingTime) !== '1970-01-01 01:00:00'">
+                      <div v-if="formatDate(scope.row.questionnaire.meetingTime) !== '1970-01-01 01:00'">
                         {{ formatDate(scope.row.questionnaire.meetingTime) }}
                       </div>
                     </template>
@@ -205,6 +205,8 @@
                       v-model="form.questionnaire.meetingTime"
                       type="datetime"
                       placeholder="Select date and time"
+                      format="YYYY-MM-DD HH:mm"
+                      :disabled-date="disabledDate"
                   />
                 </el-form-item>
               </div>
@@ -212,7 +214,7 @@
           </el-scrollbar>
         </el-form>
       </el-card>
-
+      <!-- Questionnaire Detail Drawer -->
       <el-drawer
           v-model="drawerVisible"
           title="Questionnaire Details"
@@ -254,7 +256,7 @@
                       :label="'Question ' + (parseInt(this.form.questionnaire.questions.length) + 3) +
                       ': What time is good for you to have a meeting?'"
                   >
-                    <div v-if="formatDate(this.form.questionnaire.meetingTime) !== '1970-01-01 01:00:00'">
+                    <div v-if="formatDate(this.form.questionnaire.meetingTime) !== '1970-01-01 01:00'">
                       {{ formatDate(this.form.questionnaire.meetingTime) }}
                     </div>
                   </el-form-item>
@@ -415,8 +417,11 @@ export default {
       this.recordCurrentPage = pageNum
       this.load()
     },
-    formatDate(ts) {
-      return formatDate(new Date(ts), "yyyy-MM-dd hh:mm:ss")
+    disabledDate(time) {
+      return new Date(time).getTime() < Date.now() - 8.64e7
+    },
+    formatDate(time) {
+      return formatDate(new Date(time), "yyyy-MM-dd HH:mm")
     }
   }
 }
