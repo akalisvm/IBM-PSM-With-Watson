@@ -206,6 +206,7 @@
         </div>
       </el-col>
     </el-row>
+    <!-- Create Template/Questionnaire Dialog -->
     <el-dialog v-model="dialogVisible" width="40%" align-center>
       <template #header>
         <span>{{ this.dialogTitle }}</span>
@@ -222,7 +223,7 @@
             <el-input v-model="form.title" />
           </el-form-item>
           <el-form-item prop="description" label="Description">
-            <el-input v-model="form.description" />
+            <el-input v-model="form.description" type="textarea" autosize />
           </el-form-item>
           <el-form-item
               v-for="(question, index) in form.questions"
@@ -265,7 +266,6 @@
 <script>
 import request from "@/utils/request";
 import { getCookie } from "@/utils/cookie";
-import {formatDate} from "@/utils/date";
 
 export default {
   name: "Questionnaires",
@@ -365,7 +365,7 @@ export default {
       setTimeout(() => {
         this.previewForm = JSON.parse(JSON.stringify(row))
         this.previewLoading = false
-      }, 200)
+      }, 100)
     },
     editTemplate(row) {
       this.dialogVisible = true
@@ -385,7 +385,7 @@ export default {
           this.$message({
             type: "success",
             message: "You have deleted a template",
-            customClass: 'font'
+            customClass: "font"
           })
           this.loadTemplate()
         }
@@ -413,7 +413,7 @@ export default {
       setTimeout(() => {
         this.previewForm = JSON.parse(JSON.stringify(row))
         this.previewLoading = false
-      }, 200)
+      }, 100)
     },
     editQuestionnaire(row) {
       this.dialogVisible = true
@@ -439,7 +439,7 @@ export default {
           this.$message({
             type: "success",
             message: "You have deleted a questionnaire",
-            customClass: 'font'
+            customClass: "font"
           })
           this.loadQuestionnaire()
         }
@@ -462,7 +462,7 @@ export default {
               this.$message({
                 type: "error",
                 message: "The template should contain at least one question",
-                customClass: 'font'
+                customClass: "font"
               })
               return
             }
@@ -471,7 +471,7 @@ export default {
                 this.$message({
                   type: "success",
                   message: "You have created a new template",
-                  customClass: 'font'
+                  customClass: "font"
                 })
                 this.dialogVisible = false
                 this.loadTemplate()
@@ -482,7 +482,7 @@ export default {
               this.$message({
                 type: "error",
                 message: "The questionnaire should contain at least one question",
-                customClass: 'font'
+                customClass: "font"
               })
               return
             }
@@ -491,7 +491,7 @@ export default {
                 this.$message({
                   type: "success",
                   message: "You have created a new questionnaire",
-                  customClass: 'font'
+                  customClass: "font"
                 })
                 this.dialogVisible = false
                 this.loadQuestionnaire()
@@ -502,7 +502,7 @@ export default {
               this.$message({
                 type: "error",
                 message: "The template should contain at least one question",
-                customClass: 'font'
+                customClass: "font"
               })
               return
             }
@@ -511,7 +511,7 @@ export default {
                 this.$message({
                   type: "success",
                   message: "You have edited a template",
-                  customClass: 'font'
+                  customClass: "font"
                 })
                 this.dialogVisible = false
                 this.loadTemplate()
@@ -522,7 +522,7 @@ export default {
               this.$message({
                 type: "error",
                 message: "The questionnaire should contain at least one question",
-                customClass: 'font'
+                customClass: "font"
               })
               return
             }
@@ -531,7 +531,7 @@ export default {
                 this.$message({
                   type: "success",
                   message: "You have edited a questionnaire",
-                  customClass: 'font'
+                  customClass: "font"
                 })
                 this.dialogVisible = false
                 this.loadQuestionnaire()
@@ -542,7 +542,7 @@ export default {
           this.$message({
             type: "error",
             message: "Please enter all required information",
-            customClass: 'font'
+            customClass: "font"
           })
         }
       })

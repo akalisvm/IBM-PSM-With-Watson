@@ -332,25 +332,13 @@ export default {
         ],
         questionnaire: {
           result: [
-            {
-              required: true,
-              message: 'Please select a result',
-              trigger: 'change',
-            },
+              { required: true, message: 'Please select a result', trigger: 'change' },
           ],
           needMeeting: [
-            {
-              required: true,
-              message: 'Please tell us whether you need a meeting',
-              trigger: 'change',
-            },
+            { required: true, message: 'Please tell us whether you need a meeting', trigger: 'change' },
           ],
           meetingTime: [
-            {
-              required: true,
-              message: 'Please select date and time',
-              trigger: 'change',
-            },
+            { required: true, message: 'Please select date and time', trigger: 'change' },
           ],
         }
       },
@@ -431,7 +419,7 @@ export default {
         this.$message({
           type: "error",
           message: "You haven't been assigned a questionnaire",
-          customClass: 'font'
+          customClass: "font"
         })
       }
     },
@@ -463,7 +451,7 @@ export default {
               this.$message({
                 type: "success",
                 message: "You have created a new healthcare record",
-                customClass: 'font'
+                customClass: "font"
               })
               this.clickOn = ""
               this.loadQuestionnaire()
@@ -474,7 +462,7 @@ export default {
           this.$message({
             type: "error",
             message: "Please enter all required information",
-            customClass: 'font'
+            customClass: "font"
           })
         }
       })

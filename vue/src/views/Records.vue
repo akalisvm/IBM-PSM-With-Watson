@@ -104,7 +104,7 @@
           <el-table-column fixed="right" label="Operation">
             <template #default="scope">
               <div v-if="scope.row.questionnaire.result === 'Worse'">
-                <el-button  type="primary" plain size="small" @click="schedule(scope.row.id)">
+                <el-button  type="primary" plain size="small" @click="schedule(scope.row)">
                   Schedule
                 </el-button>
               </div>
@@ -122,7 +122,51 @@
             :total="total" />
       </div>
     </el-card>
-
+    <!-- Schedule Outreach Event Dialog -->
+    <el-dialog v-model="dialogVisible" width="40%" align-center>
+      <template #header>
+        Schedule Outreach Event
+      </template>
+      <el-form ref="scheduleForm" :model="scheduleForm" :rules="rules" label-width="120px">
+        <el-form-item label="Organiser">
+          {{ this.user.given_name }} {{ this.user.given_name }}
+        </el-form-item>
+        <el-form-item label="Participant">
+          {{ scheduleForm.participantName }}
+        </el-form-item>
+        <el-form-item prop="title" label="Title">
+          <el-input v-model="scheduleForm.title" />
+        </el-form-item>
+        <el-form-item prop="description" label="Description">
+          <el-input v-model="scheduleForm.description" type="textarea" autosize />
+        </el-form-item>
+        <el-form-item prop="platform" label="Platform">
+          <el-select v-model="scheduleForm.platform">
+            <el-option label="Microsoft Teams" value="teams" />
+            <el-option label="Webex" value="webex" />
+            <el-option label="WhatsApp" value="whatsapp" />
+            <el-option label="Phone Call" value="call" />
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="meetingTime" label="Meeting Time">
+          <el-date-picker
+              v-model="scheduleForm.meetingTime"
+              type="datetime"
+              placeholder="Select date and time"
+              format="YYYY-MM-DD HH:mm"
+              :disabled-date="disabledDate"
+          />
+        </el-form-item>
+        <el-form-item prop="repeat" label="Repeat">
+          <el-select v-model="scheduleForm.repeat">
+            <el-option label="Does not repeat" value="no" />
+            <el-option label="Weekly" value="weekly" />
+            <el-option label="Monthly" value="monthly" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <!-- Questionnaire Details Drawer -->
     <el-drawer
         v-model="drawerVisible"
         title="Questionnaire Details"
@@ -189,6 +233,21 @@ export default {
       user: {},
       tableLayout: "auto",
       form: {},
+      scheduleForm: {},
+      rules: {
+        title: [
+          { required: true, message: 'Please enter the title', trigger: 'blur' }
+        ],
+        platform: [
+          { required: true, message: 'Please select a platform', trigger: 'change' },
+        ],
+        meetingTime: [
+          { required: true, message: 'Please select date and time', trigger: 'change' },
+        ],
+        repeat: [
+          { required: true, message: 'Please select a repeat plan', trigger: 'change' },
+        ]
+      },
       data: [],
       recordIdList: [],
       remoteList: [],
@@ -202,6 +261,7 @@ export default {
       total: 0,
       loading: false,
       remoteLoading: false,
+      dialogVisible: false,
       drawerVisible: false,
     }
   },
@@ -272,16 +332,33 @@ export default {
       this.loadRecord()
     },
     deleteBatch() {
+      if(this.recordIdList.length === 0) {
+        this.$message({
+          type: "error",
+          message: "Please select at least one record",
+          customClass: "font"
+        })
+        return
+      }
       request.post("/records/delete/batch", this.recordIdList).then(res => {
         if(res.code === "10000") {
           this.$message({
             type: "success",
             message: "You have deleted selected records",
-            customClass: 'font'
+            customClass: "font"
           })
           this.load()
         }
       })
+    },
+    schedule(row) {
+      this.dialogVisible = true
+      this.scheduleForm = {
+        organiserId: this.user.id,
+        participantId: row.creatorId,
+        participantName: row.creatorName,
+        meetingTime: row.questionnaire.meetingTime
+      }
     },
     currentChange(pageNum) {
       this.currentPage = pageNum

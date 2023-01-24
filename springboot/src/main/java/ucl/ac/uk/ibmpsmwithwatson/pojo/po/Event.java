@@ -8,14 +8,13 @@ import java.util.Date;
 public class Event {
     private String id;
     private Date createTime;
-    private String creatorId;
+    private String organiserId;
     private String participantId;
     private String title;
     private String description;
     private String platform;
     private Date meetingTime;
-    private String recurring;
-    private String frequency;
+    private String repeat;
     private String result;
     private String feedback;
 }

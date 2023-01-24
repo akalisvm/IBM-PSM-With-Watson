@@ -17,8 +17,7 @@ public class EventVO {
     private Date lastMeetingTime;
     private Date lastSuccessfulMeetingTime;
     private Date nextMeetingTime;
-    private String recurring;
-    private String frequency;
+    private String repeat;
     private String result;
     private String feedback;
 }

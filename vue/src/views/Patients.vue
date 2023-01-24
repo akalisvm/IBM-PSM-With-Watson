@@ -125,7 +125,7 @@ export default {
         this.$message({
           type: "error",
           message: "Please select at least one patient",
-          customClass: 'font'
+          customClass: "font"
         })
         return
       }
@@ -136,12 +136,17 @@ export default {
         this.$message({
           type: "error",
           message: "Please select a questionnaire",
-          customClass: 'font'
+          customClass: "font"
         })
         return
       }
       request.post("/questionnaires/assign/" + this.questionnaireId, this.patientIdList).then(res => {
         if(res.code === '10000') {
+          this.$message({
+            type: "success",
+            message: "You have assigned a questionnaire to selected patients",
+            customClass: "font"
+          })
           this.load()
         }
         this.dialogVisible = false

@@ -81,7 +81,7 @@ export default {
               this.$message({
                 type: "error",
                 message: res.msg,
-                customClass: 'font'
+                customClass: "font"
               })
             }
           })
@@ -89,7 +89,7 @@ export default {
           this.$message({
             type: "error",
             message: "Please enter required information",
-            customClass: 'font'
+            customClass: "font"
           })
         }
       })
