@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import ucl.ac.uk.ibmpsmwithwatson.dao.UserMapper;
 import ucl.ac.uk.ibmpsmwithwatson.dao.QuestionnaireMapper;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.dto.QuestionnaireQueryDTO;
-import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.Page;
+import ucl.ac.uk.ibmpsmwithwatson.util.Page;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Questionnaire;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.po.User;
 import ucl.ac.uk.ibmpsmwithwatson.util.PaginationUtil;

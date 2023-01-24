@@ -18,7 +18,7 @@
               <el-input prefix-icon="Lock" v-model="form.password" type="password" autocomplete="off" show-password placeholder="Enter your password" />
             </el-form-item>
             <div style="text-align: center">
-              <el-button v-loading.fullscreen.lock="loading" type="primary" @click="login" style="width: 100%"><b>Sign in with existing users</b></el-button>
+              <el-button type="primary" @click="login" style="width: 100%"><b>Sign in with existing users</b></el-button>
             </div>
           </el-form>
           <el-divider>OR</el-divider>
@@ -68,7 +68,6 @@ export default {
   },
   methods: {
     login() {
-      this.loading = true
       this.$refs.form.validate((valid) => {
         if(valid) {
           request.post("/login/app", this.form).then(res => {
@@ -85,7 +84,6 @@ export default {
                 customClass: 'font'
               })
             }
-            this.loading = false
           })
         } else {
           this.$message({

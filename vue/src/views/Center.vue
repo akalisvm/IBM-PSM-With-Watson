@@ -389,7 +389,7 @@ export default {
       }
     },
     loadDoctor() {
-      request.get("/user/" + this.user.doctor).then(res => {
+      request.get("/users/" + this.user.doctor).then(res => {
         this.doctor = res.data
       })
     },
@@ -410,7 +410,7 @@ export default {
         pageNum: this.recordCurrentPage,
         pageSize: this.recordPageSize
       }).then(res => {
-        this.recordData = res.data.records
+        this.recordData = res.data.rows
         this.recordTotal = res.data.total
         this.loading = false
       })

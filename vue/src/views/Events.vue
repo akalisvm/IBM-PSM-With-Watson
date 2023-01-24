@@ -118,6 +118,9 @@ export default {
       patientFilter: "",
       platformFilter: "",
       resultFilter: "",
+      currentPage: 1,
+      pageSize: 10,
+      total: 0,
       options: [],
       loading: false,
     }
@@ -143,6 +146,10 @@ export default {
     },
     deleteBatch() {
 
+    },
+    currentChange(pageNum) {
+      this.currentPage = pageNum
+      this.load()
     },
     disabledDate(time) {
       return new Date(time).getTime() < Date.now() - 8.64e7

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ucl.ac.uk.ibmpsmwithwatson.dao.TemplateMapper;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.dto.TemplateQueryDTO;
-import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.Page;
+import ucl.ac.uk.ibmpsmwithwatson.util.Page;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Template;
 import ucl.ac.uk.ibmpsmwithwatson.util.PaginationUtil;
 import ucl.ac.uk.ibmpsmwithwatson.util.SearchingUtil;

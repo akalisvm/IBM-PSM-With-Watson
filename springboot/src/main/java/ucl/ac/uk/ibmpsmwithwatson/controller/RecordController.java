@@ -3,10 +3,10 @@ package ucl.ac.uk.ibmpsmwithwatson.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.dto.RecordQueryDTO;
-import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.Page;
+import ucl.ac.uk.ibmpsmwithwatson.util.Page;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Record;
 import ucl.ac.uk.ibmpsmwithwatson.service.RecordService;
-import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.Result;
+import ucl.ac.uk.ibmpsmwithwatson.util.Result;
 
 import java.util.List;
 

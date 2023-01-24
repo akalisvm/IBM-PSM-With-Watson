@@ -228,13 +228,13 @@ export default {
         pageNum: this.currentPage,
         pageSize: this.pageSize
       }).then(res => {
-        this.data = res.data.records
+        this.data = res.data.rows
         this.total = res.data.total
         this.loading = false
       })
     },
     loadRemote() {
-      request.post("/patients", {
+      request.post("/users/get", {
         doctorId: this.user.id,
         searchInput: this.patientFilter,
         patientFilter: "",
@@ -243,7 +243,7 @@ export default {
         pageNum: 1,
         pageSize: 0
       }).then(res => {
-        this.remoteList = res.data.records
+        this.remoteList = res.data.rows
       })
     },
     remote(query) {

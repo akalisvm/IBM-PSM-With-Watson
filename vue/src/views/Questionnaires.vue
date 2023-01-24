@@ -133,7 +133,7 @@
         </el-card>
       </el-col>
       <el-col :span="14">
-        <div>
+        <div v-loading="previewLoading">
           <el-card style="height: 89vh">
             <template #header>
               <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -144,7 +144,7 @@
             <el-empty v-if="this.clickOn === ''" description="No selected template or questionnaire" />
             <div v-if="this.clickOn !== ''">
               <el-alert v-if="this.clickOn === 'template'"
-                        title="Templates cannot be used directly to be assigned to patients."
+                        title="Templates could not be assigned to patients."
                         type="info"
                         show-icon
                         :closable="false"
@@ -295,6 +295,7 @@ export default {
       questionnaireTotal: 0,
       questionnaireLoading: false,
       patientData: [],
+      previewLoading: false,
       dialogVisible: false,
       dialogTitle: "",
       dialogMode: 0,
@@ -324,7 +325,7 @@ export default {
         pageNum: this.templateCurrentPage,
         pageSize: this.templatePageSize
       }).then(res => {
-        this.templateData = res.data.records
+        this.templateData = res.data.rows
         this.templateTotal = res.data.total
         this.templateLoading = false
       })
@@ -337,7 +338,7 @@ export default {
         pageNum: this.questionnaireCurrentPage,
         pageSize: this.questionnairePageSize
       }).then(res => {
-        this.questionnaireData = res.data.records
+        this.questionnaireData = res.data.rows
         this.questionnaireTotal = res.data.total
         this.questionnaireLoading = false
       })
@@ -360,7 +361,11 @@ export default {
     },
     previewTemplate(row) {
       this.clickOn = "template"
-      this.previewForm = JSON.parse(JSON.stringify(row))
+      this.previewLoading = true
+      setTimeout(() => {
+        this.previewForm = JSON.parse(JSON.stringify(row))
+        this.previewLoading = false
+      }, 200)
     },
     editTemplate(row) {
       this.dialogVisible = true
@@ -404,8 +409,11 @@ export default {
     },
     previewQuestionnaire(row) {
       this.clickOn = "questionnaire"
-      this.previewForm = JSON.parse(JSON.stringify(row))
-      console.log(this.previewForm)
+      this.previewLoading = true
+      setTimeout(() => {
+        this.previewForm = JSON.parse(JSON.stringify(row))
+        this.previewLoading = false
+      }, 200)
     },
     editQuestionnaire(row) {
       this.dialogVisible = true

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ucl.ac.uk.ibmpsmwithwatson.dao.RecordMapper;
 import ucl.ac.uk.ibmpsmwithwatson.dao.UserMapper;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.dto.RecordQueryDTO;
-import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.Page;
+import ucl.ac.uk.ibmpsmwithwatson.util.Page;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Record;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.po.User;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.RecordVO;
