@@ -24,7 +24,7 @@ public class TemplateService {
     public Page getTemplates(TemplateQueryDTO dto) {
         JSONArray jsonArray = templateMapper.getTemplates(dto.getDoctorId());
         List<Template> list = JSONUtil.toList(jsonArray, Template.class);
-        SearchingUtil.searchingTemplateByIdOrTitle(list, dto.getSearchInput());
+        SearchingUtil.searchingTemplate(list, dto.getSearchInput());
         return PaginationUtil.pagination(list, dto.getPageNum(), dto.getPageSize());
     }
 

@@ -26,7 +26,7 @@ public class UserService {
     public Page getPatientsByDoctorId(UserQueryDTO dto) {
         JSONArray jsonArray = userMapper.getPatientsByDoctorId(dto.getDoctorId());
         List<User> list = JSONUtil.toList(jsonArray, User.class);
-        SearchingUtil.searchingUserByName(list, dto.getSearchInput());
+        SearchingUtil.searchingUser(list, dto.getSearchInput());
         for(User patient : list) {
             if(!patient.getQuestionnaire().equals("")) {
                 String title = String.valueOf(questionnaireMapper.getTitle(patient.getQuestionnaire())

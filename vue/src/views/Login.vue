@@ -88,7 +88,7 @@ export default {
         } else {
           this.$message({
             type: "error",
-            message: "Please enter required information",
+            message: "Please enter your email and password.",
             customClass: "font"
           })
         }

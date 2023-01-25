@@ -257,7 +257,7 @@
       <template #footer>
         <el-button @click="dialogVisible = false">Cancel</el-button>
         <el-button v-if="this.dialogMode !== 5" @click="addQuestion">Add a new question</el-button>
-        <el-button type="primary" @click="save">Save</el-button>
+        <el-button type="primary" @click="submit">Submit</el-button>
       </template>
     </el-dialog>
   </div>
@@ -384,7 +384,7 @@ export default {
         if(res.code === "10000") {
           this.$message({
             type: "success",
-            message: "You have deleted a template",
+            message: "You have deleted a template.",
             customClass: "font"
           })
           this.loadTemplate()
@@ -438,7 +438,7 @@ export default {
         if(res.code === "10000") {
           this.$message({
             type: "success",
-            message: "You have deleted a questionnaire",
+            message: "You have deleted a questionnaire.",
             customClass: "font"
           })
           this.loadQuestionnaire()
@@ -454,14 +454,14 @@ export default {
         this.form.questions.splice(index, 1)
       }
     },
-    save() {
+    submit() {
       this.$refs.form.validate((valid) => {
         if(valid) {
           if(this.dialogMode === 1) {
             if(this.form.questions.length === 0) {
               this.$message({
                 type: "error",
-                message: "The template should contain at least one question",
+                message: "The template should contain at least one question.",
                 customClass: "font"
               })
               return
@@ -470,7 +470,7 @@ export default {
               if(res.code === '10000') {
                 this.$message({
                   type: "success",
-                  message: "You have created a new template",
+                  message: "You have created a new template.",
                   customClass: "font"
                 })
                 this.dialogVisible = false
@@ -481,7 +481,7 @@ export default {
             if(this.form.questions.length === 0) {
               this.$message({
                 type: "error",
-                message: "The questionnaire should contain at least one question",
+                message: "The questionnaire should contain at least one question.",
                 customClass: "font"
               })
               return
@@ -490,7 +490,7 @@ export default {
               if(res.code === '10000') {
                 this.$message({
                   type: "success",
-                  message: "You have created a new questionnaire",
+                  message: "You have created a new questionnaire.",
                   customClass: "font"
                 })
                 this.dialogVisible = false
@@ -501,7 +501,7 @@ export default {
             if(this.form.questions.length === 0) {
               this.$message({
                 type: "error",
-                message: "The template should contain at least one question",
+                message: "The template should contain at least one question.",
                 customClass: "font"
               })
               return
@@ -510,7 +510,7 @@ export default {
               if(res.code === '10000') {
                 this.$message({
                   type: "success",
-                  message: "You have edited a template",
+                  message: "You have edited a template.",
                   customClass: "font"
                 })
                 this.dialogVisible = false
@@ -521,7 +521,7 @@ export default {
             if(this.form.questions.length === 0) {
               this.$message({
                 type: "error",
-                message: "The questionnaire should contain at least one question",
+                message: "The questionnaire should contain at least one question.",
                 customClass: "font"
               })
               return
@@ -530,7 +530,7 @@ export default {
               if(res.code === '10000') {
                 this.$message({
                   type: "success",
-                  message: "You have edited a questionnaire",
+                  message: "You have edited a questionnaire.",
                   customClass: "font"
                 })
                 this.dialogVisible = false
@@ -541,7 +541,7 @@ export default {
         } else {
           this.$message({
             type: "error",
-            message: "Please enter all required information",
+            message: "Please enter all required information and try again.",
             customClass: "font"
           })
         }

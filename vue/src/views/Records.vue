@@ -141,7 +141,7 @@
           <el-input v-model="scheduleForm.description" type="textarea" autosize />
         </el-form-item>
         <el-form-item prop="platform" label="Platform">
-          <el-select v-model="scheduleForm.platform">
+          <el-select v-model="scheduleForm.platform" clearable>
             <el-option label="Microsoft Teams" value="teams" />
             <el-option label="Webex" value="webex" />
             <el-option label="WhatsApp" value="whatsapp" />
@@ -158,13 +158,17 @@
           />
         </el-form-item>
         <el-form-item prop="repeat" label="Repeat">
-          <el-select v-model="scheduleForm.repeat">
+          <el-select v-model="scheduleForm.repeat" clearable>
             <el-option label="Does not repeat" value="no" />
             <el-option label="Weekly" value="weekly" />
             <el-option label="Monthly" value="monthly" />
           </el-select>
         </el-form-item>
       </el-form>
+      <template #footer>
+        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="submit">Submit</el-button>
+      </template>
     </el-dialog>
     <!-- Questionnaire Details Drawer -->
     <el-drawer
@@ -335,7 +339,7 @@ export default {
       if(this.recordIdList.length === 0) {
         this.$message({
           type: "error",
-          message: "Please select at least one record",
+          message: "Please select at least one record.",
           customClass: "font"
         })
         return
@@ -344,7 +348,7 @@ export default {
         if(res.code === "10000") {
           this.$message({
             type: "success",
-            message: "You have deleted selected records",
+            message: "You have deleted selected records.",
             customClass: "font"
           })
           this.load()
@@ -355,10 +359,37 @@ export default {
       this.dialogVisible = true
       this.scheduleForm = {
         organiserId: this.user.id,
+        organiserName: this.user.given_name + " " + this.user.family_name,
         participantId: row.creatorId,
         participantName: row.creatorName,
-        meetingTime: row.questionnaire.meetingTime
+        title: "",
+        description: "",
+        platform: "teams",
+        meetingTime: row.questionnaire.meetingTime,
+        repeat: "no"
       }
+    },
+    submit() {
+      this.$refs.scheduleForm.validate((valid) => {
+        if(valid) {
+          request.post("/events", this.scheduleForm).then(res => {
+            if(res.code === '10000') {
+              this.$message({
+                type: "success",
+                message: "You have scheduled a new event.",
+                customClass: "font"
+              })
+              this.clickOn = ""
+            }
+          })
+        } else {
+          this.$message({
+            type: "error",
+            message: "Please enter all required information and try again.",
+            customClass: "font"
+          })
+        }
+      })
     },
     currentChange(pageNum) {
       this.currentPage = pageNum

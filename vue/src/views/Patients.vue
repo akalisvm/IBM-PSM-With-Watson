@@ -34,7 +34,7 @@
           </el-select>
           <template #footer>
             <el-button @click="dialogVisible = false">Cancel</el-button>
-            <el-button type="primary" @click="save">Save</el-button>
+            <el-button type="primary" @click="submit">Submit</el-button>
           </template>
         </el-dialog>
       </div>
@@ -131,7 +131,7 @@ export default {
       }
       this.dialogVisible = true
     },
-    save() {
+    submit() {
       if(this.questionnaireId === '') {
         this.$message({
           type: "error",

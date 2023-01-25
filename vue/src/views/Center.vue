@@ -418,7 +418,7 @@ export default {
       } else {
         this.$message({
           type: "error",
-          message: "You haven't been assigned a questionnaire",
+          message: "You haven't been assigned a questionnaire.",
           customClass: "font"
         })
       }
@@ -450,7 +450,7 @@ export default {
             if(res.code === '10000') {
               this.$message({
                 type: "success",
-                message: "You have created a new healthcare record",
+                message: "You have created a new healthcare record.",
                 customClass: "font"
               })
               this.clickOn = ""
@@ -461,7 +461,7 @@ export default {
         } else {
           this.$message({
             type: "error",
-            message: "Please enter all required information",
+            message: "Please enter all required information and try again.",
             customClass: "font"
           })
         }

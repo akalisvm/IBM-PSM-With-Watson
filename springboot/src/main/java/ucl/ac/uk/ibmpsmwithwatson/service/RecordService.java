@@ -29,17 +29,17 @@ public class RecordService {
         if(dto.getUserRole().equals("patient")) {
             recordVOList = JSONUtil.toList(recordMapper.getRecords(dto.getUserId()), RecordVO.class);
         } else if(dto.getUserRole().equals("doctor")) {
-            List<User> userList = JSONUtil.toList(userMapper.getPatientsByDoctorId(dto.getUserId()), User.class);
-            for(User user : userList) {
-                List<RecordVO> tempList = JSONUtil.toList(recordMapper.getRecords(user.getId()), RecordVO.class);
+            List<User> patientList = JSONUtil.toList(userMapper.getPatientsByDoctorId(dto.getUserId()), User.class);
+            for(User patient : patientList) {
+                List<RecordVO> tempList = JSONUtil.toList(recordMapper.getRecords(patient.getId()), RecordVO.class);
                 for(RecordVO recordVO : tempList) {
-                    recordVO.setCreatorName(user.getGiven_name() + " " + user.getFamily_name());
+                    recordVO.setCreatorName(patient.getGiven_name() + " " + patient.getFamily_name());
                 }
                 recordVOList.addAll(tempList);
             }
             recordVOList.sort((o1, o2) -> o2.getCreateTime().compareTo(o1.getCreateTime()));
         }
-        SearchingUtil.searchingRecordByIdAndFilters(recordVOList, dto);
+        SearchingUtil.searchingRecord(recordVOList, dto);
         return PaginationUtil.pagination(recordVOList, dto.getPageNum(), dto.getPageSize());
     }
 

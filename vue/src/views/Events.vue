@@ -69,12 +69,22 @@
             :data="data"
             style="width: 100%"
             :table-layout="tableLayout"
+            @selection-change="handleSelectionChange"
         >
+          <el-table-column type="selection" />
           <el-table-column prop="id" label="ID" />
-          <el-table-column prop="createTime" label="Create Time" />
+          <el-table-column prop="createTime" label="Create Time">
+            <template #default="scope">
+              {{ formatDate(scope.row.createTime) }}
+            </template>
+          </el-table-column>
           <el-table-column prop="title" label="Title" />
           <el-table-column prop="platform" label="Platform" />
-          <el-table-column prop="meetingTime" label="Scheduled Meeting Time" sortable />
+          <el-table-column prop="meetingTime" label="Scheduled Meeting Time" sortable>
+            <template #default="scope">
+              {{ formatDate(scope.row.meetingTime) }}
+            </template>
+          </el-table-column>
           <el-table-column fixed="right" label="Operation">
             <template #default="scope">
               <div>
@@ -121,6 +131,7 @@ export default {
       currentPage: 1,
       pageSize: 10,
       total: 0,
+      eventIdList: [],
       options: [],
       loading: false,
     }
@@ -133,10 +144,24 @@ export default {
   },
   methods: {
     load() {
-
+      this.loadEvent()
     },
     loadEvent() {
-
+      this.loading = true
+      request.post("/events/get", {
+        userId: this.user.id,
+        userRole: this.user.role,
+        searchInput: this.searchInput,
+        patientFilter: this.patientFilter,
+        platformFilter: this.platformFilter,
+        resultFilter: this.resultFilter,
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+      }).then(res => {
+        this.data = res.data.rows
+        this.total = res.data.total
+        this.loading = false
+      })
     },
     remote() {
 
@@ -145,11 +170,31 @@ export default {
 
     },
     deleteBatch() {
-
+      if(this.eventIdList.length === 0) {
+        this.$message({
+          type: "error",
+          message: "Please select at least one event.",
+          customClass: "font"
+        })
+        return
+      }
+      request.post("/events/delete/batch", this.eventIdList).then(res => {
+        if(res.code === "10000") {
+          this.$message({
+            type: "success",
+            message: "You have deleted selected records.",
+            customClass: "font"
+          })
+          this.load()
+        }
+      })
     },
     currentChange(pageNum) {
       this.currentPage = pageNum
       this.load()
+    },
+    handleSelectionChange(val) {
+      this.eventIdList = val.map(v => v.id)
     },
     disabledDate(time) {
       return new Date(time).getTime() < Date.now() - 8.64e7

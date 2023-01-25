@@ -29,7 +29,7 @@ public class QuestionnaireService {
     public Page getQuestionnaires(QuestionnaireQueryDTO dto) {
         JSONArray jsonArray = questionnaireMapper.getQuestionnaires(dto.getDoctorId());
         List<Questionnaire> list = JSONUtil.toList(jsonArray, Questionnaire.class);
-        SearchingUtil.searchingQuestionnaireByIdOrTitle(list, dto.getSearchInput());
+        SearchingUtil.searchingQuestionnaire(list, dto.getSearchInput());
         return PaginationUtil.pagination(list, dto.getPageNum(), dto.getPageSize());
     }
 

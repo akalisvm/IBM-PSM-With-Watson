@@ -9,7 +9,9 @@ public class EventVO {
     private String id;
     private Date createTime;
     private String creatorId;
+    private String creatorName;
     private String participantId;
+    private String participantName;
     private String title;
     private String description;
     private String platform;

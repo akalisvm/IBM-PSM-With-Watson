@@ -9,7 +9,9 @@ public class Event {
     private String id;
     private Date createTime;
     private String organiserId;
+    private String organiserName;
     private String participantId;
+    private String participantName;
     private String title;
     private String description;
     private String platform;
