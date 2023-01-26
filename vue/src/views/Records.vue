@@ -5,8 +5,8 @@
       <div>
         <el-input
             v-model="searchInput"
-            placeholder="Type id to search record"
-            style="width: 11%"
+            placeholder="Type id or questionnaire title to search record"
+            style="width: 20%"
             clearable
             @keyup.enter.native="loadRecord"
         />
@@ -330,6 +330,7 @@ export default {
       this.patientFilter = ""
       this.resultFilter = ""
       this.needMeetingFilter = ""
+      this.currentPage = 1
       this.loadRecord()
     },
     deleteBatch() {

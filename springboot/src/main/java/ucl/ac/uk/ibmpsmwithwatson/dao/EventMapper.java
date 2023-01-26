@@ -1,6 +1,7 @@
 package ucl.ac.uk.ibmpsmwithwatson.dao;
 
 import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import ucl.ac.uk.ibmpsmwithwatson.config.BangDBConfig;
@@ -33,6 +34,40 @@ public class EventMapper {
     public JSONArray getEventsByDoctorId(String doctorId) {
         return (JSONArray) graphMapper.runCypherQuery(
                 "S=>(Event:* {organiserId=\"" + doctorId + "\"}); RETURN * SORT_DESC createTime").get("rows");
+    }
+
+    public JSONArray getLastMeetingTime(String doctorId, String patientId, Long meetingTime) {
+        return (JSONArray) graphMapper.runCypherQuery(
+                "S=>(@e Event:*); " +
+                        "RETURN " +
+                        "e.id AS id " +
+                        "e.organiserId AS organiserId " +
+                        "e.participantId AS participantId " +
+                        "e.meetingTime AS meetingTime " +
+                        "WHERE " +
+                        "organiserId=\"" + doctorId + "\" " +
+                        "participantId=\"" + patientId + "\" " +
+                        "meetingTime<" + meetingTime + " " +
+                        "SORT_DESC meetingTime"
+        ).get("rows");
+    }
+
+    public JSONArray getLastSuccessfulMeetingTime(String doctorId, String patientId, Long meetingTime) {
+        return (JSONArray) graphMapper.runCypherQuery(
+                "S=>(@e Event:*); " +
+                        "RETURN " +
+                        "e.id AS id " +
+                        "e.organiserId AS organiserId " +
+                        "e.participantId AS participantId " +
+                        "e.meetingTime AS meetingTime " +
+                        "e.result AS result " +
+                        "WHERE " +
+                        "organiserId=\"" + doctorId + "\" " +
+                        "participantId=\"" + patientId + "\" " +
+                        "meetingTime<" + meetingTime + " " +
+                        "result=\"Success\" " +
+                        "SORT_DESC meetingTime"
+        ).get("rows");
     }
 
     public void insert(String doctorId, String patientId, String eventId, String eventProp) {

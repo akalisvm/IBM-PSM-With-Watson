@@ -15,13 +15,13 @@
             <div>
               <el-input
                   v-model="searchRecordInput"
-                  placeholder="Type id to search record"
-                  style="width: 15%"
+                  placeholder="Type id and questionnaire title to search record"
+                  style="width: 20%"
                   clearable
                   @keyup.enter.native="loadRecord">
               </el-input>
               <el-select
-                  v-model="resultFilter"
+                  v-model="resultRecordFilter"
                   placeholder="Select result"
                   clearable
                   style="margin-left: 10px; width: 10%"
@@ -41,7 +41,7 @@
               <el-button type="info" plain @click="loadRecord" style="margin-left: 10px;">
                 <el-icon><Search /></el-icon>
               </el-button>
-              <el-button style="margin-left: 10px" @click="this.searchRecordInput = ''; this.load()">
+              <el-button style="margin-left: 10px" @click="resetRecord">
                 Reset
               </el-button>
               <el-button type="primary" style="margin-left: 10px" @click="fill">
@@ -63,17 +63,14 @@
                 </el-table-column>
                 <el-table-column prop="questionnaire.title" label="Questionnaire Title" show-overflow-tooltip>
                   <template #default="scope">
-                    <el-button link @click="detail(scope.row)">
+                    <el-button link @click="detailQuestionnaire(scope.row)">
                       {{ scope.row.questionnaire.title }}
                     </el-button>
                   </template>
                 </el-table-column>
                 <el-table-column prop="questionnaire.result" label="Result">
                   <template #default="scope">
-                    <el-tag
-                        :type="scope.row.questionnaire.result === 'Worse' ? 'danger' : 'success'"
-                        disable-transitions
-                    >
+                    <el-tag :type="scope.row.questionnaire.result === 'Worse' ? 'danger' : 'success'">
                       {{ scope.row.questionnaire.result }}
                     </el-tag>
                   </template>
@@ -103,11 +100,38 @@
             <div>
               <el-input
                   v-model="searchEventInput"
-                  placeholder="Type id to search event"
-                  style="width: 15%"
+                  placeholder="Type id or title to search event"
+                  style="width: 20%"
                   clearable
-                  @keyup.enter.native="loadEvent">
-              </el-input>
+                  @keyup.enter.native="loadEvent"
+              />
+              <el-select
+                  v-model="platformFilter"
+                  placeholder="Select platform"
+                  clearable
+                  style="margin-left: 10px; width: 10%"
+              >
+                <el-option label="Microsoft Teams" value="Microsoft Teams" />
+                <el-option label="Webex" value="Webex" />
+                <el-option label="WhatsApp" value="WhatsApp" />
+                <el-option label="Phone Call" value="Phone Call" />
+              </el-select>
+              <el-select
+                  v-model="resultEventFilter"
+                  placeholder="Select result"
+                  clearable
+                  style="margin-left: 10px; width: 10%"
+              >
+                <el-option label="Pending" value="Pending" />
+                <el-option label="Success" value="Success" />
+                <el-option label="Fail" value="Fail" />
+              </el-select>
+              <el-button type="info" plain @click="loadEvent" style="margin-left: 10px;">
+                <el-icon><Search /></el-icon>
+              </el-button>
+              <el-button style="margin-left: 10px" @click="resetEvent">
+                Reset
+              </el-button>
             </div>
             <!-- Outreach Events Table Area -->
             <div v-loading="loading" style="margin-top: 20px; min-height: 46vh">
@@ -117,15 +141,30 @@
                   :table-layout="tableLayout"
               >
                 <el-table-column prop="id" label="ID" />
-                <el-table-column prop="createTime" label="Create Time" />
-                <el-table-column prop="title" label="Title" />
-                <el-table-column prop="platform" label="Platform" />
-                <el-table-column prop="meetingTime" label="Scheduled Meeting Time" sortable />
-                <el-table-column fixed="right" label="Operation">
+                <el-table-column prop="createTime" label="Create Time">
                   <template #default="scope">
-                    <el-button v-if="scope.row.feedback !== ''" type="primary" plain size="small" @click="review(scope.row.id)">
-                      Review Feedback
+                    {{ formatDate(scope.row.createTime) }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="participantName" label="Participant Name" />
+                <el-table-column prop="title" label="Title">
+                  <template #default="scope">
+                    <el-button link @click="detailEvent(scope.row)">
+                      {{ scope.row.title }}
                     </el-button>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="platform" label="Platform" />
+                <el-table-column prop="meetingTime" label="Scheduled Meeting Time" sortable>
+                  <template #default="scope">
+                    {{ formatDate(scope.row.meetingTime) }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="result" label="Result">
+                  <template #default="scope">
+                    <el-tag v-if="scope.row.result === 'Pending'" type="info" light>Pending</el-tag>
+                    <el-tag v-if="scope.row.result === 'Success'" type="success" light>Success</el-tag>
+                    <el-tag v-if="scope.row.result === 'Fail'" type="danger" light>Fail</el-tag>
                   </template>
                 </el-table-column>
               </el-table>
@@ -148,7 +187,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <el-button @click="back">Back</el-button>
             <div>
-              <el-button @click="reset">Reset</el-button>
+              <el-button @click="resetQuestionnaire">Reset</el-button>
               <el-button type="primary" @click="submit">Submit</el-button>
             </div>
           </div>
@@ -254,9 +293,9 @@
           </el-descriptions-item>
         </el-descriptions>
       </el-dialog>
-      <!-- Questionnaire Detail Drawer -->
+      <!-- Questionnaire Details Drawer -->
       <el-drawer
-          v-model="drawerVisible"
+          v-model="questionnaireDrawerVisible"
           title="Questionnaire Details"
           direction="rtl"
           size="30%"
@@ -306,6 +345,64 @@
           </el-descriptions-item>
         </el-descriptions>
       </el-drawer>
+      <!-- Outreach Event Details Drawer -->
+      <el-drawer
+          v-model="eventDrawerVisible"
+          title="Outreach Event Details"
+          direction="rtl"
+          size="30%"
+      >
+        <el-descriptions
+            direction="vertical"
+            :column="1"
+            border
+        >
+          <el-descriptions-item label="Organiser">
+            {{ this.form.organiserName }}
+          </el-descriptions-item>
+          <el-descriptions-item label="Participant">
+            {{ this.form.participantName }}
+          </el-descriptions-item>
+          <el-descriptions-item label="Title">
+            {{ this.form.title }}
+          </el-descriptions-item>
+          <el-descriptions-item label="Description">
+            {{ this.form.description }}
+          </el-descriptions-item>
+          <el-descriptions-item label="Platform">
+            {{ this.form.platform }}
+          </el-descriptions-item>
+          <el-descriptions-item label="Scheduled Meeting Time">
+            {{ formatDate(this.form.meetingTime) }}
+          </el-descriptions-item>
+          <el-descriptions-item label="Last Meeting Time">
+          <span v-if="formatDate(this.form.lastMeetingTime) !== '1970-01-01 01:00'">
+            {{ formatDate(this.form.lastMeetingTime) }}
+          </span>
+          </el-descriptions-item>
+          <el-descriptions-item label="Repeat">
+            {{ this.form.repeat }}
+          </el-descriptions-item>
+          <el-descriptions-item label="Last Successful Meeting Time">
+          <span v-if="formatDate(this.form.lastSuccessfulMeetingTime) !== '1970-01-01 01:00'">
+            {{ formatDate(this.form.lastSuccessfulMeetingTime) }}
+          </span>
+          </el-descriptions-item>
+          <el-descriptions-item label="Next Meeting Time">
+          <span v-if="formatDate(this.form.nextMeetingTime) !== '1970-01-01 01:00'">
+            {{ formatDate(this.form.nextMeetingTime) }}
+          </span>
+          </el-descriptions-item>
+          <el-descriptions-item label="Result">
+            <el-tag v-if="this.form.result === 'Pending'" type="info" light>Pending</el-tag>
+            <el-tag v-if="this.form.result === 'Success'" type="success" light>Success</el-tag>
+            <el-tag v-if="this.form.result === 'Fail'" type="danger" light>Fail</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="Feedback">
+            {{ this.form.feedback }}
+          </el-descriptions-item>
+        </el-descriptions>
+      </el-drawer>
     </div>
   </div>
 </template>
@@ -344,22 +441,23 @@ export default {
       },
       recordData: [],
       searchRecordInput: "",
-      resultFilter: "",
+      resultRecordFilter: "",
       needMeetingFilter: "",
       recordCurrentPage: 1,
       recordPageSize: 10,
       recordTotal: 0,
       eventData: [],
       searchEventInput: "",
+      resultEventFilter: "",
       platformFilter: "",
-      attendanceFilter: "",
       eventCurrentPage: 1,
       eventPageSize: 10,
       eventTotal: 0,
       loading: false,
       fillLoading: false,
       infoDialogVisible: false,
-      drawerVisible: false,
+      questionnaireDrawerVisible: false,
+      eventDrawerVisible: false,
     }
   },
   created() {
@@ -372,6 +470,7 @@ export default {
     load() {
       this.loadDoctor()
       this.loadRecord()
+      this.loadEvent()
       if(this.user.questionnaire !== '') {
         this.loadQuestionnaire()
       }
@@ -393,13 +492,30 @@ export default {
         userRole: this.user.role,
         searchInput: this.searchRecordInput.trim().toLowerCase(),
         patientFilter: "",
-        resultFilter: this.resultFilter,
+        resultFilter: this.resultRecordFilter,
         needMeetingFilter: this.needMeetingFilter,
         pageNum: this.recordCurrentPage,
         pageSize: this.recordPageSize
       }).then(res => {
         this.recordData = res.data.rows
         this.recordTotal = res.data.total
+        this.loading = false
+      })
+    },
+    loadEvent() {
+      this.loading = true
+      request.post("/events/get", {
+        userId: this.user.id,
+        userRole: this.user.role,
+        searchInput: this.searchEventInput.trim().toLowerCase(),
+        patientFilter: "",
+        platformFilter: this.platformFilter,
+        resultFilter: this.resultEventFilter,
+        pageNum: this.eventCurrentPage,
+        pageSize: this.eventPageSize
+      }).then(res => {
+        this.eventData = res.data.rows
+        this.eventTotal = res.data.total
         this.loading = false
       })
     },
@@ -430,7 +546,20 @@ export default {
         this.fillLoading = false
       }, 200)
     },
-    reset() {
+    resetRecord() {
+      this.searchRecordInput = ""
+      this.resultRecordFilter = ""
+      this.needMeetingFilter = ""
+      this.recordCurrentPage = 1
+      this.loadRecord()
+    },
+    resetEvent() {
+      this.searchEventInput = ""
+      this.resultEventFilter = ""
+      this.platformFilter = ""
+      this.loadEvent()
+    },
+    resetQuestionnaire() {
       this.fillLoading = true
       setTimeout(() => {
         request.get("/questionnaires/" + this.user.questionnaire).then(res => {
@@ -467,8 +596,12 @@ export default {
         }
       })
     },
-    detail(row) {
-      this.drawerVisible = true
+    detailQuestionnaire(row) {
+      this.questionnaireDrawerVisible = true
+      this.form = row
+    },
+    detailEvent(row) {
+      this.eventDrawerVisible = true
       this.form = row
     },
     recordCurrentChange(pageNum) {

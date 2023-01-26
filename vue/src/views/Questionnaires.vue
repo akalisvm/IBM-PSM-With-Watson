@@ -14,7 +14,7 @@
           </el-button>
           <el-button
               style="margin-left: 10px"
-              @click="this.searchTemplateInput = ''; this.loadTemplate()">
+              @click="resetTemplate">
             <span>Reset</span>
           </el-button>
           <el-button
@@ -78,7 +78,7 @@
           </el-button>
           <el-button
               style="margin-left: 10px"
-              @click="this.searchQuestionnaireInput = ''; this.loadQuestionnaire()">
+              @click="resetQuestionnaire">
             <span>Reset</span>
           </el-button>
           <el-button
@@ -359,6 +359,11 @@ export default {
         ]
       }
     },
+    resetTemplate() {
+      this.searchTemplateInput = ""
+      this.templateCurrentPage = 1
+      this.loadTemplate()
+    },
     previewTemplate(row) {
       this.clickOn = "template"
       this.previewLoading = true
@@ -406,6 +411,11 @@ export default {
           { question: "", answer: "" }
         ]
       }
+    },
+    resetQuestionnaire() {
+      this.searchQuestionnaireInput = ""
+      this.questionnaireCurrentPage = 1
+      this.loadQuestionnaire()
     },
     previewQuestionnaire(row) {
       this.clickOn = "questionnaire"

@@ -148,17 +148,26 @@
         <el-descriptions-item label="Platform">
           {{ this.eventForm.platform }}
         </el-descriptions-item>
-        <el-descriptions-item label="Meeting Time">
+        <el-descriptions-item label="Scheduled Meeting Time">
           {{ formatDate(this.eventForm.meetingTime) }}
         </el-descriptions-item>
         <el-descriptions-item label="Last Meeting Time">
-          {{ this.eventForm.lastMeetingTime }}
+          <span v-if="formatDate(this.eventForm.lastMeetingTime) !== '1970-01-01 01:00'">
+            {{ formatDate(this.eventForm.lastMeetingTime) }}
+          </span>
+        </el-descriptions-item>
+        <el-descriptions-item label="Repeat">
+          {{ this.eventForm.repeat }}
         </el-descriptions-item>
         <el-descriptions-item label="Last Successful Meeting Time">
-          {{ this.eventForm.lastSuccessfulMeetingTime }}
+          <span v-if="formatDate(this.eventForm.lastSuccessfulMeetingTime) !== '1970-01-01 01:00'">
+            {{ formatDate(this.eventForm.lastSuccessfulMeetingTime) }}
+          </span>
         </el-descriptions-item>
         <el-descriptions-item label="Next Meeting Time">
-          {{ this.eventForm.nextMeetingTime }}
+          <span v-if="formatDate(this.eventForm.nextMeetingTime) !== '1970-01-01 01:00'">
+            {{ formatDate(this.eventForm.nextMeetingTime) }}
+          </span>
         </el-descriptions-item>
         <el-descriptions-item label="Result">
           <el-tag v-if="this.eventForm.result === 'Pending'" type="info" light>Pending</el-tag>

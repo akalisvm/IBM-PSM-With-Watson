@@ -55,16 +55,12 @@ public class SearchingUtil {
 
     public static void searchingRecord(List<RecordVO> list, RecordQueryDTO dto) {
         if(!dto.getSearchInput().equals("")) {
-            if(dto.getSearchInput().matches("[0-9]+")) {
-                for(int i = list.size() - 1; i >= 0; i--) {
-                    RecordVO recordVO = list.get(i);
-                    if(!recordVO.getId().equals(dto.getSearchInput())) {
-                        list.remove(recordVO);
-                    }
+            for(int i = list.size() - 1; i >= 0; i--) {
+                RecordVO recordVO = list.get(i);
+                if(!recordVO.getId().equals(dto.getSearchInput()) &&
+                        !recordVO.getQuestionnaire().getTitle().toLowerCase().contains(dto.getSearchInput())) {
+                    list.remove(recordVO);
                 }
-            } else {
-                list.clear();
-                return;
             }
         }
         if(!dto.getPatientFilter().equals("")) {

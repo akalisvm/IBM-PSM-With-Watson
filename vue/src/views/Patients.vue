@@ -13,7 +13,7 @@
         <el-button type="info" plain @click="load" style="margin-left: 10px;">
           <el-icon><Search /></el-icon>
         </el-button>
-        <el-button style="margin-left: 10px" @click="this.searchInput = ''; this.load()">
+        <el-button style="margin-left: 10px" @click="reset">
           Reset
         </el-button>
         <el-button style="margin-left: 10px" @click="assign">Assign Questionnaire</el-button>
@@ -120,6 +120,11 @@ export default {
       }).then(res => {
         this.options = res.data.rows
       })
+    },
+    reset() {
+      this.searchInput = ""
+      this.currentPage = 1
+      this.load()
     },
     assign() {
       if(this.patientIdList.length === 0) {

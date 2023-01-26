@@ -1,5 +1,7 @@
 package ucl.ac.uk.ibmpsmwithwatson.service;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,32 @@ public class EventService {
             eventVOList = JSONUtil.toList(eventMapper.getEventsByDoctorId(dto.getUserId()), EventVO.class);
         }
         SearchingUtil.searchingEvent(eventVOList, dto);
+        for(EventVO eventVO : eventVOList) {
+            // eventVO sets the last meeting time
+            JSONArray lastMeetingTimeJson = eventMapper.getLastMeetingTime(
+                    eventVO.getOrganiserId(),
+                    eventVO.getParticipantId(),
+                    eventVO.getMeetingTime().getTime());
+            if(lastMeetingTimeJson.size() != 0) {
+                eventVO.setLastMeetingTime(
+                        new Date((Long) lastMeetingTimeJson.getByPath("[0].meetingTime")));
+            }
+            // eventVO sets the last successful meeting time
+            JSONArray lastSuccessfulMeetingTimeJson = eventMapper.getLastSuccessfulMeetingTime(
+                    eventVO.getOrganiserId(),
+                    eventVO.getParticipantId(),
+                    eventVO.getMeetingTime().getTime());
+            if(lastSuccessfulMeetingTimeJson.size() != 0) {
+                eventVO.setLastSuccessfulMeetingTime(
+                        new Date((Long) lastSuccessfulMeetingTimeJson.getByPath("[0].meetingTime")));
+            }
+            // eventVO sets the next meeting time
+            if(eventVO.getRepeat().equals("Weekly")) {
+                eventVO.setNextMeetingTime(DateUtil.offsetWeek(eventVO.getMeetingTime(), 1));
+            } else if(eventVO.getRepeat().equals("Monthly")) {
+                eventVO.setNextMeetingTime(DateUtil.offsetMonth(eventVO.getMeetingTime(), 1));
+            }
+        }
         return PaginationUtil.pagination(eventVOList, dto.getPageNum(), dto.getPageSize());
     }
 
