@@ -379,6 +379,12 @@ export default {
               })
               this.clickOn = ""
               this.dialogVisible = false
+            } else {
+              this.$message({
+                type: "error",
+                message: res.msg,
+                customClass: "font"
+              })
             }
           })
         } else {

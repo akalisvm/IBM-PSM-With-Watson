@@ -23,13 +23,21 @@ public class EventController {
 
     @PostMapping
     public Result<?> insert(@RequestBody Event event) {
-        eventService.insert(event);
+        try {
+            eventService.insert(event);
+        } catch (Exception e) {
+            return Result.error("10002", e.getMessage());
+        }
         return Result.success();
     }
 
     @PutMapping
     public Result<?> update(@RequestBody Event event) {
-        eventService.update(event);
+        try {
+            eventService.update(event);
+        } catch (Exception e) {
+            return Result.error("10002", e.getMessage());
+        }
         return Result.success();
     }
 

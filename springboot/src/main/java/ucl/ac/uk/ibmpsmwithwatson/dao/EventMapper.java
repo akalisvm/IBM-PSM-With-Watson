@@ -36,6 +36,20 @@ public class EventMapper {
                 "S=>(Event:* {organiserId=\"" + doctorId + "\"}); RETURN * SORT_DESC createTime").get("rows");
     }
 
+    public JSONObject getEventByMeetingTime(String doctorId, String patientId, Long meetingTime) {
+        return (JSONObject) graphMapper.runCypherQuery(
+                "S=>(@e Event:*); " +
+                        "RETURN " +
+                        "e.organiserId AS organiserId " +
+                        "e.participantId AS participantId " +
+                        "e.meetingTime AS meetingTime " +
+                        "WHERE " +
+                        "organiserId=\"" + doctorId + "\" " +
+                        "participantId=\"" + patientId + "\" " +
+                        "meetingTime=" + meetingTime
+        );
+    }
+
     public JSONArray getLastMeetingTime(String doctorId, String patientId, Long meetingTime) {
         return (JSONArray) graphMapper.runCypherQuery(
                 "S=>(@e Event:*); " +

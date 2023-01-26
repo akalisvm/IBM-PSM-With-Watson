@@ -65,7 +65,13 @@ public class EventService {
         return PaginationUtil.pagination(eventVOList, dto.getPageNum(), dto.getPageSize());
     }
 
-    public void insert(Event event) {
+    public void insert(Event event) throws RuntimeException {
+        if(!eventMapper.getEventByMeetingTime(
+                event.getOrganiserId(),
+                event.getParticipantId(),
+                event.getMeetingTime().getTime()).get("num_items").equals("0")) {
+            throw new RuntimeException("Time slot has been occupied, please select another time and try again.");
+        }
         String id;
         if(eventMapper.getCount() == null) {
             eventMapper.insertCount();
@@ -81,7 +87,13 @@ public class EventService {
         eventMapper.insert(event.getOrganiserId(), event.getParticipantId(), id, JSONUtil.toJsonStr(event));
     }
 
-    public void update(Event event) {
+    public void update(Event event) throws RuntimeException {
+        if(!eventMapper.getEventByMeetingTime(
+                event.getOrganiserId(),
+                event.getParticipantId(),
+                event.getMeetingTime().getTime()).get("num_items").equals("0")) {
+            throw new RuntimeException("Time slot has been occupied, please select another time and try again.");
+        }
         JSONObject jsonObject = JSONUtil.parseObj(event);
         jsonObject.putOpt("label", "Event");
         jsonObject.putOpt("name", "event_" + event.getId());

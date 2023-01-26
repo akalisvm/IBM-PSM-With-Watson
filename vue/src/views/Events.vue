@@ -415,6 +415,12 @@ export default {
                 })
                 this.rescheduleDialogVisible = false
                 this.loadEvent()
+              } else {
+                this.$message({
+                  type: "error",
+                  message: res.msg,
+                  customClass: "font"
+                })
               }
             })
           } else if(this.clickOn === "give") {
