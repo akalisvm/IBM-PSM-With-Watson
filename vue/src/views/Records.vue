@@ -85,10 +85,7 @@
           </el-table-column>
           <el-table-column prop="questionnaire.result" label="Result">
             <template #default="scope">
-              <el-tag
-                  :type="scope.row.questionnaire.result === 'Worse' ? 'danger' : 'success'"
-                  disable-transitions
-              >
+              <el-tag :type="scope.row.questionnaire.result === 'Worse' ? 'danger' : 'success'" light>
                 {{ scope.row.questionnaire.result }}
               </el-tag>
             </template>
@@ -105,7 +102,7 @@
             <template #default="scope">
               <div v-if="scope.row.questionnaire.result === 'Worse'">
                 <el-button  type="primary" plain size="small" @click="schedule(scope.row)">
-                  Schedule
+                  Schedule Event
                 </el-button>
               </div>
             </template>
@@ -122,54 +119,6 @@
             :total="total" />
       </div>
     </el-card>
-    <!-- Schedule Outreach Event Dialog -->
-    <el-dialog v-model="dialogVisible" width="40%" align-center>
-      <template #header>
-        Schedule Outreach Event
-      </template>
-      <el-form ref="scheduleForm" :model="scheduleForm" :rules="rules" label-width="120px">
-        <el-form-item label="Organiser">
-          {{ this.user.given_name }} {{ this.user.given_name }}
-        </el-form-item>
-        <el-form-item label="Participant">
-          {{ scheduleForm.participantName }}
-        </el-form-item>
-        <el-form-item prop="title" label="Title">
-          <el-input v-model="scheduleForm.title" />
-        </el-form-item>
-        <el-form-item prop="description" label="Description">
-          <el-input v-model="scheduleForm.description" type="textarea" autosize />
-        </el-form-item>
-        <el-form-item prop="platform" label="Platform">
-          <el-select v-model="scheduleForm.platform" clearable>
-            <el-option label="Microsoft Teams" value="teams" />
-            <el-option label="Webex" value="webex" />
-            <el-option label="WhatsApp" value="whatsapp" />
-            <el-option label="Phone Call" value="call" />
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="meetingTime" label="Meeting Time">
-          <el-date-picker
-              v-model="scheduleForm.meetingTime"
-              type="datetime"
-              placeholder="Select date and time"
-              format="YYYY-MM-DD HH:mm"
-              :disabled-date="disabledDate"
-          />
-        </el-form-item>
-        <el-form-item prop="repeat" label="Repeat">
-          <el-select v-model="scheduleForm.repeat" clearable>
-            <el-option label="Does not repeat" value="no" />
-            <el-option label="Weekly" value="weekly" />
-            <el-option label="Monthly" value="monthly" />
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="submit">Submit</el-button>
-      </template>
-    </el-dialog>
     <!-- Questionnaire Details Drawer -->
     <el-drawer
         v-model="drawerVisible"
@@ -182,7 +131,7 @@
           :column="1"
           border
       >
-        <el-descriptions-item label="Questionnaire Title">
+        <el-descriptions-item label="Title">
           {{ this.form.questionnaire.title }}
         </el-descriptions-item>
         <el-descriptions-item label="Questions and Answers">
@@ -222,6 +171,54 @@
         </el-descriptions-item>
       </el-descriptions>
     </el-drawer>
+    <!-- Schedule Outreach Event Dialog -->
+    <el-dialog v-model="dialogVisible" width="40%" align-center>
+      <template #header>
+        Schedule Outreach Event
+      </template>
+      <el-form ref="scheduleForm" :model="scheduleForm" :rules="rules" label-width="120px">
+        <el-form-item label="Organiser">
+          {{ this.user.given_name }} {{ this.user.given_name }}
+        </el-form-item>
+        <el-form-item label="Participant">
+          {{ scheduleForm.participantName }}
+        </el-form-item>
+        <el-form-item prop="title" label="Title">
+          <el-input v-model="scheduleForm.title" />
+        </el-form-item>
+        <el-form-item prop="description" label="Description">
+          <el-input v-model="scheduleForm.description" type="textarea" autosize />
+        </el-form-item>
+        <el-form-item prop="platform" label="Platform">
+          <el-select v-model="scheduleForm.platform" clearable>
+            <el-option label="Microsoft Teams" value="Microsoft Teams" />
+            <el-option label="Webex" value="Webex" />
+            <el-option label="WhatsApp" value="WhatsApp" />
+            <el-option label="Phone Call" value="Phone Call" />
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="meetingTime" label="Meeting Time">
+          <el-date-picker
+              v-model="scheduleForm.meetingTime"
+              type="datetime"
+              placeholder="Select date and time"
+              format="YYYY-MM-DD HH:mm"
+              :disabled-date="disabledDate"
+          />
+        </el-form-item>
+        <el-form-item prop="repeat" label="Repeat">
+          <el-select v-model="scheduleForm.repeat" clearable>
+            <el-option label="Does not repeat" value="Does not repeat" />
+            <el-option label="Weekly" value="Weekly" />
+            <el-option label="Monthly" value="Monthly" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="submit">Submit</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -265,8 +262,8 @@ export default {
       total: 0,
       loading: false,
       remoteLoading: false,
-      dialogVisible: false,
       drawerVisible: false,
+      dialogVisible: false,
     }
   },
   created() {
@@ -285,7 +282,7 @@ export default {
       request.post("/records/get", {
         userId: this.user.id,
         userRole: this.user.role,
-        searchInput: this.searchInput,
+        searchInput: this.searchInput.trim().toLowerCase(),
         patientFilter: this.patientFilter,
         resultFilter: this.resultFilter,
         needMeetingFilter: this.needMeetingFilter,
@@ -300,7 +297,7 @@ export default {
     loadRemote() {
       request.post("/users/get", {
         doctorId: this.user.id,
-        searchInput: this.patientFilter,
+        searchInput: this.patientFilter.trim().toLowerCase(),
         patientFilter: "",
         resultFilter: this.resultFilter,
         needMeetingFilter: this.needMeetingFilter,
@@ -364,9 +361,9 @@ export default {
         participantName: row.creatorName,
         title: "",
         description: "",
-        platform: "teams",
+        platform: "",
         meetingTime: row.questionnaire.meetingTime,
-        repeat: "no"
+        repeat: "Does not repeat"
       }
     },
     submit() {
@@ -380,6 +377,7 @@ export default {
                 customClass: "font"
               })
               this.clickOn = ""
+              this.dialogVisible = false
             }
           })
         } else {

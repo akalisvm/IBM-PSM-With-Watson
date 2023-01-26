@@ -321,7 +321,7 @@ export default {
       this.templateLoading = true
       request.post("/templates/get", {
         doctorId: this.user.id,
-        searchInput: this.searchTemplateInput,
+        searchInput: this.searchTemplateInput.trim().toLowerCase(),
         pageNum: this.templateCurrentPage,
         pageSize: this.templatePageSize
       }).then(res => {
@@ -334,7 +334,7 @@ export default {
       this.questionnaireLoading = true
       request.post("/questionnaires/get", {
         doctorId: this.user.id,
-        searchInput: this.searchQuestionnaireInput,
+        searchInput: this.searchQuestionnaireInput.trim().toLowerCase(),
         pageNum: this.questionnaireCurrentPage,
         pageSize: this.questionnairePageSize
       }).then(res => {

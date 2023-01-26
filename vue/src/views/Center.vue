@@ -391,7 +391,7 @@ export default {
       request.post("/records/get", {
         userId: this.user.id,
         userRole: this.user.role,
-        searchInput: this.searchRecordInput,
+        searchInput: this.searchRecordInput.trim().toLowerCase(),
         patientFilter: "",
         resultFilter: this.resultFilter,
         needMeetingFilter: this.needMeetingFilter,

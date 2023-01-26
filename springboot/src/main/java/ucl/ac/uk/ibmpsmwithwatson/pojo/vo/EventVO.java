@@ -8,8 +8,8 @@ import java.util.Date;
 public class EventVO {
     private String id;
     private Date createTime;
-    private String creatorId;
-    private String creatorName;
+    private String organiserId;
+    private String organiserName;
     private String participantId;
     private String participantName;
     private String title;

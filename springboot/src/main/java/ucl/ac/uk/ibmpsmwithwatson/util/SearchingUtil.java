@@ -34,7 +34,7 @@ public class SearchingUtil {
             for(int i = list.size() - 1; i >= 0; i--) {
                 Template template = list.get(i);
                 if(!template.getId().equals(searchInput) &&
-                        !template.getTitle().toLowerCase().contains(searchInput.trim().toLowerCase())) {
+                        !template.getTitle().toLowerCase().contains(searchInput)) {
                     list.remove(template);
                 }
             }
@@ -46,7 +46,7 @@ public class SearchingUtil {
             for(int i = list.size() - 1; i >= 0; i--) {
                 Questionnaire questionnaire = list.get(i);
                 if(!questionnaire.getId().equals(searchInput) &&
-                        !questionnaire.getTitle().toLowerCase().contains(searchInput.trim().toLowerCase())) {
+                        !questionnaire.getTitle().toLowerCase().contains(searchInput)) {
                     list.remove(questionnaire);
                 }
             }
@@ -98,7 +98,7 @@ public class SearchingUtil {
             for(int i = list.size() - 1; i >= 0; i--) {
                 EventVO eventVO = list.get(i);
                 if(!eventVO.getId().equals(dto.getSearchInput()) &&
-                        !eventVO.getTitle().equals(dto.getSearchInput())) {
+                        !eventVO.getTitle().toLowerCase().contains(dto.getSearchInput())) {
                     list.remove(eventVO);
                 }
             }

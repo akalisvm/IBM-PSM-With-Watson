@@ -67,6 +67,7 @@
             :total="total" />
       </div>
     </el-card>
+
   </div>
 </template>
 
@@ -103,7 +104,7 @@ export default {
       this.loading = true
       request.post("/users/get", {
         doctorId: this.user.id,
-        searchInput: this.searchInput,
+        searchInput: this.searchInput.trim().toLowerCase(),
         pageNum: this.currentPage,
         pageSize: this.pageSize
       }).then(res => {
