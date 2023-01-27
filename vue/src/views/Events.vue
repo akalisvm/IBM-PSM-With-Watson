@@ -151,13 +151,13 @@
         <el-descriptions-item label="Scheduled Meeting Time">
           {{ formatDate(this.eventForm.meetingTime) }}
         </el-descriptions-item>
+        <el-descriptions-item label="Repeat">
+          {{ this.eventForm.repeat }}
+        </el-descriptions-item>
         <el-descriptions-item label="Last Meeting Time">
           <span v-if="formatDate(this.eventForm.lastMeetingTime) !== '1970-01-01 01:00'">
             {{ formatDate(this.eventForm.lastMeetingTime) }}
           </span>
-        </el-descriptions-item>
-        <el-descriptions-item label="Repeat">
-          {{ this.eventForm.repeat }}
         </el-descriptions-item>
         <el-descriptions-item label="Last Successful Meeting Time">
           <span v-if="formatDate(this.eventForm.lastSuccessfulMeetingTime) !== '1970-01-01 01:00'">
@@ -433,6 +433,12 @@ export default {
                 })
                 this.giveDialogVisible = false
                 this.loadEvent()
+              } else {
+                this.$message({
+                  type: "error",
+                  message: res.msg,
+                  customClass: "font"
+                })
               }
             })
           }

@@ -66,10 +66,7 @@ public class EventService {
     }
 
     public void insert(Event event) throws RuntimeException {
-        if(!eventMapper.getEventByMeetingTime(
-                event.getOrganiserId(),
-                event.getParticipantId(),
-                event.getMeetingTime().getTime()).get("num_items").equals("0")) {
+        if(eventMapper.getEventByMeetingTime(event.getOrganiserId(), event.getMeetingTime().getTime()).size() != 0) {
             throw new RuntimeException("Time slot has been occupied, please select another time and try again.");
         }
         String id;
@@ -88,10 +85,10 @@ public class EventService {
     }
 
     public void update(Event event) throws RuntimeException {
-        if(!eventMapper.getEventByMeetingTime(
-                event.getOrganiserId(),
-                event.getParticipantId(),
-                event.getMeetingTime().getTime()).get("num_items").equals("0")) {
+        JSONArray temp = eventMapper.getEventByMeetingTime(event.getOrganiserId(), event.getMeetingTime().getTime());
+        if(event.getResult().equals("Pending")
+                && temp.size() != 0
+                && !event.getId().equals(temp.getByPath("[0].id"))) {
             throw new RuntimeException("Time slot has been occupied, please select another time and try again.");
         }
         JSONObject jsonObject = JSONUtil.parseObj(event);

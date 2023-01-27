@@ -16,7 +16,7 @@
         <el-button style="margin-left: 10px" @click="reset">
           Reset
         </el-button>
-        <el-button style="margin-left: 10px" @click="assign">Assign Questionnaire</el-button>
+        <el-button type="primary" style="margin-left: 10px" @click="assign">Assign Questionnaire</el-button>
         <el-dialog v-model="dialogVisible" title="Assign Questionnaire To Patients" width="40%" align-center>
           <el-select
               v-model="questionnaireId"
