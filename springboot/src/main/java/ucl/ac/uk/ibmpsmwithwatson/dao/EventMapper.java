@@ -4,6 +4,7 @@ import cn.hutool.json.JSONArray;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import ucl.ac.uk.ibmpsmwithwatson.config.BangDBConfig;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.dto.EventQueryDTO;
 
 @Component
 public class EventMapper {
@@ -25,14 +26,39 @@ public class EventMapper {
         tableMapper.updateCount(EVENT, count);
     }
 
-    public JSONArray getEventsByPatientId(String patientId) {
-        return (JSONArray) graphMapper.runCypherQuery(
-                "S=>(Event:* {participantId=\"" + patientId + "\"}); RETURN * SORT_DESC createTime").get("rows");
-    }
-
-    public JSONArray getEventsByDoctorId(String doctorId) {
-        return (JSONArray) graphMapper.runCypherQuery(
-                "S=>(Event:* {organiserId=\"" + doctorId + "\"}); RETURN * SORT_DESC createTime").get("rows");
+    public JSONArray getEvents(EventQueryDTO dto) {
+        StringBuilder cypher = new StringBuilder("S=>(@e Event:*); " +
+                "RETURN " +
+                "e.id AS id " +
+                "e.createTime AS createTime " +
+                "e.organiserId AS organiserId " +
+                "e.organiserName AS organiserName " +
+                "e.participantId AS participantId " +
+                "e.participantName AS participantName " +
+                "e.title AS title " +
+                "e.description AS description " +
+                "e.platform AS platform " +
+                "e.meetingTime AS meetingTime " +
+                "e.repeat AS repeat " +
+                "e.result AS result " +
+                "e.feedback AS feedback " +
+                "WHERE ");
+        if(dto.getUserRole().equals("doctor")) {
+            cypher.append("organiserId=\"").append(dto.getUserId()).append("\" ");
+            if(!dto.getPatientFilter().equals("")) {
+                cypher.append("participantId=\"").append(dto.getPatientFilter()).append("\" ");
+            }
+        } else if(dto.getUserRole().equals("patient")) {
+            cypher.append("participantId=\"").append(dto.getUserId()).append("\" ");
+        }
+        if(!dto.getPlatformFilter().equals("")) {
+            cypher.append("platform=\"").append(dto.getPlatformFilter()).append("\" ");
+        }
+        if(!dto.getResultFilter().equals("")) {
+            cypher.append("result=\"").append(dto.getResultFilter()).append("\" ");
+        }
+        cypher.append("SORT_DESC createTime");
+        return (JSONArray) graphMapper.runCypherQuery(cypher.toString()).get("rows");
     }
 
     public JSONArray getEventByMeetingTime(String doctorId, Long meetingTime) {

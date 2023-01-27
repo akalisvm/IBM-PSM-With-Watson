@@ -29,12 +29,7 @@ public class EventService {
     EventMapper eventMapper;
 
     public Page getEvents(EventQueryDTO dto) {
-        List<EventVO> eventVOList = new ArrayList<>();
-        if(dto.getUserRole().equals("patient")) {
-            eventVOList = JSONUtil.toList(eventMapper.getEventsByPatientId(dto.getUserId()), EventVO.class);
-        } else if(dto.getUserRole().equals("doctor")) {
-            eventVOList = JSONUtil.toList(eventMapper.getEventsByDoctorId(dto.getUserId()), EventVO.class);
-        }
+        List<EventVO> eventVOList = JSONUtil.toList(eventMapper.getEvents(dto), EventVO.class);
         SearchingUtil.searchingEvent(eventVOList, dto);
         for(EventVO eventVO : eventVOList) {
             // eventVO sets the last meeting time

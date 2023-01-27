@@ -99,29 +99,5 @@ public class SearchingUtil {
                 }
             }
         }
-        if(!dto.getPatientFilter().equals("")) {
-            for(int i = list.size() - 1; i >= 0; i--) {
-                EventVO eventVO = list.get(i);
-                if(!eventVO.getParticipantId().equals(dto.getPatientFilter())) {
-                    list.remove(eventVO);
-                }
-            }
-        }
-        if(!dto.getPlatformFilter().equals("")) {
-            for(int i = list.size() - 1; i >= 0; i--) {
-                EventVO eventVO = list.get(i);
-                if(!eventVO.getPlatform().equals(dto.getPlatformFilter())) {
-                    list.remove(eventVO);
-                }
-            }
-        }
-        if(!dto.getResultFilter().equals("")) {
-            for(int i = list.size() - 1; i >= 0; i--) {
-                EventVO eventVO = list.get(i);
-                if(!eventVO.getResult().equals(dto.getResultFilter())) {
-                    list.remove(eventVO);
-                }
-            }
-        }
     }
 }
