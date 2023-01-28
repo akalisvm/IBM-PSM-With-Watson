@@ -1,0 +1,7 @@
+host = smtp.qq.com
+port = 465
+from = tianang.ucl.ixn@foxmail.com
+user = 2722968218
+pass = fjublfgmmpcpdhbb
+startttlsEnable = true
+sslEnable = true

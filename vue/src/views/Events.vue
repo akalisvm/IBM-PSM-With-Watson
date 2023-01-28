@@ -292,7 +292,6 @@ export default {
       searchInput: "",
       patientFilter: "",
       platformFilter: "",
-      timeFilter: "",
       resultFilter: "",
       currentPage: 1,
       pageSize: 10,
