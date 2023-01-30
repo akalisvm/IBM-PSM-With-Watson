@@ -1,5 +1,6 @@
 package ucl.ac.uk.ibmpsmwithwatson.controller;
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.dto.EventQueryDTO;
@@ -9,6 +10,7 @@ import ucl.ac.uk.ibmpsmwithwatson.util.Result;
 
 import java.util.List;
 
+@Api(tags = "Event")
 @RestController
 @RequestMapping("/events")
 public class EventController {

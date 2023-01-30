@@ -370,7 +370,7 @@ export default {
       setTimeout(() => {
         this.previewForm = JSON.parse(JSON.stringify(row))
         this.previewLoading = false
-      }, 100)
+      }, 200)
     },
     editTemplate(row) {
       this.dialogVisible = true
@@ -423,7 +423,7 @@ export default {
       setTimeout(() => {
         this.previewForm = JSON.parse(JSON.stringify(row))
         this.previewLoading = false
-      }, 100)
+      }, 200)
     },
     editQuestionnaire(row) {
       this.dialogVisible = true

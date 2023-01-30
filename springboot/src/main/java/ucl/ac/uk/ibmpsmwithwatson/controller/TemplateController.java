@@ -1,5 +1,6 @@
 package ucl.ac.uk.ibmpsmwithwatson.controller;
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.dto.TemplateQueryDTO;
@@ -8,6 +9,7 @@ import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Template;
 import ucl.ac.uk.ibmpsmwithwatson.service.TemplateService;
 import ucl.ac.uk.ibmpsmwithwatson.util.Result;
 
+@Api(tags = "Template")
 @RestController
 @RequestMapping("/templates")
 public class TemplateController {
