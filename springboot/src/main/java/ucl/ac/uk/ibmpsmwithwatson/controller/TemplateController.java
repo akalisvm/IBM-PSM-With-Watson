@@ -17,6 +17,11 @@ public class TemplateController {
     @Autowired
     TemplateService templateService;
 
+    @GetMapping("/number/{doctorId}")
+    public Result<?> getNumberOfTemplatesByDoctorId(@PathVariable String doctorId) {
+        return Result.success(templateService.getNumberOfTemplatesByDoctorId(doctorId));
+    }
+
     @PostMapping("/get")
     public Result<?> getTemplates(@RequestBody TemplateQueryDTO dto) {
         Page page = templateService.getTemplates(dto);

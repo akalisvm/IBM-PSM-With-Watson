@@ -1,6 +1,7 @@
 package ucl.ac.uk.ibmpsmwithwatson.dao;
 
 import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import ucl.ac.uk.ibmpsmwithwatson.config.BangDBConfig;
@@ -29,6 +30,10 @@ public class QuestionnaireMapper {
         graphMapper.runCypherQuery("CREATE (User:user_" + doctorId +
                 ")-[CREATED " + relProp + "]->(Questionnaire:questionnaire_" +
                 questionnaireId + " " + questionnaireProp + ")");
+    }
+
+    public JSONObject getNumberOfQuestionnairesByDoctorId(String doctorId) {
+        return graphMapper.runCypherQuery("S=>(Questionnaire:* {creatorId=\"" + doctorId + "\"}); RETURN COUNT(*) AS count");
     }
 
     public JSONArray getQuestionnaires(String doctorId) {

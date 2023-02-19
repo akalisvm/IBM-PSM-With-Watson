@@ -18,8 +18,13 @@ public class EventController {
     @Autowired
     EventService eventService;
 
+    @GetMapping("/dashboard/{doctorId}")
+    public Result<?> getUpcomingEventsInDashboard(@PathVariable String doctorId) {
+        return null;
+    }
+
     @PostMapping("/get")
-    public Result<?> get(@RequestBody EventQueryDTO dto) {
+    public Result<?> getEvents(@RequestBody EventQueryDTO dto) {
         return Result.success(eventService.getEvents(dto));
     }
 

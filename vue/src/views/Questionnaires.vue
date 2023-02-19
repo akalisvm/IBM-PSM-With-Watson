@@ -133,7 +133,7 @@
         </el-card>
       </el-col>
       <el-col :span="14">
-        <div v-loading="previewLoading">
+        <div>
           <el-card style="height: 89vh">
             <template #header>
               <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -295,7 +295,6 @@ export default {
       questionnaireTotal: 0,
       questionnaireLoading: false,
       patientData: [],
-      previewLoading: false,
       dialogVisible: false,
       dialogTitle: "",
       dialogMode: 0,
@@ -366,11 +365,7 @@ export default {
     },
     previewTemplate(row) {
       this.clickOn = "template"
-      this.previewLoading = true
-      setTimeout(() => {
-        this.previewForm = JSON.parse(JSON.stringify(row))
-        this.previewLoading = false
-      }, 200)
+      this.previewForm = JSON.parse(JSON.stringify(row))
     },
     editTemplate(row) {
       this.dialogVisible = true
@@ -419,11 +414,7 @@ export default {
     },
     previewQuestionnaire(row) {
       this.clickOn = "questionnaire"
-      this.previewLoading = true
-      setTimeout(() => {
-        this.previewForm = JSON.parse(JSON.stringify(row))
-        this.previewLoading = false
-      }, 200)
+      this.previewForm = JSON.parse(JSON.stringify(row))
     },
     editQuestionnaire(row) {
       this.dialogVisible = true
@@ -435,11 +426,7 @@ export default {
       this.dialogVisible = true
       this.dialogTitle = "Check All Patients Assigned To This Questionnaire"
       this.dialogMode = 5
-      request.get("/questionnaires/check", {
-        params: {
-          questionnaireId: id,
-        }
-      }).then(res => {
+      request.get("/questionnaires/check/" + id).then(res => {
         this.patientData = res.data
       })
     },

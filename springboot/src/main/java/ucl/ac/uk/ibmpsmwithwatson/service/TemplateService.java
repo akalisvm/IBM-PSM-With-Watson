@@ -21,6 +21,10 @@ public class TemplateService {
     @Autowired
     TemplateMapper templateMapper;
 
+    public Integer getNumberOfTemplatesByDoctorId(String doctorId) {
+        return (Integer) templateMapper.getNumberOfTemplatesByDoctorId(doctorId).get("count");
+    }
+
     public Page getTemplates(TemplateQueryDTO dto) {
         JSONArray jsonArray = templateMapper.getTemplates(dto.getDoctorId());
         List<Template> list = JSONUtil.toList(jsonArray, Template.class);

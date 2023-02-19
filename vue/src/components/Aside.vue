@@ -26,6 +26,10 @@
         <el-icon><HomeFilled /></el-icon>
         <span>Personal Center</span>
       </el-menu-item>
+      <el-menu-item index="/dashboard" v-if="this.user.role==='doctor'">
+        <el-icon><Histogram /></el-icon>
+        <span>Dashboard</span>
+      </el-menu-item>
       <el-menu-item index="/patients" v-if="this.user.role==='doctor'">
         <el-icon><UserFilled /></el-icon>
         <span>My Patients</span>

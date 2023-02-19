@@ -130,7 +130,7 @@ export default {
       if(this.patientIdList.length === 0) {
         this.$message({
           type: "error",
-          message: "Please select at least one patient",
+          message: "Please select at least one patient.",
           customClass: "font"
         })
         return
@@ -141,7 +141,7 @@ export default {
       if(this.questionnaireId === '') {
         this.$message({
           type: "error",
-          message: "Please select a questionnaire",
+          message: "Please select a questionnaire.",
           customClass: "font"
         })
         return
@@ -150,7 +150,7 @@ export default {
         if(res.code === '10000') {
           this.$message({
             type: "success",
-            message: "You have assigned a questionnaire to selected patients",
+            message: "You have assigned a questionnaire to selected patients.",
             customClass: "font"
           })
           this.load()

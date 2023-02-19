@@ -19,19 +19,24 @@ public class QuestionnaireController {
     @Autowired
     QuestionnaireService questionnaireService;
 
+    @GetMapping("/number/{doctorId}")
+    public Result<?> getNumberOfQuestionnairesByDoctorId(@PathVariable String doctorId) {
+        return Result.success(questionnaireService.getNumberOfQuestionnairesByDoctorId(doctorId));
+    }
+
     @PostMapping("/get")
     public Result<?> getQuestionnaires(@RequestBody QuestionnaireQueryDTO dto) {
         Page page = questionnaireService.getQuestionnaires(dto);
         return Result.success(page);
     }
 
-    @GetMapping("/{id}")
-    public Result<?> getQuestionnaireById(@PathVariable String id) {
-        return Result.success(questionnaireService.getQuestionnaireById(id));
+    @GetMapping("/{questionnaireId}")
+    public Result<?> getQuestionnaireById(@PathVariable String questionnaireId) {
+        return Result.success(questionnaireService.getQuestionnaireById(questionnaireId));
     }
 
-    @GetMapping("/check")
-    public Result<?> check(@RequestParam(defaultValue = "") String questionnaireId) {
+    @GetMapping("/check/{questionnaireId}")
+    public Result<?> check(@PathVariable String questionnaireId) {
         return Result.success(questionnaireService.check(questionnaireId));
     }
 

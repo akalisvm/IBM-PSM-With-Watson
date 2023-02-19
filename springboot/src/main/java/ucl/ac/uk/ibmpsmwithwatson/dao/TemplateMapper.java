@@ -1,6 +1,7 @@
 package ucl.ac.uk.ibmpsmwithwatson.dao;
 
 import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import ucl.ac.uk.ibmpsmwithwatson.config.BangDBConfig;
@@ -23,6 +24,10 @@ public class TemplateMapper {
 
     public void updateCount(String count) {
         tableMapper.updateCount(TEMPLATE, count);
+    }
+
+    public JSONObject getNumberOfTemplatesByDoctorId(String doctorId) {
+        return graphMapper.runCypherQuery("S=>(Template:* {creatorId=\"" + doctorId + "\"}); RETURN COUNT(*) AS count");
     }
 
     public JSONArray getTemplates(String doctorId) {

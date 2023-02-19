@@ -26,6 +26,10 @@ public class QuestionnaireService {
     @Autowired
     UserMapper userMapper;
 
+    public Integer getNumberOfQuestionnairesByDoctorId(String doctorId) {
+        return (Integer) questionnaireMapper.getNumberOfQuestionnairesByDoctorId(doctorId).get("count");
+    }
+
     public Page getQuestionnaires(QuestionnaireQueryDTO dto) {
         JSONArray jsonArray = questionnaireMapper.getQuestionnaires(dto.getDoctorId());
         List<Questionnaire> list = JSONUtil.toList(jsonArray, Questionnaire.class);
@@ -33,8 +37,8 @@ public class QuestionnaireService {
         return PaginationUtil.pagination(list, dto.getPageNum(), dto.getPageSize());
     }
 
-    public Questionnaire getQuestionnaireById(String id) {
-        JSONArray jsonArray = questionnaireMapper.getQuestionnaireById(id);
+    public Questionnaire getQuestionnaireById(String questionnaireId) {
+        JSONArray jsonArray = questionnaireMapper.getQuestionnaireById(questionnaireId);
         List<Questionnaire> list = JSONUtil.toList(jsonArray, Questionnaire.class);
         if(list.size() == 0) {
             return null;

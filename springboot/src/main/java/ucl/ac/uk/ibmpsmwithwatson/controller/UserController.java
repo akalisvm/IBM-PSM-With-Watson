@@ -16,9 +16,14 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/{id}")
-    public Result<?> getUserById(@PathVariable String id) {
-        return Result.success(userService.getUserById(id));
+    @GetMapping("/{userId}")
+    public Result<?> getUserById(@PathVariable String userId) {
+        return Result.success(userService.getUserById(userId));
+    }
+
+    @GetMapping("/number/{doctorId}")
+    public Result<?> getNumberOfPatientsByDoctorId(@PathVariable String doctorId) {
+        return Result.success(userService.getNumberOfPatientsByDoctorId(doctorId));
     }
 
     @PostMapping("/get")
