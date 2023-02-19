@@ -15,7 +15,6 @@ import ucl.ac.uk.ibmpsmwithwatson.util.Page;
 import ucl.ac.uk.ibmpsmwithwatson.util.PaginationUtil;
 import ucl.ac.uk.ibmpsmwithwatson.util.SearchingUtil;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +26,11 @@ public class EventService {
 
     @Autowired
     EventMapper eventMapper;
+
+    public List<Event> getUpcomingEvents(String doctorId) {
+        List<Event> eventList = JSONUtil.toList(eventMapper.getUpcomingEvents(doctorId, new Date().getTime()), Event.class);
+        return eventList.size() <= 5 ? eventList : eventList.subList(0, 5);
+    }
 
     public Page getEvents(EventQueryDTO dto) {
         List<EventVO> eventVOList = JSONUtil.toList(eventMapper.getEvents(dto), EventVO.class);
@@ -51,18 +55,25 @@ public class EventService {
                         new Date((Long) lastSuccessfulMeetingTimeJson.getByPath("[0].meetingTime")));
             }
             // eventVO sets the next meeting time
-            if(eventVO.getRepeat().equals("Weekly")) {
-                eventVO.setNextMeetingTime(DateUtil.offsetWeek(eventVO.getMeetingTime(), 1));
-            } else if(eventVO.getRepeat().equals("Monthly")) {
-                eventVO.setNextMeetingTime(DateUtil.offsetMonth(eventVO.getMeetingTime(), 1));
+            String[] repeat = eventVO.getRepeat().split(" ");
+            if(repeat[2].equals("week") || repeat[2].equals("weeks")) {
+                eventVO.setNextMeetingTime(DateUtil.offsetWeek(eventVO.getMeetingTime(), Integer.parseInt(repeat[1])));
+            } else if(repeat[2].equals("month") || repeat[2].equals("months")) {
+                eventVO.setNextMeetingTime(DateUtil.offsetMonth(eventVO.getMeetingTime(), Integer.parseInt(repeat[1])));
             }
         }
         return PaginationUtil.pagination(eventVOList, dto.getPageNum(), dto.getPageSize());
     }
 
     public void insert(Event event) throws RuntimeException {
-        if(eventMapper.getEventByMeetingTime(event.getOrganiserId(), event.getMeetingTime().getTime()).size() != 0) {
-            throw new RuntimeException("Time slot has been occupied, please select another time and try again.");
+        EventQueryDTO dto = new EventQueryDTO();
+        dto.setUserRole("doctor");
+        dto.setUserId(event.getOrganiserId());
+        dto.setPatientFilter(event.getParticipantId());
+        dto.setPlatformFilter("");
+        dto.setResultFilter("Pending");
+        if(JSONUtil.toList(eventMapper.getEvents(dto), EventVO.class).size() != 0) {
+            throw new RuntimeException("You have scheduled a meeting with this patient.");
         }
         String id;
         if(eventMapper.getCount() == null) {
@@ -80,21 +91,40 @@ public class EventService {
     }
 
     public void update(Event event) throws RuntimeException {
-        JSONArray temp = eventMapper.getEventByMeetingTime(event.getOrganiserId(), event.getMeetingTime().getTime());
-        if(event.getResult().equals("Pending")
-                && temp.size() != 0
-                && !event.getId().equals(temp.getByPath("[0].id"))) {
-            throw new RuntimeException("Time slot has been occupied, please select another time and try again.");
-        }
+        String originalResult = getEventById(event.getId()).getResult();
         JSONObject jsonObject = JSONUtil.parseObj(event);
         jsonObject.putOpt("label", "Event");
         jsonObject.putOpt("name", "event_" + event.getId());
         eventMapper.update(event.getId(), JSONUtil.toJsonStr(jsonObject));
+        if(originalResult.equals("Pending") && !event.getResult().equals("Pending")) {
+            Event newEvent = new Event();
+            newEvent.setOrganiserId(event.getOrganiserId());
+            newEvent.setOrganiserName(event.getOrganiserName());
+            newEvent.setParticipantId(event.getParticipantId());
+            newEvent.setParticipantName(event.getParticipantName());
+            newEvent.setTitle(event.getTitle());
+            newEvent.setDescription(event.getDescription());
+            newEvent.setPlatform(event.getPlatform());
+            newEvent.setRepeat(event.getRepeat());
+            String[] repeat = event.getRepeat().split(" ");
+            if(repeat[2].equals("week") || repeat[2].equals("weeks")) {
+                newEvent.setMeetingTime(DateUtil.offsetWeek(event.getMeetingTime(), Integer.parseInt(repeat[1])));
+            } else if(repeat[2].equals("month") || repeat[2].equals("months")) {
+                newEvent.setMeetingTime(DateUtil.offsetMonth(event.getMeetingTime(), Integer.parseInt(repeat[1])));
+            }
+            insert(newEvent);
+        }
     }
 
     public void deleteBatch(List<String> eventIdList) {
         for(String eventId : eventIdList) {
             eventMapper.delete(eventId);
         }
+    }
+
+    public Event getEventById(String eventId) {
+        JSONArray jsonArray = eventMapper.getEventById(eventId);
+        List<Event> list = JSONUtil.toList(jsonArray, Event.class);
+        return list.size() == 0 ? null : list.get(0);
     }
 }

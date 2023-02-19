@@ -12,6 +12,10 @@ public class UserMapper {
     TableMapper tableMapper = new TableMapper(new BangDBConfig(), new RestTemplateBuilder());
     GraphMapper graphMapper = new GraphMapper(new BangDBConfig(), new RestTemplateBuilder());
 
+    public Integer getNHSUserId() {
+        return (Integer) graphMapper.runCypherQuery("S=>(User:*); RETURN COUNT(*) AS count").get("count") + 1;
+    }
+
     public JSONArray getUserById(String userId) {
         return (JSONArray) graphMapper.runCypherQuery("S=>(User:* {id=\"" + userId + "\"})").get("rows");
     }

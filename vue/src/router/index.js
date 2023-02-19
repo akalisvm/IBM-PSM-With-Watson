@@ -10,6 +10,11 @@ const routes = [
     redirect: "/login",
     children: [
       {
+        path: 'home',
+        name: 'Home',
+        component: () => import("@/views/Home.vue")
+      },
+      {
         path: 'dashboard',
         name: 'Dashboard',
         component: () => import("@/views/Dashboard.vue")
@@ -33,12 +38,7 @@ const routes = [
         path: 'events',
         name: 'Events',
         component: () => import("@/views/Events")
-      },
-      {
-        path: 'center',
-        name: 'Center',
-        component: () => import("@/views/Center")
-      },
+      }
     ]
   },
   {

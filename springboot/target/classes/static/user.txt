@@ -6,7 +6,7 @@
 6;Dylan;Garey;dylan.garey.test@gmail.com;+441414960482;123456;patient;Male;1978-01-02;3560568188;1
 7;Wayland;Butler;wayland.butler.test@gmail.com;+441614960593;123456;patient;Male;1989-03-27;1483612236;1
 8;Joetta;Beake;joetta.beake.test@gmail.com;+441614960262;123456;patient;Female;1987-05-15;8344899052;1
-9;Katrina;Perry;Katrina.perry.test@gmail.com;+441614960157;123456;patient;Female;1990-12-29;2366971540;1
-10;Oralee;Rigby;Oralee.rigby.test@gmail.com;+441414960124;123456;patient;Female;1993-01-19;0632916451;1
+9;Katrina;Perry;katrina.perry.test@gmail.com;+441614960157;123456;patient;Female;1990-12-29;2366971540;1
+10;Oralee;Rigby;oralee.rigby.test@gmail.com;+441414960124;123456;patient;Female;1993-01-19;0632916451;1
 11;Bertram;David;bertram.david.test@gmail.com;+441184960674;123456;patient;Male;1956-03-07;5966150575;1
 12;Pamella;Winter;pamella.winter.test@gmail.com;+441314960675;123456;patient;Female;2000-08-21;2451116250;1

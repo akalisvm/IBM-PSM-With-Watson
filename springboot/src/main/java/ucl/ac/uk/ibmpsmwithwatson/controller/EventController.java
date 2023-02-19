@@ -19,8 +19,8 @@ public class EventController {
     EventService eventService;
 
     @GetMapping("/dashboard/{doctorId}")
-    public Result<?> getUpcomingEventsInDashboard(@PathVariable String doctorId) {
-        return null;
+    public Result<?> getUpcomingEvents(@PathVariable String doctorId) {
+        return Result.success(eventService.getUpcomingEvents(doctorId));
     }
 
     @PostMapping("/get")

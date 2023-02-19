@@ -22,9 +22,9 @@
         <el-icon v-if="!isCollapse"><Fold /></el-icon>
         <el-icon v-if="isCollapse"><Expand /></el-icon>
       </el-button>
-      <el-menu-item index="/center" v-if="this.user.role==='patient'">
+      <el-menu-item index="/home" v-if="this.user.role==='patient'">
         <el-icon><HomeFilled /></el-icon>
-        <span>Personal Center</span>
+        <span>My Home</span>
       </el-menu-item>
       <el-menu-item index="/dashboard" v-if="this.user.role==='doctor'">
         <el-icon><Histogram /></el-icon>

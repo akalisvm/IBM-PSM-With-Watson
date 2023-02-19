@@ -208,9 +208,28 @@
         </el-form-item>
         <el-form-item prop="repeat" label="Repeat">
           <el-select v-model="scheduleForm.repeat" clearable>
-            <el-option label="Does not repeat" value="Does not repeat" />
-            <el-option label="Weekly" value="Weekly" />
-            <el-option label="Monthly" value="Monthly" />
+            <el-option-group>
+              <el-option label="Does not repeat" value="Does not repeat" />
+            </el-option-group>
+            <el-option-group label="Repeat weekly">
+              <el-option label="Every 1 week" value="Every 1 week" />
+              <el-option label="Every 2 weeks" value="Every 2 weeks" />
+              <el-option label="Every 3 weeks" value="Every 3 weeks" />
+              <el-option label="Every 4 weeks" value="Every 4 weeks" />
+              <el-option label="Every 5 weeks" value="Every 5 weeks" />
+              <el-option label="Every 6 weeks" value="Every 6 weeks" />
+              <el-option label="Every 7 weeks" value="Every 7 weeks" />
+              <el-option label="Every 8 weeks" value="Every 8 weeks" />
+              <el-option label="Every 9 weeks" value="Every 9 weeks" />
+              <el-option label="Every 10 weeks" value="Every 10 weeks" />
+              <el-option label="Every 11 weeks" value="Every 11 weeks" />
+              <el-option label="Every 12 weeks" value="Every 12 weeks" />
+            </el-option-group>
+            <el-option-group label="Repeat monthly">
+              <el-option label="Every 1 month" value="Every 1 month" />
+              <el-option label="Every 2 months" value="Every 2 months" />
+              <el-option label="Every 3 months" value="Every 3 months" />
+            </el-option-group>
           </el-select>
         </el-form-item>
       </el-form>
@@ -380,11 +399,14 @@ export default {
               this.clickOn = ""
               this.dialogVisible = false
             } else {
+              console.log(res.msg)
               this.$message({
                 type: "error",
                 message: res.msg,
                 customClass: "font"
               })
+              this.clickOn = ""
+              this.dialogVisible = false
             }
           })
         } else {

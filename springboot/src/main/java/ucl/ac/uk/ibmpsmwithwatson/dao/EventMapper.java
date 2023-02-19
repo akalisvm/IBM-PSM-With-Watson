@@ -26,6 +26,20 @@ public class EventMapper {
         tableMapper.updateCount(EVENT, count);
     }
 
+    public JSONArray getUpcomingEvents(String doctorId, Long meetingTime) {
+        return (JSONArray) graphMapper.runCypherQuery(
+                "S=>(@e Event:*); " +
+                        "RETURN " +
+                        "e.id AS id " +
+                        "e.organiserId AS organiserId " +
+                        "e.meetingTime AS meetingTime " +
+                        "WHERE " +
+                        "organiserId=\"" + doctorId + "\" " +
+                        "meetingTime>" + meetingTime + " " +
+                        "SORT_ASC meetingTime"
+        ).get("rows");
+    }
+
     public JSONArray getEvents(EventQueryDTO dto) {
         StringBuilder cypher = new StringBuilder("S=>(@e Event:*); " +
                 "RETURN " +
@@ -61,17 +75,8 @@ public class EventMapper {
         return (JSONArray) graphMapper.runCypherQuery(cypher.toString()).get("rows");
     }
 
-    public JSONArray getEventByMeetingTime(String doctorId, Long meetingTime) {
-        return (JSONArray) graphMapper.runCypherQuery(
-                "S=>(@e Event:*); " +
-                        "RETURN " +
-                        "e.id AS id " +
-                        "e.organiserId AS organiserId " +
-                        "e.meetingTime AS meetingTime " +
-                        "WHERE " +
-                        "organiserId=\"" + doctorId + "\" " +
-                        "meetingTime=" + meetingTime
-        ).get("rows");
+    public JSONArray getEventById(String eventId) {
+        return (JSONArray) graphMapper.runCypherQuery("S=>(Event:* {id=\"" + eventId + "\"})").get("rows");
     }
 
     public JSONArray getLastMeetingTime(String doctorId, String patientId, Long meetingTime) {

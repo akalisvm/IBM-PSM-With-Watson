@@ -73,7 +73,7 @@ export default {
           request.post("/login/app", this.form).then(res => {
             if(res.code === "10000") {
               if(res.data.role === "patient") {
-                this.$router.push("/center")
+                this.$router.push("/home")
               } else {
                 this.$router.push("/dashboard")
               }

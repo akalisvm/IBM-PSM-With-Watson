@@ -44,9 +44,6 @@ public class UserService {
     public User getUserById(String userId) {
         JSONArray jsonArray = userMapper.getUserById(userId);
         List<User> list = JSONUtil.toList(jsonArray, User.class);
-        if(list.size() == 0) {
-            return null;
-        }
-        return list.get(0);
+        return list.size() == 0 ? null : list.get(0);
     }
 }

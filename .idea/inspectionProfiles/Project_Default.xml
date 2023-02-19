@@ -11,7 +11,7 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="9">
+          <list size="11">
             <item index="0" class="java.lang.String" itemvalue="v-if" />
             <item index="1" class="java.lang.String" itemvalue="#default" />
             <item index="2" class="java.lang.String" itemvalue="v-loading" />
@@ -21,6 +21,8 @@
             <item index="6" class="java.lang.String" itemvalue="#append" />
             <item index="7" class="java.lang.String" itemvalue="v-else-if" />
             <item index="8" class="java.lang.String" itemvalue="#content" />
+            <item index="9" class="java.lang.String" itemvalue="v-for" />
+            <item index="10" class="java.lang.String" itemvalue=":key" />
           </list>
         </value>
       </option>
@@ -29,7 +31,7 @@
     <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="49">
+          <list size="52">
             <item index="0" class="java.lang.String" itemvalue="nobr" />
             <item index="1" class="java.lang.String" itemvalue="noembed" />
             <item index="2" class="java.lang.String" itemvalue="comment" />
@@ -79,6 +81,9 @@
             <item index="46" class="java.lang.String" itemvalue="el-row" />
             <item index="47" class="java.lang.String" itemvalue="el-alert" />
             <item index="48" class="java.lang.String" itemvalue="el-empty" />
+            <item index="49" class="java.lang.String" itemvalue="el-option-group" />
+            <item index="50" class="java.lang.String" itemvalue="el-divider" />
+            <item index="51" class="java.lang.String" itemvalue="el-header" />
           </list>
         </value>
       </option>

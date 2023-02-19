@@ -31,7 +31,7 @@ public class LoginController {
     public Result<?> checkNHSLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
         User nhsUser = loginService.checkNHSLogin(code);
         setUserInfoCookie(nhsUser, response);
-        response.sendRedirect("http://" + IP + ":8080/center");
+        response.sendRedirect("http://" + IP + ":8080/home");
         return Result.success(nhsUser);
     }
 

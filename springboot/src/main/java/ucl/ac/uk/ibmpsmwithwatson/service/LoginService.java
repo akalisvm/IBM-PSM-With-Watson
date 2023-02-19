@@ -34,9 +34,10 @@ public class LoginService {
         User nhsUser = nhsLoginClient.getUserInfo(accessToken);
         nhsUser.setRole("patient");
         if(getUserByEmail(nhsUser.getEmail()) == null) {
-            TableMapper tableMapper = new TableMapper(new BangDBConfig(), new RestTemplateBuilder());
             GraphMapper graphMapper = new GraphMapper(new BangDBConfig(), new RestTemplateBuilder());
-            graphMapper.addNode("User", "user_" + (tableMapper.getCount("User") + 1),
+            String id = String.valueOf(userMapper.getNHSUserId());
+            nhsUser.setId(id);
+            graphMapper.addNode("User", "user_" + id,
                     JSONUtil.parseObj(nhsUser, false).toString());
         }
         nhsUser.setApp_token(JwtUtil.getToken(MapUtil.toUserMap(nhsUser)));
@@ -55,10 +56,7 @@ public class LoginService {
 
     private User getUserByEmail(String email) {
         JSONArray jsonArray = userMapper.getUserByEmail(email);
-        List<User> userList = JSONUtil.toList(jsonArray, User.class);
-        if(userList.size() == 0) {
-            return null;
-        }
-        return userList.get(0);
+        List<User> list = JSONUtil.toList(jsonArray, User.class);
+        return list.size() == 0 ? null : list.get(0);
     }
 }

@@ -55,6 +55,13 @@
           <template #header>
             <span>Upcoming Events</span>
           </template>
+          <ul class="infinite-list"  style="overflow: auto">
+            <li v-for="i in upcomingEvents.length" :key="i" >
+              <el-card shadow="hover" class="infinite-list-item">
+                {{ this.upcomingEvents[i - 1] }}
+              </el-card>
+            </li>
+          </ul>
         </el-card>
       </el-col>
     </el-row>
@@ -65,6 +72,7 @@
 <script>
 import request from "@/utils/request";
 import { getCookie } from "@/utils/cookie";
+import { formatDate } from "@/utils/date";
 
 export default {
   name: "Dashboard.vue",
@@ -74,6 +82,7 @@ export default {
       numberOfPatients: 0,
       numberOfTemplates: 0,
       numberOfQuestionnaires: 0,
+      upcomingEvents: ['a', 'b', 'c', 'd', 'e']
     }
   },
   created() {
@@ -93,7 +102,28 @@ export default {
       request.get("/questionnaires/number/" + this.user.id).then(res => {
         this.numberOfQuestionnaires = res.data
       })
+    },
+    formatDate(time) {
+      return formatDate(new Date(time), "yyyy-MM-dd HH:mm")
     }
   }
 }
 </script>
+
+<style>
+.infinite-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.infinite-list .infinite-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 15vh;
+  margin-bottom: 10px;
+}
+.infinite-list .infinite-list-item + .list-item {
+  margin-top: 10px;
+}
+</style>

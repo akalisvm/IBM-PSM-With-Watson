@@ -217,14 +217,33 @@
         </el-form-item>
         <el-form-item prop="repeat" label="Repeat">
           <el-select v-model="eventForm.repeat" clearable>
-            <el-option label="Does not repeat" value="Does not repeat" />
-            <el-option label="Weekly" value="Weekly" />
-            <el-option label="Monthly" value="Monthly" />
+            <el-option-group>
+              <el-option label="Does not repeat" value="Does not repeat" />
+            </el-option-group>
+            <el-option-group label="Repeat weekly">
+              <el-option label="Every 1 week" value="Every 1 week" />
+              <el-option label="Every 2 weeks" value="Every 2 weeks" />
+              <el-option label="Every 3 weeks" value="Every 3 weeks" />
+              <el-option label="Every 4 weeks" value="Every 4 weeks" />
+              <el-option label="Every 5 weeks" value="Every 5 weeks" />
+              <el-option label="Every 6 weeks" value="Every 6 weeks" />
+              <el-option label="Every 7 weeks" value="Every 7 weeks" />
+              <el-option label="Every 8 weeks" value="Every 8 weeks" />
+              <el-option label="Every 9 weeks" value="Every 9 weeks" />
+              <el-option label="Every 10 weeks" value="Every 10 weeks" />
+              <el-option label="Every 11 weeks" value="Every 11 weeks" />
+              <el-option label="Every 12 weeks" value="Every 12 weeks" />
+            </el-option-group>
+            <el-option-group label="Repeat monthly">
+              <el-option label="Every 1 month" value="Every 1 month" />
+              <el-option label="Every 2 months" value="Every 2 months" />
+              <el-option label="Every 3 months" value="Every 3 months" />
+            </el-option-group>
           </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <el-button @click="rescheduleDialogVisible = false">Cancel</el-button>
         <el-button type="primary" @click="submit">Submit</el-button>
       </template>
     </el-dialog>
@@ -242,7 +261,6 @@
         </el-form-item>
         <el-form-item prop="result" label="Result">
           <el-select v-model="eventForm.result" clearable>
-            <el-option label="Pending" value="Pending" />
             <el-option label="Success" value="Success" />
             <el-option label="Fail" value="Fail" />
           </el-select>
@@ -252,7 +270,7 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <el-button @click="giveDialogVisible = false">Cancel</el-button>
         <el-button type="primary" @click="submit">Submit</el-button>
       </template>
     </el-dialog>
@@ -381,7 +399,7 @@ export default {
         if(res.code === "10000") {
           this.$message({
             type: "success",
-            message: "You have deleted selected records.",
+            message: "You have deleted selected events.",
             customClass: "font"
           })
           this.load()

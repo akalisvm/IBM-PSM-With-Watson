@@ -413,7 +413,7 @@ import { getCookie } from "@/utils/cookie";
 import { formatDate } from "@/utils/date";
 
 export default {
-  name: "Center",
+  name: "Home",
   data() {
     return {
       user: {},
