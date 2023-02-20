@@ -19,6 +19,16 @@ public class RecordController {
     @Autowired
     RecordService recordService;
 
+    @GetMapping("/history/xdata")
+    public Result<?> getHistoryXData() {
+        return Result.success(recordService.getHistoryXData());
+    }
+
+    @GetMapping("/history/ydata/{doctorId}")
+    public Result<?> getHistoryYData(@PathVariable String doctorId) {
+        return Result.success(recordService.getHistoryYData(doctorId));
+    }
+
     @PostMapping("/get")
     public Result<?> getRecords(@RequestBody RecordQueryDTO dto) {
         Page page = recordService.getRecords(dto);

@@ -16,12 +16,10 @@
   </div>
 </template>
 
-<style>
-</style>
-
 <script>
 import Aside from "@/components/Aside";
 import Header from "@/components/Header";
+
 export default {
   name: "Layout",
   components: {

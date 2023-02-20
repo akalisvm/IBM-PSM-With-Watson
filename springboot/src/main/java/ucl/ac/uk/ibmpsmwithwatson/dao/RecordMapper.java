@@ -25,6 +25,12 @@ public class RecordMapper {
         tableMapper.updateCount(RECORD, count);
     }
 
+    public Integer getNumberOfRecordsByPatientId(String patientId, Long startTime, Long endTime) {
+        return (Integer) graphMapper.runCypherQuery("S=>(@r Record:*); " +
+                "RETURN r.id AS id r.createTime AS createTime r.creatorId AS creatorId " +
+                "WHERE createTime>=" + startTime + " createTime<=" + endTime + " creatorId=\"" + patientId + "\"").get("num_items");
+    }
+
     public JSONArray getRecords(String patientId) {
         return (JSONArray) graphMapper.runCypherQuery(
                 "S=>(Record:* {creatorId=\"" + patientId + "\"}); RETURN * SORT_DESC createTime").get("rows");

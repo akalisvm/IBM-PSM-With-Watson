@@ -1,5 +1,6 @@
 package ucl.ac.uk.ibmpsmwithwatson.service;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,35 @@ public class RecordService {
 
     @Autowired
     RecordMapper recordMapper;
+
+    public List<String> getHistoryXData() {
+        List<String> xData = new ArrayList<>();
+        Date today = DateUtil.endOfDay(new Date());
+        xData.add(DateUtil.format(today, "yyyy-MM-dd"));
+        for(int i = 1; i < 7; i++) {
+            xData.add(0, DateUtil.format(DateUtil.offsetDay(today, -1 * i), "yyyy-MM-dd"));
+        }
+        return xData;
+    }
+
+    public List<Integer> getHistoryYData(String doctorId) {
+        List<User> patientList = JSONUtil.toList(userMapper.getPatientsByDoctorId(doctorId), User.class);
+        Long[] xData = new Long[8];
+        Date today = DateUtil.endOfDay(new Date());
+        xData[7] = today.getTime();
+        for(int i = 1; i <= 7; i++) {
+            xData[7 - i] = DateUtil.offsetDay(today, -1 * i).getTime();
+        }
+        List<Integer> yData = new ArrayList<>();
+        for(int i = 1; i <= 7; i++) {
+            int count = 0;
+            for(User patient : patientList) {
+                count += recordMapper.getNumberOfRecordsByPatientId(patient.getId(), xData[i - 1], xData[i]);
+            }
+            yData.add(count);
+        }
+        return yData;
+    }
 
     public Page getRecords(RecordQueryDTO dto) {
         List<RecordVO> recordVOList = new ArrayList<>();
