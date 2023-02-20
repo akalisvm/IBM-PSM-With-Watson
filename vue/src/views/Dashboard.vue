@@ -44,8 +44,9 @@
           <el-col :span="24">
             <el-card style="margin-top: 20px; height: 57vh; font-weight: bold">
               <template #header>
-                <span>Questionnaire History</span>
+                <span>Healthcare Records History</span>
               </template>
+              <div v-loading="loading" class="echart" id="mychart" :style="myChartStyle" />
             </el-card>
           </el-col>
         </el-row>
@@ -81,6 +82,7 @@
 import request from "@/utils/request";
 import { getCookie } from "@/utils/cookie";
 import { formatDate } from "@/utils/date";
+import * as echarts from "echarts";
 
 export default {
   name: "Dashboard.vue",
@@ -90,7 +92,12 @@ export default {
       numberOfPatients: 0,
       numberOfTemplates: 0,
       numberOfQuestionnaires: 0,
-      upcomingEvents: ['a', 'b', 'c', 'd', 'e']
+      upcomingEvents: [],
+      loading: false,
+      myChart: {},
+      xData: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"],
+      yData: [0, 0, 0, 0, 0, 0, 0],
+      myChartStyle: { float: "left", width: "100%", height: "50vh" }
     }
   },
   created() {
@@ -98,6 +105,18 @@ export default {
     this.$nextTick(() => {
       this.load()
     })
+  },
+  watch: {
+    myChart: {
+      handler() {
+        this.loading = false
+      },
+      immediate: true
+    }
+  },
+  mounted() {
+    this.loading = true
+    this.initEcharts()
   },
   methods: {
     load() {
@@ -113,6 +132,40 @@ export default {
       request.get("/events/upcoming/" + this.user.id).then(res => {
         this.upcomingEvents = res.data
       })
+    },
+    async initEcharts() {
+      await request.get("/records/history/xdata").then(res => {
+        this.xData = res.data
+      })
+      await request.get("/records/history/ydata/" + this.user.id).then(res => {
+        this.yData = res.data
+        console.log('in the request method:')
+        console.log(this.yData)
+      })
+      console.log('initEcharts method:')
+      console.log(this.yData)
+      const option = {
+        xAxis: {
+          data: this.xData
+        },
+        yAxis: {},
+        series: [
+          {
+            data: this.yData,
+            type: "line",
+            label: {
+              show: true,
+              position: "top",
+              fontSize: 16
+            }
+          }
+        ]
+      };
+      this.myChart = echarts.init(document.getElementById("mychart"));
+      this.myChart.setOption(option);
+      window.addEventListener("resize", () => {
+        this.myChart.resize();
+      });
     },
     formatDate(time) {
       return formatDate(new Date(time), "yyyy-MM-dd HH:mm")

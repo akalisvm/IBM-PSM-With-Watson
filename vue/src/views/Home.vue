@@ -530,7 +530,6 @@ export default {
           }
           this.fillLoading = false
         }, 200)
-
       } else {
         this.$message({
           type: "error",
