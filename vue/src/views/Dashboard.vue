@@ -51,21 +51,29 @@
         </el-row>
       </el-col>
       <el-col :span="6">
-        <el-card style="height: 89vh; font-weight: bold">
+        <el-card style="height: 89vh">
           <template #header>
-            <span>Upcoming Events</span>
+            <span style="font-weight: bold">Upcoming Events</span>
           </template>
           <ul class="infinite-list"  style="overflow: auto">
             <li v-for="i in upcomingEvents.length" :key="i" >
               <el-card shadow="hover" class="infinite-list-item">
-                {{ this.upcomingEvents[i - 1] }}
+                <span style="font-size: large; font-weight: bold">{{ this.upcomingEvents[i - 1].title }}</span>
+                <br />
+                <div style="height: 10px"></div>
+                <span>{{ this.upcomingEvents[i - 1].platform }}</span>
+                <br />
+                <div style="height: 10px"></div>
+                <span>{{ formatDate(this.upcomingEvents[i - 1].meetingTime) }}, {{ this.upcomingEvents[i - 1].participantName }}</span>
+                <br />
+                <div style="height: 10px"></div>
+                <span>{{ this.upcomingEvents[i - 1].repeat }}</span>
               </el-card>
             </li>
           </ul>
         </el-card>
       </el-col>
     </el-row>
-
   </div>
 </template>
 
@@ -102,6 +110,9 @@ export default {
       request.get("/questionnaires/number/" + this.user.id).then(res => {
         this.numberOfQuestionnaires = res.data
       })
+      request.get("/events/upcoming/" + this.user.id).then(res => {
+        this.upcomingEvents = res.data
+      })
     },
     formatDate(time) {
       return formatDate(new Date(time), "yyyy-MM-dd HH:mm")
@@ -118,12 +129,7 @@ export default {
 }
 .infinite-list .infinite-list-item {
   display: flex;
-  align-items: center;
-  justify-content: center;
   height: 15vh;
   margin-bottom: 10px;
-}
-.infinite-list .infinite-list-item + .list-item {
-  margin-top: 10px;
 }
 </style>

@@ -32,7 +32,11 @@ public class EventMapper {
                         "RETURN " +
                         "e.id AS id " +
                         "e.organiserId AS organiserId " +
+                        "e.participantName AS participantName " +
+                        "e.title AS title " +
+                        "e.platform AS platform " +
                         "e.meetingTime AS meetingTime " +
+                        "e.repeat AS repeat " +
                         "WHERE " +
                         "organiserId=\"" + doctorId + "\" " +
                         "meetingTime>" + meetingTime + " " +

@@ -18,7 +18,7 @@ public class EventController {
     @Autowired
     EventService eventService;
 
-    @GetMapping("/dashboard/{doctorId}")
+    @GetMapping("/upcoming/{doctorId}")
     public Result<?> getUpcomingEvents(@PathVariable String doctorId) {
         return Result.success(eventService.getUpcomingEvents(doctorId));
     }
