@@ -32,7 +32,7 @@ public class insertDataFromTxt {
     public static void insertDataToTable(String table, String filename, String[] attr) {
         try {
             TableMapper tableMapper = new TableMapper(new BangDBConfig(), new RestTemplateBuilder());
-            ClassPathResource classPathResource = new ClassPathResource("static" + File.separator + filename);
+            ClassPathResource classPathResource = new ClassPathResource(filename);
             InputStream inputStream = classPathResource.getStream();
             InputStreamReader reader = new InputStreamReader(inputStream);
             BufferedReader br = new BufferedReader(reader);
@@ -67,7 +67,7 @@ public class insertDataFromTxt {
         try {
             TableMapper tableMapper = new TableMapper(new BangDBConfig(), new RestTemplateBuilder());
             GraphMapper graphMapper = new GraphMapper(new BangDBConfig(), new RestTemplateBuilder());
-            ClassPathResource classPathResource = new ClassPathResource("static" + File.separator + filename);
+            ClassPathResource classPathResource = new ClassPathResource(filename);
             InputStream inputStream = classPathResource.getStream();
             InputStreamReader reader = new InputStreamReader(inputStream);
             BufferedReader br = new BufferedReader(reader);
