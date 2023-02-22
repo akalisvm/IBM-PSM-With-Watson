@@ -38,6 +38,11 @@ const routes = [
         path: 'events',
         name: 'Events',
         component: () => import("@/views/Events")
+      },
+      {
+        path: 'audio',
+        name: 'Audio',
+        component: () => import("@/views/Audio.vue")
       }
     ]
   },

@@ -46,6 +46,10 @@
         <el-icon><Platform /></el-icon>
         <span>Outreach Events</span>
       </el-menu-item>
+      <el-menu-item index="/audio" v-if="this.user.role==='doctor'">
+        <el-icon><Microphone /></el-icon>
+        <span>Test Audio</span>
+      </el-menu-item>
     </el-menu>
   </div>
 </template>

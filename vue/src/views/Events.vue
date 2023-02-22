@@ -62,6 +62,7 @@
             </el-button>
           </template>
         </el-popconfirm>
+        <Recorder />
       </div>
       <!-- Outreach Events Table Area -->
       <div v-loading="loading" style="margin-top: 20px; min-height: 46vh">
@@ -481,21 +482,25 @@ export default {
     },
     formatDate(time) {
       return formatDate(new Date(time), "yyyy-MM-dd HH:mm")
+    },
+    record() {
+      window.navigator.mediaDevices.getUserMedia({
+        audio: true
+      }).then(mediaStream => {
+        console.log(mediaStream);
+        this.beginRecord(mediaStream);
+      }).catch(err => {
+        console.error(err);
+      });
+    },
+    beginRecord(mediaStream) {
+      let audioContext = new (window.AudioContext || window.webkitAudioContext);
+      let mediaNode = audioContext.createMediaStreamSource(mediaStream);
+      // The voice record will play automatically if you use 'connect' here.
+      // mediaNode.connect(audioContext.destination);
     }
   }
 }
-
-window.watsonAssistantChatOptions = {
-  integrationID: "3d6702df-1c29-43dd-acbf-ca05b8c5d99c", // The ID of this integration.
-  region: "eu-gb", // The region your integration is hosted in.
-  serviceInstanceID: "3074a022-733c-4ccf-8389-a74bdcdb89a3", // The ID of your service instance.
-  onLoad: function(instance) { instance.render(); }
-};
-setTimeout(function(){
-  const t=document.createElement('script');
-  t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
-  document.head.appendChild(t);
-});
 </script>
 
 <style>
