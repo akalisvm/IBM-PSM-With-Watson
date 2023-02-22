@@ -25,6 +25,9 @@ public class NHSLoginClient {
     @Value("${server.ip}")
     private String IP;
 
+    @Value("{server.port}")
+    private String port;
+
     private final NHSLoginConfig nhsLoginConfig;
     private final RestTemplate restTemplate;
 
@@ -45,7 +48,7 @@ public class NHSLoginClient {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("grant_type", "authorization_code");
         map.add("code", code);
-        map.add("redirect_uri", "http://" + IP + ":9090/login/nhs");
+        map.add("redirect_uri", "http://" + IP + ":" + port + "/login/nhs");
         map.add("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer");
         map.add("client_assertion", NHSLoginTokenService.getJws(nhsLoginConfig.getClientId(), nhsLoginConfig.getTokenEndpoint()));
 

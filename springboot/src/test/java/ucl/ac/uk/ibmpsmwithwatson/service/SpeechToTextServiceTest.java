@@ -11,7 +11,7 @@ public class SpeechToTextServiceTest {
     SpeechToTextService speechToTextService;
 
     @Test
-    public void getTextTranscriptFromSpeech() throws InterruptedException {
-        System.out.println(speechToTextService.getTextTranscriptFromSpeech("examples_static_audio.wav"));
+    public void getTextTranscriptFromSpeech() throws Exception {
+        System.out.println(speechToTextService.getTranscriptByFilename("examples_static_audio.wav"));
     }
 }
