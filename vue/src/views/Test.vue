@@ -1,14 +1,15 @@
 <template>
   <Recorder />
+  <Assistant />
 </template>
 
 <script>
 import Recorder from '@/components/Recorder'
 
 export default {
-  name: "Audio.vue",
+  name: "Test",
   components: {
     Recorder
-  },
+  }
 }
 </script>

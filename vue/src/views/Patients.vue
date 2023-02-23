@@ -67,7 +67,6 @@
             :total="total" />
       </div>
     </el-card>
-
   </div>
 </template>
 

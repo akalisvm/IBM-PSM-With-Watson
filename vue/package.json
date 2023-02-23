@@ -12,10 +12,14 @@
     "core-js": "^3.8.3",
     "echarts": "^5.4.1",
     "element-plus": "^2.2.21",
+    "element-ui": "^2.15.13",
     "ibm-watson": "^5.3.1",
     "js-audio-recorder": "^1.0.7",
+    "jwchat": "^1.0.11",
     "vue": "^3.2.13",
+    "vue-beautiful-chat": "^2.5.0",
     "vue-router": "^4.0.3",
+    "vue3-beautiful-chat": "^3.3.1",
     "vuex": "^4.0.0"
   },
   "devDependencies": {

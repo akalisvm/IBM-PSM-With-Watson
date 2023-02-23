@@ -9,7 +9,8 @@
           <Aside v-on:getIsCollapse="getIsCollapseHandle" v-bind:isCollapse="fIsCollapse" />
         </el-aside>
         <el-main>
-          <router-view/>
+          <router-view />
+          <Assistant />
         </el-main>
       </el-container>
     </el-container>
@@ -19,12 +20,14 @@
 <script>
 import Aside from "@/components/Aside";
 import Header from "@/components/Header";
+import Assistant from "@/components/Assistant"
 
 export default {
   name: "Layout",
   components: {
     Aside,
-    Header
+    Header,
+    Assistant
   },
   data() {
     return {

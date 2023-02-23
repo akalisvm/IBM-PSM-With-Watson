@@ -85,7 +85,7 @@ import { formatDate } from "@/utils/date";
 import * as echarts from "echarts";
 
 export default {
-  name: "Dashboard.vue",
+  name: "Dashboard",
   data() {
     return {
       user: {},

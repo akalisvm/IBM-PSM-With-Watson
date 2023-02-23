@@ -27,7 +27,7 @@
         <span>My Home</span>
       </el-menu-item>
       <el-menu-item index="/dashboard" v-if="this.user.role==='doctor'">
-        <el-icon><Histogram /></el-icon>
+        <el-icon><TrendCharts /></el-icon>
         <span>Dashboard</span>
       </el-menu-item>
       <el-menu-item index="/patients" v-if="this.user.role==='doctor'">
@@ -39,16 +39,16 @@
         <span>Questionnaires</span>
       </el-menu-item>
       <el-menu-item index="/records" v-if="this.user.role==='doctor'">
-        <el-icon><TrendCharts /></el-icon>
+        <el-icon><Files /></el-icon>
         <span>Healthcare Records</span>
       </el-menu-item>
       <el-menu-item index="/events" v-if="this.user.role==='doctor'">
         <el-icon><Platform /></el-icon>
         <span>Outreach Events</span>
       </el-menu-item>
-      <el-menu-item index="/audio" v-if="this.user.role==='doctor'">
-        <el-icon><Microphone /></el-icon>
-        <span>Test Audio</span>
+      <el-menu-item index="/test" v-if="this.user.role==='doctor'">
+        <el-icon><WarnTriangleFilled /></el-icon>
+        <span>Test Area</span>
       </el-menu-item>
     </el-menu>
   </div>
