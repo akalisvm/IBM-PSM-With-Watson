@@ -15,6 +15,7 @@ public class AssistantServiceTest {
     public void getTextResponse() {
         Assistant assistant = assistantService.authenticate();
         String sessionId = assistantService.createSession(assistant);
+        System.out.println(sessionId);
         System.out.println(assistantService.getResponse(assistant, sessionId, "How are you"));
         assistantService.deleteSession(assistant, sessionId);
     }

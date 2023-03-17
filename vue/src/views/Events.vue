@@ -482,22 +482,6 @@ export default {
     },
     formatDate(time) {
       return formatDate(new Date(time), "yyyy-MM-dd HH:mm")
-    },
-    record() {
-      window.navigator.mediaDevices.getUserMedia({
-        audio: true
-      }).then(mediaStream => {
-        console.log(mediaStream);
-        this.beginRecord(mediaStream);
-      }).catch(err => {
-        console.error(err);
-      });
-    },
-    beginRecord(mediaStream) {
-      let audioContext = new (window.AudioContext || window.webkitAudioContext);
-      let mediaNode = audioContext.createMediaStreamSource(mediaStream);
-      // The voice record will play automatically if you use 'connect' here.
-      // mediaNode.connect(audioContext.destination);
     }
   }
 }

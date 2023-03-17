@@ -1,5 +1,5 @@
 <template>
-  <el-button @click="startRecord" circle>
+  <el-button size="large" @click="startRecord" circle>
     <el-icon><Microphone /></el-icon>
   </el-button>
   <el-dialog v-model="dialogVisible" width="30%" draggable style="font-family: Arial, sans-serif;">
@@ -51,12 +51,6 @@ export default {
     },
     stopRecord() {
       this.recorder.stop();
-    },
-    playRecord() {
-      this.recorder && this.recorder.play()
-    },
-    downloadWAVRecord() {
-      this.recorder.downloadWAV("audio-file");
     },
     getTranscript() {
       let wavBlob = this.recorder.getWAVBlob();

@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { getCookie } from "@/utils/cookie"
+import { getCookie } from "@/utils/cookie";
 
 export default {
   name: "Aside",

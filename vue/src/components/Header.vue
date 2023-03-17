@@ -23,13 +23,15 @@
 </template>
 
 <script>
-import { getCookie } from "@/utils/cookie"
+import request from "@/utils/request";
+import { getCookie } from "@/utils/cookie";
 
 export default {
   name: "Header",
   data() {
     return {
       user: {},
+      sessionId: "",
       login: false
     }
   },
@@ -40,10 +42,14 @@ export default {
     } else {
       this.login = false
     }
+    if(getCookie("sessionId")) {
+      this.sessionId = getCookie("sessionId")
+    }
   },
   methods: {
     goToLogin() {
       this.$router.push("/login")
+      request.get("/assistant/delete/" + this.sessionId)
     }
   }
 }

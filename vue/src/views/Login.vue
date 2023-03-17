@@ -65,6 +65,9 @@ export default {
     if(getCookie("user")) {
       delCookie("user")
     }
+    if(getCookie("sessionId")) {
+      delCookie("sessionId")
+    }
   },
   methods: {
     login() {

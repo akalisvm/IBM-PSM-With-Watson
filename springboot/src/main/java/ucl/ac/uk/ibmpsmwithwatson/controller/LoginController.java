@@ -2,10 +2,12 @@ package ucl.ac.uk.ibmpsmwithwatson.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ibm.watson.assistant.v2.Assistant;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import ucl.ac.uk.ibmpsmwithwatson.service.AssistantService;
 import ucl.ac.uk.ibmpsmwithwatson.service.LoginService;
 import ucl.ac.uk.ibmpsmwithwatson.util.Result;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.po.User;
@@ -26,6 +28,9 @@ public class LoginController {
 
     @Autowired
     LoginService loginService;
+
+    @Autowired
+    AssistantService assistantService;
 
     @GetMapping("/nhs")
     public Result<?> checkNHSLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
@@ -48,9 +53,15 @@ public class LoginController {
     private void setUserInfoCookie(User user, HttpServletResponse response) throws UnsupportedEncodingException, JsonProcessingException {
         ObjectMapper om = new ObjectMapper();
         String userInfo = URLEncoder.encode(om.writeValueAsString(user), "UTF-8");
-        Cookie cookie = new Cookie("user", userInfo);
-        cookie.setPath("/");
-        cookie.setMaxAge(3600 * 24);
-        response.addCookie(cookie);
+        Cookie userCookie = new Cookie("user", userInfo);
+        userCookie.setPath("/");
+        userCookie.setMaxAge(3600 * 24);
+        response.addCookie(userCookie);
+        Assistant assistant = assistantService.authenticate();
+        String sessionId = assistantService.createSession(assistant);
+        Cookie sessionIdCookie = new Cookie("sessionId", sessionId);
+        sessionIdCookie.setPath("/");
+        sessionIdCookie.setMaxAge(3600 * 24);
+        response.addCookie(sessionIdCookie);
     }
 }

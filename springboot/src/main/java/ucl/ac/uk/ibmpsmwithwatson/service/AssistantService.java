@@ -24,10 +24,10 @@ public class AssistantService {
         return assistant.createSession(options).execute().getResult().getSessionId();
     }
 
-    public MessageResponse getResponse(Assistant assistant, String sessionId, String text) {
+    public String getResponse(Assistant assistant, String sessionId, String text) {
         MessageInput input = new MessageInput.Builder().messageType("text").text(text).build();
         MessageOptions options = new MessageOptions.Builder(EnvironmentID, sessionId).input(input).build();
-        return assistant.message(options).execute().getResult();
+        return assistant.message(options).execute().getResult().getOutput().getGeneric().get(0).text();
     }
 
     public void deleteSession(Assistant assistant, String sessionID) {
