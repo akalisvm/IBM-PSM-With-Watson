@@ -22,26 +22,40 @@
         @edit="editMessage">
     </beautiful-chat>
   </div>
-  <div class="microphone">
-    <Recorder v-if="this.microphoneVisible === true" />
+  <div class="recorder" v-if="this.recorderVisible === true">
+    <el-button size="large" @click="startRecord" circle>
+      <el-icon><Microphone /></el-icon>
+    </el-button>
+    <el-dialog v-model="dialogVisible" width="30%" draggable style="font-family: Arial, sans-serif;">
+      <span v-if="this.process === 'start'">Recording audio...</span>
+      <span v-if="this.process === 'submit'">Recognising the transcript...</span>
+      <template #footer>
+        <el-button v-if="this.process === 'start'" @click="submitRecord">Submit</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import request from "@/utils/request";
-import Recorder from "@/components/Recorder";
 import { getCookie } from "@/utils/cookie";
+import Recorder from 'js-audio-recorder';
 
 export default {
   name: 'Assistant',
-  components: {
-    Recorder
-  },
   data() {
     return {
       user: {},
       sessionId: '',
-      microphoneVisible: false,
+      recorderVisible: false,
+      loading: false,
+      dialogVisible: false,
+      process: '',
+      recorder: new Recorder({
+        sampleBits: 16,
+        sampleRate: 16000,
+        numChannels: 1,
+      }),
       participants: [
         {
           id: 'assistant',
@@ -86,18 +100,12 @@ export default {
     this.sessionId = getCookie("sessionId")
   },
   methods: {
-    sendMessage (text) {
-      if (text.length > 0) {
-        this.newMessagesCount = this.isChatOpen ? this.newMessagesCount : this.newMessagesCount + 1
-        this.onMessageWasSent({ author: 'assistant', type: 'text', data: { text } })
-      }
-    },
     onMessageWasSent (message) {
       // called when the user sends a message
       this.messageList = [ ...this.messageList, message ]
       request.post("/assistant/message", {
         sessionId: this.sessionId,
-        sender: this.user.given_name + ' ' + this.user.family_name,
+        author: this.user.given_name + ' ' + this.user.family_name,
         text: message.data.text
       }).then(res => {
         this.messageList.push({ type: 'text', author: `assistant`, data: { text: res.data } })
@@ -107,16 +115,12 @@ export default {
       // called when the user clicks on the fab button to open the chat
       this.isChatOpen = true
       this.newMessagesCount = 0
-      this.microphoneVisible = true
+      this.recorderVisible = true
     },
     closeChat () {
       // called when the user clicks on the button to close the chat
       this.isChatOpen = false
-      this.microphoneVisible = false
-    },
-    handleScrollToTop () {
-      // called when the user scrolls message list to top
-      // leverage pagination for loading another page of messages
+      this.recorderVisible = false
     },
     handleOnType () {
       // console.log('Emit typing event')
@@ -125,6 +129,40 @@ export default {
       const m = this.messageList.find(m=>m.id === message.id);
       m.isEdited = true;
       m.data.text = message.data.text;
+    },
+    startRecord() {
+      Recorder.getPermission().then(() => {
+            this.process = 'start'
+            this.dialogVisible = true
+            this.recorder.start();
+          },
+          (error) => {
+            this.$message({
+              message: "Please allow the website to access your microphone.",
+              type: "info",
+            });
+            console.log(`${error.name} : ${error.message}`);
+          }
+      );
+    },
+    stopRecord() {
+      this.recorder.stop();
+    },
+    getTranscript() {
+      let wavBlob = this.recorder.getWAVBlob();
+      let formData = new FormData()
+      const newBlob = new Blob([wavBlob], { type: 'audio/wav' })
+      const fileOfBlob = new File([newBlob],'audio-file.wav')
+      formData.append('file', fileOfBlob)
+      this.$axios.post("http://localhost:9090/stt/transcript", formData).then(res => {
+        this.dialogVisible = false
+        this.onMessageWasSent({ type: "text", author: "me", data: { text: res.data.data } })
+      })
+    },
+    submitRecord() {
+      this.process = 'submit'
+      this.stopRecord()
+      this.getTranscript()
     }
   }
 }
@@ -135,9 +173,9 @@ export default {
   position: relative;
   z-index: 9998;
 }
-.microphone {
+.recorder {
   position: fixed;
-  bottom: 100px;
+  bottom: 110px;
   right: 400px;
   z-index: 9999;
 }

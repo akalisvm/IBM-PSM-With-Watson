@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class Message {
     private String sessionId;
-    private String sender;
+    private String author;
     private String text;
 }

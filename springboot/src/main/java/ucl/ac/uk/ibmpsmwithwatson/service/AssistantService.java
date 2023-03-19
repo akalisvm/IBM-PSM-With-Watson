@@ -1,6 +1,7 @@
 package ucl.ac.uk.ibmpsmwithwatson.service;
 
 import com.ibm.cloud.sdk.core.security.IamAuthenticator;
+import com.ibm.cloud.sdk.core.service.exception.NotFoundException;
 import com.ibm.watson.assistant.v2.Assistant;
 import com.ibm.watson.assistant.v2.model.*;
 import org.springframework.stereotype.Service;

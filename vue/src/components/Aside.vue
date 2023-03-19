@@ -46,10 +46,6 @@
         <el-icon><Platform /></el-icon>
         <span>Outreach Events</span>
       </el-menu-item>
-      <el-menu-item index="/test" v-if="this.user.role==='doctor'">
-        <el-icon><WarnTriangleFilled /></el-icon>
-        <span>Test Area</span>
-      </el-menu-item>
     </el-menu>
   </div>
 </template>

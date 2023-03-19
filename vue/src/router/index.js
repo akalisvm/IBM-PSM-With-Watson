@@ -38,11 +38,6 @@ const routes = [
         path: 'events',
         name: 'Events',
         component: () => import("@/views/Events")
-      },
-      {
-        path: 'test',
-        name: 'Test',
-        component: () => import("@/views/Test")
       }
     ]
   },
