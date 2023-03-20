@@ -63,7 +63,9 @@ export default {
           imageUrl: 'https://cache.globalcatalog.cloud.ibm.com/api/v1/7045626d-55e3-4418-be11-683a26dbc1e5/artifacts/cache/5c18a362b3f855bff471377ff580f369-public/WatsonAssistant.svg'
         }
       ], // the list of all the participant of the conversation. `name` is the username, `id` is used to establish the author of a message, `imageUrl` is supposed to be the user avatar.
-      messageList: [], // the list of the messages to show, can be paginated and adjusted dynamically
+      messageList: [
+        { type: 'text', author: `assistant`, data: { text: "Welcome, how can I assist you?" } }
+      ], // the list of the messages to show, can be paginated and adjusted dynamically
       newMessagesCount: 0,
       isChatOpen: false, // to determine whether the chat window should be open or closed
       showTypingIndicator: '', // when set to a value matching the participant.id it shows the typing indicator for the specific user
@@ -102,13 +104,18 @@ export default {
   methods: {
     onMessageWasSent (message) {
       // called when the user sends a message
+      console.log(message)
       this.messageList = [ ...this.messageList, message ]
       request.post("/assistant/message", {
         sessionId: this.sessionId,
         author: this.user.given_name + ' ' + this.user.family_name,
         text: message.data.text
       }).then(res => {
-        this.messageList.push({ type: 'text', author: `assistant`, data: { text: res.data } })
+        for(let i = 0; i < res.data.length; i++) {
+          if(res.data[i] !== null) {
+            this.messageList.push({ type: 'text', author: `assistant`, data: { text: res.data[i] } })
+          }
+        }
       })
     },
     openChat () {

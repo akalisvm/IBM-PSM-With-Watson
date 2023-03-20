@@ -6,6 +6,9 @@ import com.ibm.watson.assistant.v2.Assistant;
 import com.ibm.watson.assistant.v2.model.*;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class AssistantService {
 
@@ -25,10 +28,18 @@ public class AssistantService {
         return assistant.createSession(options).execute().getResult().getSessionId();
     }
 
-    public String getResponse(Assistant assistant, String sessionId, String text) {
+    public MessageResponse getMessageResponse(Assistant assistant, String sessionId, String text) {
         MessageInput input = new MessageInput.Builder().messageType("text").text(text).build();
         MessageOptions options = new MessageOptions.Builder(EnvironmentID, sessionId).input(input).build();
-        return assistant.message(options).execute().getResult().getOutput().getGeneric().get(0).text();
+        return assistant.message(options).execute().getResult();
+    }
+
+    public List<String> getTextResponse(MessageResponse messageResponse) {
+        List<String> texts = new ArrayList<>();
+        for (RuntimeResponseGeneric generic : messageResponse.getOutput().getGeneric()) {
+            texts.add(generic.text());
+        }
+        return texts;
     }
 
     public void deleteSession(Assistant assistant, String sessionID) {

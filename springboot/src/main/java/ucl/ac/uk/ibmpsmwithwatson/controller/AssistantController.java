@@ -10,6 +10,7 @@ import ucl.ac.uk.ibmpsmwithwatson.util.Result;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @RestController
 @RequestMapping("/assistant")
@@ -21,12 +22,14 @@ public class AssistantController {
     @PostMapping("/message")
     public Result<?> getResponse(@RequestBody Message message, HttpServletResponse response) {
         Assistant assistant = assistantService.authenticate();
-        String assistantResponse;
+        List<String> assistantResponse;
         try {
-            assistantResponse = assistantService.getResponse(assistant, message.getSessionId(), message.getText());
+            assistantResponse = assistantService.getTextResponse(
+                    assistantService.getMessageResponse(assistant, message.getSessionId(), message.getText()));
         } catch (NotFoundException e) {
             String newSessionId = assistantService.createSession(assistant);
-            assistantResponse = assistantService.getResponse(assistant, newSessionId, message.getText());
+            assistantResponse = assistantService.getTextResponse(
+                    assistantService.getMessageResponse(assistant, newSessionId, message.getText()));
             Cookie sessionIdCookie = new Cookie("sessionId", newSessionId);
             sessionIdCookie.setPath("/");
             sessionIdCookie.setMaxAge(3600 * 24);
