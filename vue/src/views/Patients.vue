@@ -55,6 +55,13 @@
           <el-table-column prop="phone_number" label="Phone Number" />
           <el-table-column prop="nhs_number" label="NHS Number" />
           <el-table-column prop="questionnaire" label="Questionnaire" show-overflow-tooltip />
+          <el-table-column fixed="right" label="Operation">
+            <template #default="scope">
+              <el-button plain v-if="scope.row.dialog === 'true'" size="small" @click="checkDialog(scope.row.id)">
+                Check Dialog
+              </el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <div style="margin: 10px 0">
@@ -67,12 +74,39 @@
             :total="total" />
       </div>
     </el-card>
+    <!-- Shared Decision Making Dialog -->
+    <el-dialog v-model="sdmDialogVisible">
+      <el-descriptions
+          title="Shared Decision Making Dialog"
+          direction="vertical"
+          :column="1"
+          border
+      >
+        <el-descriptions-item label="ID">
+          {{ this.sdm.id }}
+        </el-descriptions-item>
+        <el-descriptions-item label="Time">
+          {{ formatDate(this.sdm.createTime) }}
+        </el-descriptions-item>
+        <el-descriptions-item label="Dialog">
+          <el-table
+              :data="this.sdm.messages"
+              style="width: 100%"
+              table-layout="fixed"
+          >
+            <el-table-column prop="author" label="Author" />
+            <el-table-column prop="text" label="Text" />
+          </el-table>
+        </el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import request from "@/utils/request";
 import { getCookie } from "@/utils/cookie";
+import {formatDate} from "@/utils/date";
 
 export default {
   name: "Patients",
@@ -81,15 +115,17 @@ export default {
       user: {},
       tableLayout: "auto",
       data: [],
+      sdm: {},
       searchInput: "",
       currentPage: 1,
       pageSize: 10,
       total: 0,
-      loading: false,
-      dialogVisible: false,
       questionnaireId: "",
       options: [],
       patientIdList: [],
+      loading: false,
+      dialogVisible: false,
+      sdmDialogVisible: false
     }
   },
   created() {
@@ -163,6 +199,15 @@ export default {
     currentChange(pageNum) {
       this.currentPage = pageNum
       this.load()
+    },
+    checkDialog(id) {
+      this.sdmDialogVisible = true
+      request.get("/dialog/" + id).then(res => {
+        this.sdm = res.data
+      })
+    },
+    formatDate(time) {
+      return formatDate(new Date(time), "yyyy-MM-dd HH:mm")
     }
   }
 }

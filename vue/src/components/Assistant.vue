@@ -104,11 +104,10 @@ export default {
   methods: {
     onMessageWasSent (message) {
       // called when the user sends a message
-      console.log(message)
       this.messageList = [ ...this.messageList, message ]
       request.post("/assistant/message", {
         sessionId: this.sessionId,
-        author: this.user.given_name + ' ' + this.user.family_name,
+        author: this.user.email,
         text: message.data.text
       }).then(res => {
         for(let i = 0; i < res.data.length; i++) {

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ucl.ac.uk.ibmpsmwithwatson.dao.UserMapper;
 import ucl.ac.uk.ibmpsmwithwatson.dao.QuestionnaireMapper;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.dto.UserQueryDTO;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.UserVO;
 import ucl.ac.uk.ibmpsmwithwatson.util.Page;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.po.User;
 import ucl.ac.uk.ibmpsmwithwatson.util.PaginationUtil;
@@ -23,21 +24,30 @@ public class UserService {
     @Autowired
     QuestionnaireMapper questionnaireMapper;
 
+    @Autowired
+    DialogService dialogService;
+
     public Integer getNumberOfPatientsByDoctorId(String doctorId) {
         return (Integer) userMapper.getNumberOfPatientsByDoctorId(doctorId).get("count");
     }
 
     public Page getPatientsByDoctorId(UserQueryDTO dto) {
         JSONArray jsonArray = userMapper.getPatientsByDoctorId(dto.getDoctorId());
-        List<User> list = JSONUtil.toList(jsonArray, User.class);
+        List<UserVO> list = JSONUtil.toList(jsonArray, UserVO.class);
         SearchingUtil.searchingUser(list, dto.getSearchInput());
-        for(User patient : list) {
+        for(UserVO patient : list) {
             if(!patient.getQuestionnaire().equals("")) {
                 String title = String.valueOf(questionnaireMapper.getTitle(patient.getQuestionnaire())
                         .getByPath("[0].title"));
                 patient.setQuestionnaire(patient.getQuestionnaire() + ": " + title);
             }
+            if(dialogService.getDialog(patient.getId()) != null) {
+                patient.setDialog("true");
+            } else {
+                patient.setDialog("false");
+            }
         }
+        System.out.println(list);
         return PaginationUtil.pagination(list, dto.getPageNum(), dto.getPageSize());
     }
 

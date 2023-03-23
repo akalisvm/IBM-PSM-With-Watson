@@ -37,7 +37,7 @@
                   </el-button>
                 </template>
               </el-table-column>
-              <el-table-column fixed="right" label="Operations" >
+              <el-table-column fixed="right" label="Operation" >
                 <template #default="scope">
                   <el-button plain size="small" @click="editTemplate(scope.row)">
                     Edit
@@ -102,7 +102,7 @@
                   </el-button>
                 </template>
               </el-table-column>
-              <el-table-column fixed="right" label="Operations" >
+              <el-table-column fixed="right" label="Operation" >
                 <template #default="scope">
                   <el-button plain size="small" @click="editQuestionnaire(scope.row)">
                     Edit

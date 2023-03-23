@@ -3,7 +3,10 @@
     <el-card>
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <span>Hi, {{ this.user.given_name }}  {{ this.user.family_name }}</span>
-        <el-button type="info" @click="infoDialogVisible = true" plain>Show personal information</el-button>
+        <div>
+          <el-button type="info" @click="checkDialog" plain>Check Shared Decision Making Dialog</el-button>
+          <el-button type="info" @click="infoDialogVisible = true" plain>Show personal information</el-button>
+        </div>
       </div>
     </el-card>
     <div><br /></div>
@@ -256,6 +259,32 @@
           </el-scrollbar>
         </el-form>
       </el-card>
+      <!-- Shared Decision Making Dialog -->
+      <el-dialog v-model="sdmDialogVisible">
+        <el-descriptions
+            title="Shared Decision Making Dialog"
+            direction="vertical"
+            :column="1"
+            border
+        >
+          <el-descriptions-item label="ID">
+            {{ this.sdm.id }}
+          </el-descriptions-item>
+          <el-descriptions-item label="Time">
+            {{ formatDate(this.sdm.createTime) }}
+          </el-descriptions-item>
+          <el-descriptions-item label="Dialog">
+            <el-table
+                :data="this.sdm.messages"
+                style="width: 100%"
+                table-layout="fixed"
+            >
+              <el-table-column prop="author" label="Author" />
+              <el-table-column prop="text" label="Text" />
+            </el-table>
+          </el-descriptions-item>
+        </el-descriptions>
+      </el-dialog>
       <!-- Personal Information Demonstration Dialog -->
       <el-dialog v-model="infoDialogVisible">
         <el-descriptions
@@ -423,6 +452,7 @@ export default {
       form: {},
       doctor: {},
       questionnaire: {},
+      sdm: {},
       rules: {
         answers: [
           { required: true, message: 'Please enter your answer', trigger: 'blur' }
@@ -458,6 +488,7 @@ export default {
       infoDialogVisible: false,
       questionnaireDrawerVisible: false,
       eventDrawerVisible: false,
+      sdmDialogVisible: false
     }
   },
   created() {
@@ -468,12 +499,20 @@ export default {
   },
   methods: {
     load() {
+      this.loadDialog()
       this.loadDoctor()
       this.loadRecord()
       this.loadEvent()
       if(this.user.questionnaire !== '') {
         this.loadQuestionnaire()
       }
+    },
+    loadDialog() {
+      request.get("/dialog/" + this.user.id).then(res => {
+        if(res.data !== null) {
+          this.sdm = res.data
+        }
+      })
     },
     loadDoctor() {
       request.get("/users/" + this.user.doctor).then(res => {
@@ -518,6 +557,18 @@ export default {
         this.eventTotal = res.data.total
         this.loading = false
       })
+    },
+    checkDialog() {
+      this.loadDialog()
+      if(this.sdm === 'null') {
+        this.$message({
+          type: "error",
+          message: "Please complete the shard decision making dialog with Watson Assistant first.",
+          customClass: "font"
+        })
+      } else {
+        this.sdmDialogVisible = true
+      }
     },
     fill() {
       if(this.user.questionnaire !== '') {

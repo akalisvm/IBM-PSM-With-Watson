@@ -4,7 +4,7 @@ import com.ibm.cloud.sdk.core.service.exception.NotFoundException;
 import com.ibm.watson.assistant.v2.Assistant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Message;
+import ucl.ac.uk.ibmpsmwithwatson.util.Message;
 import ucl.ac.uk.ibmpsmwithwatson.service.AssistantService;
 import ucl.ac.uk.ibmpsmwithwatson.util.Result;
 
@@ -25,11 +25,11 @@ public class AssistantController {
         List<String> assistantResponse;
         try {
             assistantResponse = assistantService.getTextResponse(
-                    assistantService.getMessageResponse(assistant, message.getSessionId(), message.getText()));
+                    assistant, message.getSessionId(), message.getAuthor(), message.getText());
         } catch (NotFoundException e) {
             String newSessionId = assistantService.createSession(assistant);
             assistantResponse = assistantService.getTextResponse(
-                    assistantService.getMessageResponse(assistant, newSessionId, message.getText()));
+                    assistant, newSessionId, message.getAuthor(), message.getText());
             Cookie sessionIdCookie = new Cookie("sessionId", newSessionId);
             sessionIdCookie.setPath("/");
             sessionIdCookie.setMaxAge(3600 * 24);

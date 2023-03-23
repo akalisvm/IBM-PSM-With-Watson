@@ -4,23 +4,23 @@ import ucl.ac.uk.ibmpsmwithwatson.pojo.dto.EventQueryDTO;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.dto.RecordQueryDTO;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Questionnaire;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Template;
-import ucl.ac.uk.ibmpsmwithwatson.pojo.po.User;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.EventVO;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.RecordVO;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.UserVO;
 
 import java.util.List;
 
 public class SearchingUtil {
-    public static void searchingUser(List<User> list, String searchInput) {
+    public static void searchingUser(List<UserVO> list, String searchInput) {
         if(!searchInput.equals("")) {
             if(searchInput.matches("[a-zA-Z]+")) {
                 searchInput = searchInput.toLowerCase();
                 for(int i = list.size() - 1; i >= 0; i--) {
-                    User user = list.get(i);
-                    String givenName = user.getGiven_name().toLowerCase();
-                    String familyName = user.getFamily_name().toLowerCase();
+                    UserVO userVO = list.get(i);
+                    String givenName = userVO.getGiven_name().toLowerCase();
+                    String familyName = userVO.getFamily_name().toLowerCase();
                     if(!givenName.contains(searchInput) && !familyName.contains(searchInput)) {
-                        list.remove(user);
+                        list.remove(userVO);
                     }
                 }
             } else {
