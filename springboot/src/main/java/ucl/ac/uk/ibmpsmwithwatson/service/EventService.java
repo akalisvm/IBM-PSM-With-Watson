@@ -1,6 +1,12 @@
 package ucl.ac.uk.ibmpsmwithwatson.service;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.extra.mail.MailUtil;
+import cn.hutool.extra.template.Template;
+import cn.hutool.extra.template.TemplateConfig;
+import cn.hutool.extra.template.TemplateEngine;
+import cn.hutool.extra.template.TemplateUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -16,16 +22,17 @@ import ucl.ac.uk.ibmpsmwithwatson.util.PaginationUtil;
 import ucl.ac.uk.ibmpsmwithwatson.util.SearchingUtil;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
 public class EventService {
 
     @Autowired
-    UserMapper userMapper;
+    EventMapper eventMapper;
 
     @Autowired
-    EventMapper eventMapper;
+    UserService userService;
 
     public List<Event> getUpcomingEvents(String doctorId) {
         List<Event> eventList = JSONUtil.toList(eventMapper.getUpcomingEvents(doctorId, new Date().getTime()), Event.class);
@@ -88,6 +95,7 @@ public class EventService {
         event.setResult("Pending");
         event.setFeedback("");
         eventMapper.insert(event.getOrganiserId(), event.getParticipantId(), id, JSONUtil.toJsonStr(event));
+        sendEmail("schedule", userService.getUserById(event.getParticipantId()).getEmail(), event);
     }
 
     public void update(Event event) throws RuntimeException {
@@ -114,6 +122,7 @@ public class EventService {
             }
             insert(newEvent);
         }
+        sendEmail("reschedule", userService.getUserById(event.getParticipantId()).getEmail(), event);
     }
 
     public void deleteBatch(List<String> eventIdList) {
@@ -132,5 +141,26 @@ public class EventService {
         JSONArray jsonArray = eventMapper.getPendingEventById(patientId);
         List<Event> list = JSONUtil.toList(jsonArray, Event.class);
         return list.size() == 0 ? null : list.get(0);
+    }
+
+    private void sendEmail(String type, String email, Event event) {
+        TemplateEngine engine = TemplateUtil.createEngine(new TemplateConfig("templates", TemplateConfig.ResourceMode.CLASSPATH));
+        HashMap<String, String> map = new HashMap<>();
+        map.put("participantName", event.getParticipantName());
+        map.put("organiserName", event.getOrganiserName());
+        map.put("title", event.getTitle());
+        map.put("description", event.getDescription());
+        map.put("platform", event.getPlatform());
+        map.put("meetingTime", event.getMeetingTime().toString());
+        map.put("repeat", event.getRepeat());
+        if(type.equals("schedule")) {
+            Template template = engine.getTemplate("schedule.html");
+            String content = template.render(map);
+            MailUtil.send(email, "Outreach event scheduled", content, true);
+        } else if(type.equals("reschedule")) {
+            Template template = engine.getTemplate("schedule.html");
+            String content = template.render(map);
+            MailUtil.send(email, "Outreach event rescheduled", content, true);
+        }
     }
 }
