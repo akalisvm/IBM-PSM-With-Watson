@@ -10,6 +10,7 @@ import ucl.ac.uk.ibmpsmwithwatson.util.Result;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,7 +23,7 @@ public class AssistantController {
     @PostMapping("/message")
     public Result<?> getResponse(@RequestBody Message message, HttpServletResponse response) {
         Assistant assistant = assistantService.authenticate();
-        List<String> assistantResponse;
+        List<String> assistantResponse = new ArrayList<>();
         try {
             assistantResponse = assistantService.getTextResponse(
                     assistant, message.getSessionId(), message.getAuthor(), message.getText());
@@ -34,6 +35,8 @@ public class AssistantController {
             sessionIdCookie.setPath("/");
             sessionIdCookie.setMaxAge(3600 * 24);
             response.addCookie(sessionIdCookie);
+        } catch (RuntimeException re) {
+            assistantResponse.add(re.getMessage());
         }
         return Result.success(assistantResponse);
     }

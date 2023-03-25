@@ -1,17 +1,21 @@
 package ucl.ac.uk.ibmpsmwithwatson.service;
 
 import com.ibm.cloud.sdk.core.security.IamAuthenticator;
+import com.ibm.cloud.sdk.core.service.exception.NotFoundException;
 import com.ibm.watson.assistant.v2.Assistant;
 import com.ibm.watson.assistant.v2.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ucl.ac.uk.ibmpsmwithwatson.dao.UserMapper;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Dialog;
+import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Event;
 import ucl.ac.uk.ibmpsmwithwatson.util.Message;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.po.User;
 import ucl.ac.uk.ibmpsmwithwatson.util.MessageLog;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -19,10 +23,13 @@ import java.util.List;
 public class AssistantService {
 
     @Autowired
-    UserMapper userMapper;
+    UserService userService;
 
     @Autowired
     DialogService dialogService;
+
+    @Autowired
+    EventService eventService;
 
     final String APIkey = "hFGcCwRg-hv5smSLqq_wJA_JO1fhDd7S8HHrt1-5zpfI";
     final String URL = "https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/3074a022-733c-4ccf-8389-a74bdcdb89a3";
@@ -49,7 +56,7 @@ public class AssistantService {
                 "", operator.getGiven_name() + " " + operator.getFamily_name(), text));
         List<String> texts = new ArrayList<>();
         List<RuntimeResponseGeneric> generic = messageResponse.getOutput().getGeneric();
-        for(int i = 0; i < generic.size(); i++) {
+        for(RuntimeResponseGeneric runtimeResponseGeneric : generic) {
             if(generic.get(0).text().equals("Let's start the shared decision making dialog.")) {
                 MessageLog.getInstance().reset();
                 MessageLog.getInstance().setAction("sdm");
@@ -68,20 +75,162 @@ public class AssistantService {
                 MessageLog.getInstance().setOperatorId(operator.getId());
                 MessageLog.getInstance().setOperatorName(operator.getGiven_name() + " " + operator.getFamily_name());
             }
-            if(generic.get(i).text() != null) {
-                texts.add(generic.get(i).text());
-                MessageLog.getInstance().addMessage(new Message("", "Watson Assistant", generic.get(i).text()));
-                if(generic.get(i).text().endsWith("Enjoy the rest of your day!")) {
-                    if(MessageLog.getInstance().getAction().equals("sdm")) {
-                        Dialog dialog = dialogService.getDialog(operator.getId());
-                        if(dialog == null) {
-                            dialogService.insert(operator.getId(), MessageLog.getInstance().getMessages());
-                        } else {
-                            dialog.setCreateTime(new Date());
-                            dialog.setMessages(MessageLog.getInstance().getMessages());
-                            dialogService.update(dialog);
+            if(runtimeResponseGeneric.text() != null) {
+                texts.add(runtimeResponseGeneric.text());
+                MessageLog.getInstance().addMessage(new Message("", "Watson Assistant", runtimeResponseGeneric.text()));
+                if (runtimeResponseGeneric.text().endsWith("Enjoy the rest of your day!")) {
+                    List<String> userMessages = new ArrayList<>();
+                    for(Message message : MessageLog.getInstance().getMessages()) {
+                        if(!message.getAuthor().equals("Watson Assistant")) {
+                            userMessages.add(message.getText());
                         }
-                        System.out.println(MessageLog.getInstance());
+                    }
+                    switch (MessageLog.getInstance().getAction()) {
+                        case "sdm":
+                            Dialog dialog = dialogService.getDialog(operator.getId());
+                            if (dialog == null) {
+                                dialogService.insert(operator.getId(), MessageLog.getInstance().getMessages());
+                            } else {
+                                dialog.setCreateTime(new Date());
+                                dialog.setMessages(MessageLog.getInstance().getMessages());
+                                dialogService.update(dialog);
+                            }
+                            break;
+                        case "schedule": {
+                            String id = userMessages.get(0);
+                            try {
+                                Integer.parseInt(id);
+                            } catch (Exception e) {
+                                throw new RuntimeException("Invalid patient ID.");
+                            }
+
+                            User participant = userService.getUserById(id);
+                            if (participant == null) {
+                                throw new RuntimeException("The patient ID does not exist.");
+                            }
+
+                            List<String> platforms = Arrays.asList("Microsoft Teams", "Webex", "WhatsApp", "Phone Call");
+                            if (!platforms.contains(userMessages.get(3))) {
+                                throw new RuntimeException("Unrecognised platform.");
+                            }
+
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                            Date date;
+                            try {
+                                date = sdf.parse(userMessages.get(4));
+                            } catch (ParseException e) {
+                                throw new RuntimeException("Invalid date format.");
+                            }
+
+                            String repeat;
+                            if (userMessages.size() == 7) {
+                                try {
+                                    repeat = userMessages.get(6);
+                                    if (Integer.parseInt(repeat) < 1) {
+                                        throw new RuntimeException("Too small repeat number of weeks.");
+                                    }
+                                    if (Integer.parseInt(repeat) > 12) {
+                                        throw new RuntimeException("Too large repeat number of weeks.");
+                                    }
+                                } catch (Exception e) {
+                                    throw new RuntimeException("Invalid repeat number of weeks.");
+                                }
+                            }
+
+                            Event event = new Event();
+                            event.setOrganiserId(MessageLog.getInstance().getOperatorId());
+                            event.setOrganiserName(MessageLog.getInstance().getOperatorName());
+                            event.setParticipantId(id);
+                            event.setParticipantName(participant.getGiven_name() + " " + participant.getFamily_name());
+                            event.setTitle(userMessages.get(1));
+                            event.setDescription(userMessages.get(2));
+                            event.setPlatform(userMessages.get(3));
+                            event.setMeetingTime(date);
+                            if (userMessages.size() == 7) {
+                                repeat = userMessages.get(6);
+                                if (repeat.equals("1")) {
+                                    event.setRepeat("Every 1 week");
+                                } else {
+                                    int intRepeat = Integer.parseInt(repeat);
+                                    if (intRepeat % 4 == 0) {
+                                        if (intRepeat / 4 == 1) {
+                                            event.setRepeat("Every 1 month");
+                                        } else {
+                                            event.setRepeat("Every " + intRepeat / 4 + " months");
+                                        }
+                                    } else {
+                                        event.setRepeat("Every " + repeat + " weeks");
+                                    }
+                                }
+                            } else {
+                                event.setRepeat("Does not repeat");
+                            }
+                            eventService.insert(event);
+                            break;
+                        }
+                        case "reschedule": {
+                            String id = userMessages.get(0);
+                            try {
+                                Integer.parseInt(id);
+                            } catch (Exception e) {
+                                throw new RuntimeException("Invalid patient ID.");
+                            }
+                            User participant = userService.getUserById(id);
+                            if (participant == null) {
+                                throw new RuntimeException("The patient ID does not exist.");
+                            }
+
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                            Date date;
+                            try {
+                                date = sdf.parse(userMessages.get(1));
+                            } catch (ParseException e) {
+                                throw new RuntimeException("Invalid date format.");
+                            }
+
+                            String repeat;
+                            if (userMessages.size() == 4) {
+                                try {
+                                    repeat = userMessages.get(3);
+                                    if (Integer.parseInt(repeat) < 1) {
+                                        throw new RuntimeException("Too small repeat number of weeks.");
+                                    }
+                                    if (Integer.parseInt(repeat) > 12) {
+                                        throw new RuntimeException("Too large repeat number of weeks.");
+                                    }
+                                } catch (Exception e) {
+                                    throw new RuntimeException("Invalid repeat number of weeks.");
+                                }
+                            }
+
+                            Event event = eventService.getPendingEventById(id);
+                            if (event != null) {
+                                event.setMeetingTime(date);
+                                if (userMessages.size() == 4) {
+                                    repeat = userMessages.get(3);
+                                    if (repeat.equals("1")) {
+                                        event.setRepeat("Every 1 week");
+                                    } else {
+                                        int intRepeat = Integer.parseInt(repeat);
+                                        if (intRepeat % 4 == 0) {
+                                            if (intRepeat / 4 == 1) {
+                                                event.setRepeat("Every 1 month");
+                                            } else {
+                                                event.setRepeat("Every " + intRepeat / 4 + " months");
+                                            }
+                                        } else {
+                                            event.setRepeat("Every " + repeat + " weeks");
+                                        }
+                                    }
+                                } else {
+                                    event.setRepeat("Does not repeat");
+                                }
+                                eventService.update(event);
+                            } else {
+                                throw new RuntimeException("The outreach event does not exist.");
+                            }
+                            break;
+                        }
                     }
                 }
             }
@@ -90,7 +239,11 @@ public class AssistantService {
     }
 
     public void deleteSession(Assistant assistant, String sessionID) {
-        DeleteSessionOptions options = new DeleteSessionOptions.Builder(EnvironmentID, sessionID).build();
-        assistant.deleteSession(options).execute();
+        try {
+            DeleteSessionOptions options = new DeleteSessionOptions.Builder(EnvironmentID, sessionID).build();
+            assistant.deleteSession(options).execute();
+        } catch (NotFoundException e) {
+            // System.out.println(e.getMessage());
+        }
     }
 }

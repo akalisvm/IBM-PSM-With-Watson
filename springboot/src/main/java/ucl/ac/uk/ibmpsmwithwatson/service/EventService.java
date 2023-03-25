@@ -127,4 +127,10 @@ public class EventService {
         List<Event> list = JSONUtil.toList(jsonArray, Event.class);
         return list.size() == 0 ? null : list.get(0);
     }
+
+    public Event getPendingEventById(String patientId) {
+        JSONArray jsonArray = eventMapper.getPendingEventById(patientId);
+        List<Event> list = JSONUtil.toList(jsonArray, Event.class);
+        return list.size() == 0 ? null : list.get(0);
+    }
 }

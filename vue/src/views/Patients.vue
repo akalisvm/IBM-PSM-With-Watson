@@ -47,6 +47,7 @@
             @selection-change="handleSelectionChange"
         >
           <el-table-column type="selection" />
+          <el-table-column prop="id" label="ID" />
           <el-table-column prop="given_name" label="Given Name" />
           <el-table-column prop="family_name" label="Family Name" />
           <el-table-column prop="gender" label="Gender" />

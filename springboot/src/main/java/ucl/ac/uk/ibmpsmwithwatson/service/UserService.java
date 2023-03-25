@@ -47,7 +47,6 @@ public class UserService {
                 patient.setDialog("false");
             }
         }
-        System.out.println(list);
         return PaginationUtil.pagination(list, dto.getPageNum(), dto.getPageSize());
     }
 

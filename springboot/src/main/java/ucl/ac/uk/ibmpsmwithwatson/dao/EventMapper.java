@@ -79,6 +79,26 @@ public class EventMapper {
         return (JSONArray) graphMapper.runCypherQuery(cypher.toString()).get("rows");
     }
 
+    public JSONArray getPendingEventById(String patientId) {
+        String cypher = "S=>(@e Event:*); " +
+                "RETURN " +
+                "e.id AS id " +
+                "e.createTime AS createTime " +
+                "e.organiserId AS organiserId " +
+                "e.organiserName AS organiserName " +
+                "e.participantId AS participantId " +
+                "e.participantName AS participantName " +
+                "e.title AS title " +
+                "e.description AS description " +
+                "e.platform AS platform " +
+                "e.meetingTime AS meetingTime " +
+                "e.repeat AS repeat " +
+                "e.result AS result " +
+                "e.feedback AS feedback " +
+                "WHERE participantId=\"" + patientId + "\" result=\"Pending\"";
+        return (JSONArray) graphMapper.runCypherQuery(cypher).get("rows");
+    }
+
     public JSONArray getEventById(String eventId) {
         return (JSONArray) graphMapper.runCypherQuery("S=>(Event:* {id=\"" + eventId + "\"})").get("rows");
     }
