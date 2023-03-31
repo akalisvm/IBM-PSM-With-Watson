@@ -18,8 +18,8 @@ import java.io.InputStream;
 @Service
 public class SpeechToTextService {
 
-    final String APIkey = "G8CReY88aWVwoM5zqaZkn55JktaXkRYHAjq4IEpkZZz3";
-    final String URL = "https://api.eu-gb.speech-to-text.watson.cloud.ibm.com/instances/37720f6d-8937-4abf-bcec-fead11212620";
+    static final String APIkey = null;
+    static final String URL = null;
 
     public String getTranscriptByWavFile(MultipartFile file) throws InterruptedException, IOException {
         return getTranscriptByInputStream(file.getInputStream());
