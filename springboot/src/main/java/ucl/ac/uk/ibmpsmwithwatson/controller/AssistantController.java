@@ -2,6 +2,7 @@ package ucl.ac.uk.ibmpsmwithwatson.controller;
 
 import com.ibm.cloud.sdk.core.service.exception.NotFoundException;
 import com.ibm.watson.assistant.v2.Assistant;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ucl.ac.uk.ibmpsmwithwatson.util.Message;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+@Api(tags = "IBM Watson Assistant")
 @RestController
 @RequestMapping("/assistant")
 public class AssistantController {
@@ -25,11 +27,11 @@ public class AssistantController {
         Assistant assistant = assistantService.authenticate();
         List<String> assistantResponse = new ArrayList<>();
         try {
-            assistantResponse = assistantService.getTextResponse(
+            assistantResponse = assistantService.getResponse(
                     assistant, message.getSessionId(), message.getAuthor(), message.getText());
         } catch (NotFoundException e) {
             String newSessionId = assistantService.createSession(assistant);
-            assistantResponse = assistantService.getTextResponse(
+            assistantResponse = assistantService.getResponse(
                     assistant, newSessionId, message.getAuthor(), message.getText());
             Cookie sessionIdCookie = new Cookie("sessionId", newSessionId);
             sessionIdCookie.setPath("/");

@@ -12,18 +12,16 @@ public class EventMapper {
     TableMapper tableMapper = new TableMapper(new BangDBConfig(), new RestTemplateBuilder());
     GraphMapper graphMapper = new GraphMapper(new BangDBConfig(), new RestTemplateBuilder());
 
-    private static final String EVENT = "Event";
-
-    public void insertCount() {
-        tableMapper.insertCount(EVENT);
+    public String getEventCount() {
+        return tableMapper.getCount("Event");
     }
 
-    public String getCount() {
-        return tableMapper.getCount(EVENT);
+    public void insertEventCount() {
+        tableMapper.insertCount("Event");
     }
 
-    public void updateCount(String count) {
-        tableMapper.updateCount(EVENT, count);
+    public void updateEventCount(String count) {
+        tableMapper.updateCount("Event", count);
     }
 
     public JSONArray getUpcomingEvents(String doctorId, Long meetingTime) {
@@ -137,18 +135,18 @@ public class EventMapper {
         ).get("rows");
     }
 
-    public void insert(String doctorId, String patientId, String eventId, String eventProp) {
+    public void insertEvent(String doctorId, String patientId, String eventId, String eventProp) {
         graphMapper.runCypherQuery("CREATE (User:user_" + doctorId +
                 ")-[SCHEDULED {\"name\":\"event_" + eventId + "\"}]->(Event:event_" + eventId + " " + eventProp + ")");
         graphMapper.runCypherQuery("CREATE (User:user_" + patientId +
                 ")-[SHOULD_ATTEND {\"name\":\"event_" + eventId + "\"}]->(Event:event_" + eventId + ")");
     }
 
-    public void update(String eventId, String eventProp) {
+    public void updateEvent(String eventId, String eventProp) {
         tableMapper.runSQLQuery("update mygraph set val = " + eventProp + " where name=\"event_" + eventId + "\"");
     }
 
-    public void delete(String eventId) {
+    public void deleteEvent(String eventId) {
         tableMapper.runSQLQuery("delete from mygraph_rel where name=\"event_" + eventId + "\"");
         tableMapper.runSQLQuery("delete from mygraph where name=\"event_" + eventId + "\"");
     }

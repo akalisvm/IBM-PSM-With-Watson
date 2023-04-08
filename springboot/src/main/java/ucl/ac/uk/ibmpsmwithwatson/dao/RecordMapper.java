@@ -11,18 +11,16 @@ public class RecordMapper {
     TableMapper tableMapper = new TableMapper(new BangDBConfig(), new RestTemplateBuilder());
     GraphMapper graphMapper = new GraphMapper(new BangDBConfig(), new RestTemplateBuilder());
 
-    private static final String RECORD = "Record";
-
-    public void insertCount() {
-        tableMapper.insertCount(RECORD);
+    public String getRecordCount() {
+        return tableMapper.getCount("Record");
     }
 
-    public String getCount() {
-        return tableMapper.getCount(RECORD);
+    public void insertRecordCount() {
+        tableMapper.insertCount("Record");
     }
 
-    public void updateCount(String count) {
-        tableMapper.updateCount(RECORD, count);
+    public void updateRecordCount(String count) {
+        tableMapper.updateCount("Record", count);
     }
 
     public Integer getNumberOfRecordsByPatientId(String patientId, Long startTime, Long endTime) {
@@ -36,16 +34,16 @@ public class RecordMapper {
                 "S=>(Record:* {creatorId=\"" + patientId + "\"}); RETURN * SORT_DESC createTime").get("rows");
     }
 
-    public void insert(String patientId, String recordId, String recordProp) {
+    public void insertRecord(String patientId, String recordId, String recordProp) {
         graphMapper.runCypherQuery("CREATE (User:user_" + patientId +
                 ")-[CREATED {\"name\":\"record_" + recordId + "\"}]->(Record:record_" + recordId + " " + recordProp + ")");
     }
 
-    public void update(String recordId, String recordProp) {
+    public void updateRecord(String recordId, String recordProp) {
         tableMapper.runSQLQuery("update mygraph set val = " + recordProp + " where name=\"record_" + recordId + "\"");
     }
 
-    public void delete(String recordId) {
+    public void deleteRecord(String recordId) {
         tableMapper.runSQLQuery("delete from mygraph_rel where name=\"record_" + recordId + "\"");
         tableMapper.runSQLQuery("delete from mygraph where name=\"record_" + recordId + "\"");
     }

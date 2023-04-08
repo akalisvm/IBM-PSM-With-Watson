@@ -12,11 +12,11 @@ public class AssistantServiceTest {
     AssistantService assistantService;
 
     @Test
-    public void getTextResponse() {
+    public void getResponse() {
         Assistant assistant = assistantService.authenticate();
         String sessionId = assistantService.createSession(assistant);
         System.out.println(sessionId);
-        System.out.println(assistantService.getTextResponse(assistant, sessionId, "patient@test.com", "shared decision making"));
+        System.out.println(assistantService.getResponse(assistant, sessionId, "melina.sela.test@gmail.com", "how are you"));
         assistantService.deleteSession(assistant, sessionId);
     }
 }

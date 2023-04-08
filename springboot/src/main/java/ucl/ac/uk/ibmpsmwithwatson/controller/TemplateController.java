@@ -9,7 +9,7 @@ import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Template;
 import ucl.ac.uk.ibmpsmwithwatson.service.TemplateService;
 import ucl.ac.uk.ibmpsmwithwatson.util.Result;
 
-@Api(tags = "Template")
+@Api(tags = "Healthcare Template")
 @RestController
 @RequestMapping("/templates")
 public class TemplateController {
@@ -29,20 +29,20 @@ public class TemplateController {
     }
 
     @PostMapping
-    public Result<?> insert(@RequestBody Template template) {
-        templateService.insert(template);
+    public Result<?> insertTemplate(@RequestBody Template template) {
+        templateService.insertTemplate(template);
         return Result.success();
     }
 
     @PutMapping
-    public Result<?> update(@RequestBody Template template) {
-        templateService.update(template);
+    public Result<?> updateTemplate(@RequestBody Template template) {
+        templateService.updateTemplate(template);
         return Result.success();
     }
 
     @DeleteMapping("/{templateId}")
-    public Result<?> delete(@PathVariable String templateId) {
-        templateService.delete(templateId);
+    public Result<?> deleteTemplate(@PathVariable String templateId) {
+        templateService.deleteTemplate(templateId);
         return Result.success();
     }
 }

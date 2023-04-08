@@ -12,18 +12,16 @@ public class TemplateMapper {
     TableMapper tableMapper = new TableMapper(new BangDBConfig(), new RestTemplateBuilder());
     GraphMapper graphMapper = new GraphMapper(new BangDBConfig(), new RestTemplateBuilder());
 
-    private static final String TEMPLATE = "Template";
-
-    public void insertCount() {
-        tableMapper.insertCount(TEMPLATE);
+    public String getTemplateCount() {
+        return tableMapper.getCount("Template");
     }
 
-    public String getCount() {
-        return tableMapper.getCount(TEMPLATE);
+    public void insertTemplateCount() {
+        tableMapper.insertCount("Template");
     }
 
-    public void updateCount(String count) {
-        tableMapper.updateCount(TEMPLATE, count);
+    public void updateTemplateCount(String count) {
+        tableMapper.updateCount("Template", count);
     }
 
     public JSONObject getNumberOfTemplatesByDoctorId(String doctorId) {
@@ -35,16 +33,16 @@ public class TemplateMapper {
                 "S=>(Template:* {creatorId=\"" + doctorId + "\"}); RETURN * SORT_ASC createTime").get("rows");
     }
 
-    public void insert(String doctorId, String templateId, String templateProp) {
+    public void insertTemplate(String doctorId, String templateId, String templateProp) {
         graphMapper.runCypherQuery("CREATE (User:user_" + doctorId +
                 ")-[CREATED {\"name\":\"template_" + templateId + "\"}]->(Template:template_" + templateId + " " + templateProp + ")");
     }
 
-    public void update(String templateId, String templateProp) {
+    public void updateTemplate(String templateId, String templateProp) {
         tableMapper.runSQLQuery("update mygraph set val = " + templateProp + " where name=\"template_" + templateId + "\"");
     }
 
-    public void delete(String templateId) {
+    public void deleteTemplate(String templateId) {
         tableMapper.runSQLQuery("delete from mygraph_rel where name=\"template_" + templateId + "\"");
         tableMapper.runSQLQuery("delete from mygraph where name=\"template_" + templateId + "\"");
     }

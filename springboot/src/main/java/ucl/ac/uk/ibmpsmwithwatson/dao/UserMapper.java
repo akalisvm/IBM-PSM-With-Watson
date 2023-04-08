@@ -12,8 +12,16 @@ public class UserMapper {
     TableMapper tableMapper = new TableMapper(new BangDBConfig(), new RestTemplateBuilder());
     GraphMapper graphMapper = new GraphMapper(new BangDBConfig(), new RestTemplateBuilder());
 
-    public Integer getNHSUserId() {
-        return (Integer) graphMapper.runCypherQuery("S=>(User:*); RETURN COUNT(*) AS count").get("count") + 1;
+    public String getUserCount() {
+        return tableMapper.getCount("User");
+    }
+
+    public void insertUserCount() {
+        tableMapper.insertCount("User");
+    }
+
+    public void updateUserCount(String count) {
+        tableMapper.updateCount("User", count);
     }
 
     public JSONArray getUserById(String userId) {
@@ -32,7 +40,7 @@ public class UserMapper {
         return (JSONArray) graphMapper.runCypherQuery("S=>(User:* {doctor=\"" + doctorId + "\"})").get("rows");
     }
 
-    public void update(String patientId, String patientProp) {
+    public void updateUser(String patientId, String patientProp) {
         tableMapper.runSQLQuery("update mygraph set val = " + patientProp + " where name=\"user_" + patientId + "\"");
     }
 }

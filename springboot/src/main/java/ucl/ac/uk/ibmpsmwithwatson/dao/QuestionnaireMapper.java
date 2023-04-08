@@ -12,24 +12,16 @@ public class QuestionnaireMapper {
     TableMapper tableMapper = new TableMapper(new BangDBConfig(), new RestTemplateBuilder());
     GraphMapper graphMapper = new GraphMapper(new BangDBConfig(), new RestTemplateBuilder());
 
-    private static final String QUESTIONNAIRE = "Questionnaire";
-
-    public void insertCount() {
-        tableMapper.insertCount(QUESTIONNAIRE);
+    public String getQuestionnaireCount() {
+        return tableMapper.getCount("Questionnaire");
     }
 
-    public String getCount() {
-        return tableMapper.getCount(QUESTIONNAIRE);
+    public void insertQuestionnaireCount() {
+        tableMapper.insertCount("Questionnaire");
     }
 
-    public void updateCount(String count) {
-        tableMapper.updateCount(QUESTIONNAIRE, count);
-    }
-
-    public void insert(String doctorId, String relProp, String questionnaireId, String questionnaireProp) {
-        graphMapper.runCypherQuery("CREATE (User:user_" + doctorId +
-                ")-[CREATED " + relProp + "]->(Questionnaire:questionnaire_" +
-                questionnaireId + " " + questionnaireProp + ")");
+    public void updateQuestionnaireCount(String count) {
+        tableMapper.updateCount("Questionnaire", count);
     }
 
     public JSONObject getNumberOfQuestionnairesByDoctorId(String doctorId) {
@@ -50,22 +42,28 @@ public class QuestionnaireMapper {
                 "S=>(@q Questionnaire:* {id=\"" + questionnaireId + "\"}); RETURN q.title").get("rows");
     }
 
-    public void update(String questionnaireId, String questionnaireProp) {
-        tableMapper.runSQLQuery("update mygraph set val = " +
-                questionnaireProp + " where name=\"questionnaire_" + questionnaireId + "\"");
-    }
-
-    public JSONArray check(String questionnaireId) {
+    public JSONArray checkQuestionnaire(String questionnaireId) {
         return (JSONArray) graphMapper.runCypherQuery(
                 "S=>(User:* {questionnaire=\"" + questionnaireId + "\"})").get("rows");
     }
 
-    public void delete(String questionnaireId) {
-        tableMapper.runSQLQuery("delete from mygraph_rel where name=\"questionnaire_" + questionnaireId + "\"");
-        tableMapper.runSQLQuery("delete from mygraph where name=\"questionnaire_" + questionnaireId + "\"");
+    public void insertQuestionnaire(String doctorId, String relProp, String questionnaireId, String questionnaireProp) {
+        graphMapper.runCypherQuery("CREATE (User:user_" + doctorId +
+                ")-[CREATED " + relProp + "]->(Questionnaire:questionnaire_" +
+                questionnaireId + " " + questionnaireProp + ")");
     }
 
-    public void assign(String questionnaireProp, String questionnaireId) {
+    public void assignQuestionnaire(String questionnaireProp, String questionnaireId) {
         tableMapper.runSQLQuery("update mygraph set val = " + questionnaireProp + " where name=\"user_" + questionnaireId + "\"");
+    }
+
+    public void updateQuestionnaire(String questionnaireId, String questionnaireProp) {
+        tableMapper.runSQLQuery("update mygraph set val = " +
+                questionnaireProp + " where name=\"questionnaire_" + questionnaireId + "\"");
+    }
+
+    public void deleteQuestionnaire(String questionnaireId) {
+        tableMapper.runSQLQuery("delete from mygraph_rel where name=\"questionnaire_" + questionnaireId + "\"");
+        tableMapper.runSQLQuery("delete from mygraph where name=\"questionnaire_" + questionnaireId + "\"");
     }
 }

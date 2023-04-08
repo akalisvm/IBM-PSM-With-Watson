@@ -32,28 +32,28 @@ public class TemplateService {
         return PaginationUtil.pagination(list, dto.getPageNum(), dto.getPageSize());
     }
 
-    public void insert(Template template) {
+    public void insertTemplate(Template template) {
         String id;
-        if(templateMapper.getCount() == null) {
-            templateMapper.insertCount();
+        if(templateMapper.getTemplateCount() == null) {
+            templateMapper.insertTemplateCount();
             id = "1";
         } else {
-            id = templateMapper.getCount();
+            id = templateMapper.getTemplateCount();
         }
-        templateMapper.updateCount(String.valueOf(Integer.parseInt(id) + 1));
+        templateMapper.updateTemplateCount(String.valueOf(Integer.parseInt(id) + 1));
         template.setId(id);
         template.setCreateTime(new Date());
-        templateMapper.insert(template.getCreatorId(), id, JSONUtil.toJsonStr(template));
+        templateMapper.insertTemplate(template.getCreatorId(), id, JSONUtil.toJsonStr(template));
     }
 
-    public void update(Template template) {
+    public void updateTemplate(Template template) {
         JSONObject jsonObject = JSONUtil.parseObj(template);
         jsonObject.putOpt("label", "Template");
         jsonObject.putOpt("name", "template_" + template.getId());
-        templateMapper.update(template.getId(), JSONUtil.toJsonStr(jsonObject));
+        templateMapper.updateTemplate(template.getId(), JSONUtil.toJsonStr(jsonObject));
     }
 
-    public void delete(String templateId) {
-        templateMapper.delete(templateId);
+    public void deleteTemplate(String templateId) {
+        templateMapper.deleteTemplate(templateId);
     }
 }

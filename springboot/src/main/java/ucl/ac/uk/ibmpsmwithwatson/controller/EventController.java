@@ -10,7 +10,7 @@ import ucl.ac.uk.ibmpsmwithwatson.util.Result;
 
 import java.util.List;
 
-@Api(tags = "Event")
+@Api(tags = "Outreach Event")
 @RestController
 @RequestMapping("/events")
 public class EventController {
@@ -29,9 +29,9 @@ public class EventController {
     }
 
     @PostMapping
-    public Result<?> insert(@RequestBody Event event) {
+    public Result<?> insertEvent(@RequestBody Event event) {
         try {
-            eventService.insert(event);
+            eventService.insertEvent(event);
         } catch (Exception e) {
             return Result.error("10002", e.getMessage());
         }
@@ -39,9 +39,9 @@ public class EventController {
     }
 
     @PutMapping
-    public Result<?> update(@RequestBody Event event) {
+    public Result<?> updateEvent(@RequestBody Event event) {
         try {
-            eventService.update(event);
+            eventService.updateEvent(event);
         } catch (Exception e) {
             return Result.error("10002", e.getMessage());
         }
@@ -49,8 +49,8 @@ public class EventController {
     }
 
     @PostMapping("/delete/batch")
-    public Result<?> deleteBatch(@RequestBody List<String> eventIdList) {
-        eventService.deleteBatch(eventIdList);
+    public Result<?> deleteBatchEvents(@RequestBody List<String> eventIdList) {
+        eventService.deleteBatchEvents(eventIdList);
         return Result.success();
     }
 }

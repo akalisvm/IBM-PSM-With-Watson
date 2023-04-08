@@ -11,18 +11,16 @@ public class DialogMapper {
     TableMapper tableMapper = new TableMapper(new BangDBConfig(), new RestTemplateBuilder());
     GraphMapper graphMapper = new GraphMapper(new BangDBConfig(), new RestTemplateBuilder());
 
-    private static final String DIALOG = "Dialog";
-
-    public void insertCount() {
-        tableMapper.insertCount(DIALOG);
+    public String getDialogCount() {
+        return tableMapper.getCount("Dialog");
     }
 
-    public String getCount() {
-        return tableMapper.getCount(DIALOG);
+    public void insertDialogCount() {
+        tableMapper.insertCount("Dialog");
     }
 
-    public void updateCount(String count) {
-        tableMapper.updateCount(DIALOG, count);
+    public void updateDialogCount(String count) {
+        tableMapper.updateCount("Dialog", count);
     }
 
     public JSONArray getDialog(String patientId) {
@@ -30,12 +28,12 @@ public class DialogMapper {
                 "S=>(Dialog:* {creatorId=\"" + patientId + "\"}); RETURN * SORT_DESC createTime").get("rows");
     }
 
-    public void insert(String patientId, String dialogId, String dialogProp) {
+    public void insertDialog(String patientId, String dialogId, String dialogProp) {
         graphMapper.runCypherQuery("CREATE (User:user_" + patientId +
                 ")-[CREATED {\"name\":\"dialog_" + dialogId + "\"}]->(Dialog:dialog_" + dialogId + " " + dialogProp + ")");
     }
 
-    public void update(String dialogId, String dialogProp) {
+    public void updateDialog(String dialogId, String dialogProp) {
         tableMapper.runSQLQuery("update mygraph set val = " + dialogProp + " where name=\"dialog_" + dialogId + "\"");
     }
 }

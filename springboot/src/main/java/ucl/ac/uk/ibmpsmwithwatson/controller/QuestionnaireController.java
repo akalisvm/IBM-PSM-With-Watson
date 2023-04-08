@@ -11,7 +11,7 @@ import ucl.ac.uk.ibmpsmwithwatson.util.Result;
 
 import java.util.List;
 
-@Api(tags = "Questionnaire")
+@Api(tags = "Healthcare Questionnaire")
 @RestController
 @RequestMapping("/questionnaires")
 public class QuestionnaireController {
@@ -36,31 +36,31 @@ public class QuestionnaireController {
     }
 
     @GetMapping("/check/{questionnaireId}")
-    public Result<?> check(@PathVariable String questionnaireId) {
-        return Result.success(questionnaireService.check(questionnaireId));
+    public Result<?> checkQuestionnaire(@PathVariable String questionnaireId) {
+        return Result.success(questionnaireService.checkQuestionnaire(questionnaireId));
     }
 
     @PostMapping
-    public Result<?> insert(@RequestBody Questionnaire questionnaire) {
-        questionnaireService.insert(questionnaire);
+    public Result<?> insertQuestionnaire(@RequestBody Questionnaire questionnaire) {
+        questionnaireService.insertQuestionnaire(questionnaire);
         return Result.success();
     }
 
     @PostMapping("/assign/{questionnaireId}")
-    public Result<?> assign(@PathVariable String questionnaireId, @RequestBody List<String> patientIdList) {
-        questionnaireService.assign(questionnaireId, patientIdList);
+    public Result<?> assignQuestionnaire(@PathVariable String questionnaireId, @RequestBody List<String> patientIdList) {
+        questionnaireService.assignQuestionnaire(questionnaireId, patientIdList);
         return Result.success();
     }
 
     @PutMapping
-    public Result<?> update(@RequestBody Questionnaire questionnaire) {
-        questionnaireService.update(questionnaire);
+    public Result<?> updateQuestionnaire(@RequestBody Questionnaire questionnaire) {
+        questionnaireService.updateQuestionnaire(questionnaire);
         return Result.success();
     }
 
     @DeleteMapping("/{questionnaireId}")
-    public Result<?> delete(@PathVariable String questionnaireId) {
-        questionnaireService.delete(questionnaireId);
+    public Result<?> deleteQuestionnaire(@PathVariable String questionnaireId) {
+        questionnaireService.deleteQuestionnaire(questionnaireId);
         return Result.success();
     }
 }

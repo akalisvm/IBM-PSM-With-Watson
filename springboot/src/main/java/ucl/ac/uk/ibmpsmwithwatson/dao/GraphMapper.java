@@ -1,6 +1,5 @@
 package ucl.ac.uk.ibmpsmwithwatson.dao;
 
-import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
@@ -27,9 +26,5 @@ public class GraphMapper {
         HttpEntity<String> entity = new HttpEntity<>(cypher, headers);
         ResponseEntity<JSONObject> response = restTemplate.exchange(uri, HttpMethod.POST, entity, JSONObject.class);
         return Objects.requireNonNull(response.getBody());
-    }
-
-    public void addNode(String label, String name, String prop) {
-        runCypherQuery("CREATE (" + label + ":" + name + " " + prop + ")");
     }
 }

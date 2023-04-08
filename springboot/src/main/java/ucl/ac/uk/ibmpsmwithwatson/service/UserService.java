@@ -55,4 +55,10 @@ public class UserService {
         List<User> list = JSONUtil.toList(jsonArray, User.class);
         return list.size() == 0 ? null : list.get(0);
     }
+
+    public User getUserByEmail(String email) {
+        JSONArray jsonArray = userMapper.getUserByEmail(email);
+        List<User> list = JSONUtil.toList(jsonArray, User.class);
+        return list.size() == 0 ? null : list.get(0);
+    }
 }

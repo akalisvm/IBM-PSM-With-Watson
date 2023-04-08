@@ -25,7 +25,7 @@ public class NHSLoginClient {
     @Value("${server.ip}")
     private String IP;
 
-    @Value("{server.port}")
+    @Value("${server.port}")
     private String port;
 
     private final NHSLoginConfig nhsLoginConfig;

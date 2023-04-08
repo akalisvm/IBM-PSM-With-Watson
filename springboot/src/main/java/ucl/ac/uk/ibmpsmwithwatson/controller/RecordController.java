@@ -11,7 +11,7 @@ import ucl.ac.uk.ibmpsmwithwatson.util.Result;
 
 import java.util.List;
 
-@Api(tags = "Record")
+@Api(tags = "Healthcare Record")
 @RestController
 @RequestMapping("/records")
 public class RecordController {
@@ -36,14 +36,14 @@ public class RecordController {
     }
 
     @PostMapping
-    public Result<?> insert(@RequestBody Record record) {
-        recordService.insert(record);
+    public Result<?> insertRecord(@RequestBody Record record) {
+        recordService.insertRecord(record);
         return Result.success();
     }
 
     @PostMapping("/delete/batch")
-    public Result<?> deleteBatch(@RequestBody List<String> recordIdList) {
-        recordService.deleteBatch(recordIdList);
+    public Result<?> deleteBatchRecords(@RequestBody List<String> recordIdList) {
+        recordService.deleteBatchRecords(recordIdList);
         return Result.success();
     }
 }

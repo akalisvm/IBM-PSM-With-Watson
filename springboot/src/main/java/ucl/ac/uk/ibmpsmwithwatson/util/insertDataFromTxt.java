@@ -15,7 +15,8 @@ import java.util.Map;
 
 public class insertDataFromTxt {
 
-    private final static String[] USER_ATTR = new String[]{"id",
+    private final static String[] USER_ATTR = new String[]{
+            "id",
             "given_name",
             "family_name",
             "email",
@@ -28,40 +29,6 @@ public class insertDataFromTxt {
             "doctor",
             "questionnaire"
     };
-
-    public static void insertDataToTable(String table, String filename, String[] attr) {
-        try {
-            TableMapper tableMapper = new TableMapper(new BangDBConfig(), new RestTemplateBuilder());
-            ClassPathResource classPathResource = new ClassPathResource(filename);
-            InputStream inputStream = classPathResource.getStream();
-            InputStreamReader reader = new InputStreamReader(inputStream);
-            BufferedReader br = new BufferedReader(reader);
-            String line = br.readLine();
-            Digester md5 = new Digester(DigestAlgorithm.MD5);
-            while(line != null) {
-                String[] split = line.split(";");
-                Map<String, String> map = new LinkedHashMap<>();
-                for(int i = 0; i < attr.length; i++) {
-                    if(attr[i].equals("password")) {
-                        map.put(attr[i], md5.digestHex(split[i].trim()));
-                    } else {
-                        map.put(attr[i], split[i].trim());
-                    }
-                }
-                tableMapper.insertData(table,
-                        String.valueOf(tableMapper.getRetvalCount(table) + 1),
-                        JSONUtil.toJsonStr(map));
-                line = br.readLine();
-            }
-            inputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void insertUserDataToTable() {
-        insertDataToTable("mygraph", "user.txt", USER_ATTR);
-    }
 
     public static void insertDataToGraph(String filename, String[] attr, String label) {
         try {
@@ -86,9 +53,8 @@ public class insertDataFromTxt {
                 for(int i = split.length; i < attr.length; i++) {
                     map.put(attr[i], "");
                 }
-                graphMapper.addNode(label,
-                        label.toLowerCase() + "_" + (tableMapper.getRetvalCount(label) + 1),
-                        JSONUtil.toJsonStr(map));
+                String cypher = "CREATE (" + label + ":" + label.toLowerCase() + "_" + (tableMapper.getRetvalCount(label) + 1) + " " + JSONUtil.toJsonStr(map) + ")";
+                graphMapper.runCypherQuery(cypher);
                 line = br.readLine();
             }
             inputStream.close();

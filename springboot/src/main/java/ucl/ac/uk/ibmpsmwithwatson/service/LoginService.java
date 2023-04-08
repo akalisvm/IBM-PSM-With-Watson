@@ -34,11 +34,17 @@ public class LoginService {
         User nhsUser = nhsLoginClient.getUserInfo(accessToken);
         nhsUser.setRole("patient");
         if(getUserByEmail(nhsUser.getEmail()) == null) {
+            String id;
+            if(userMapper.getUserCount() == null) {
+                userMapper.insertUserCount();
+                id = "1";
+            } else {
+                id = userMapper.getUserCount();
+            }
+            userMapper.updateUserCount(String.valueOf(Integer.parseInt(id) + 1));
             GraphMapper graphMapper = new GraphMapper(new BangDBConfig(), new RestTemplateBuilder());
-            String id = String.valueOf(userMapper.getNHSUserId());
             nhsUser.setId(id);
-            graphMapper.addNode("User", "user_" + id,
-                    JSONUtil.parseObj(nhsUser, false).toString());
+            graphMapper.runCypherQuery("CREATE (" + "User" + ":" + "user_" + id + " " + JSONUtil.parseObj(nhsUser, false) + ")");
         }
         nhsUser.setApp_token(JwtUtil.getToken(MapUtil.toUserMap(nhsUser)));
         return nhsUser;

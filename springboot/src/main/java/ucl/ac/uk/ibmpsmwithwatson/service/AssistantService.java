@@ -31,9 +31,9 @@ public class AssistantService {
     @Autowired
     EventService eventService;
 
-    static final String APIkey = null;
-    static final String URL = null;
-    static final String EnvironmentID = null;
+    static final String APIkey = "hFGcCwRg-hv5smSLqq_wJA_JO1fhDd7S8HHrt1-5zpfI";
+    static final String URL = "https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/3074a022-733c-4ccf-8389-a74bdcdb89a3";
+    static final String EnvironmentID = "d9aac63d-6247-444e-901c-27a5b77e01a7";
 
     public Assistant authenticate() {
         IamAuthenticator authenticator = new IamAuthenticator.Builder().apikey(APIkey).build();
@@ -47,8 +47,8 @@ public class AssistantService {
         return assistant.createSession(options).execute().getResult().getSessionId();
     }
 
-    public List<String> getTextResponse(Assistant assistant, String sessionId, String author, String text) {
-        User operator = dialogService.getUserByEmail(author);
+    public List<String> getResponse(Assistant assistant, String sessionId, String author, String text) {
+        User operator = userService.getUserByEmail(author);
         MessageInput input = new MessageInput.Builder().messageType("text").text(text).build();
         MessageOptions options = new MessageOptions.Builder(EnvironmentID, sessionId).input(input).build();
         MessageResponse messageResponse = assistant.message(options).execute().getResult();
@@ -89,11 +89,11 @@ public class AssistantService {
                         case "sdm":
                             Dialog dialog = dialogService.getDialog(operator.getId());
                             if (dialog == null) {
-                                dialogService.insert(operator.getId(), MessageLog.getInstance().getMessages());
+                                dialogService.insertDialog(operator.getId(), MessageLog.getInstance().getMessages());
                             } else {
                                 dialog.setCreateTime(new Date());
                                 dialog.setMessages(MessageLog.getInstance().getMessages());
-                                dialogService.update(dialog);
+                                dialogService.updateDialog(dialog);
                             }
                             break;
                         case "schedule": {
@@ -165,7 +165,7 @@ public class AssistantService {
                             } else {
                                 event.setRepeat("Does not repeat");
                             }
-                            eventService.insert(event);
+                            eventService.insertEvent(event);
                             break;
                         }
                         case "reschedule": {
@@ -225,7 +225,7 @@ public class AssistantService {
                                 } else {
                                     event.setRepeat("Does not repeat");
                                 }
-                                eventService.update(event);
+                                eventService.updateEvent(event);
                             } else {
                                 throw new RuntimeException("The outreach event does not exist.");
                             }

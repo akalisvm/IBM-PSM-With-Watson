@@ -1,7 +1,6 @@
 package ucl.ac.uk.ibmpsmwithwatson.service;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.Dict;
 import cn.hutool.extra.mail.MailUtil;
 import cn.hutool.extra.template.Template;
 import cn.hutool.extra.template.TemplateConfig;
@@ -13,7 +12,6 @@ import cn.hutool.json.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ucl.ac.uk.ibmpsmwithwatson.dao.EventMapper;
-import ucl.ac.uk.ibmpsmwithwatson.dao.UserMapper;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.dto.EventQueryDTO;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Event;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.vo.EventVO;
@@ -72,7 +70,7 @@ public class EventService {
         return PaginationUtil.pagination(eventVOList, dto.getPageNum(), dto.getPageSize());
     }
 
-    public void insert(Event event) throws RuntimeException {
+    public void insertEvent(Event event) throws RuntimeException {
         EventQueryDTO dto = new EventQueryDTO();
         dto.setUserRole("doctor");
         dto.setUserId(event.getOrganiserId());
@@ -83,27 +81,27 @@ public class EventService {
             throw new RuntimeException("You have scheduled a meeting with this patient.");
         }
         String id;
-        if(eventMapper.getCount() == null) {
-            eventMapper.insertCount();
+        if(eventMapper.getEventCount() == null) {
+            eventMapper.insertEventCount();
             id = "1";
         } else {
-            id = eventMapper.getCount();
+            id = eventMapper.getEventCount();
         }
-        eventMapper.updateCount(String.valueOf(Integer.parseInt(id) + 1));
+        eventMapper.updateEventCount(String.valueOf(Integer.parseInt(id) + 1));
         event.setId(id);
         event.setCreateTime(new Date());
         event.setResult("Pending");
         event.setFeedback("");
-        eventMapper.insert(event.getOrganiserId(), event.getParticipantId(), id, JSONUtil.toJsonStr(event));
-        sendEmail("schedule", userService.getUserById(event.getParticipantId()).getEmail(), event);
+        eventMapper.insertEvent(event.getOrganiserId(), event.getParticipantId(), id, JSONUtil.toJsonStr(event));
+        sendEmailNotification("schedule", userService.getUserById(event.getParticipantId()).getEmail(), event);
     }
 
-    public void update(Event event) throws RuntimeException {
+    public void updateEvent(Event event) throws RuntimeException {
         String originalResult = getEventById(event.getId()).getResult();
         JSONObject jsonObject = JSONUtil.parseObj(event);
         jsonObject.putOpt("label", "Event");
         jsonObject.putOpt("name", "event_" + event.getId());
-        eventMapper.update(event.getId(), JSONUtil.toJsonStr(jsonObject));
+        eventMapper.updateEvent(event.getId(), JSONUtil.toJsonStr(jsonObject));
         if(originalResult.equals("Pending") && !event.getResult().equals("Pending")) {
             Event newEvent = new Event();
             newEvent.setOrganiserId(event.getOrganiserId());
@@ -120,14 +118,14 @@ public class EventService {
             } else if(repeat[2].equals("month") || repeat[2].equals("months")) {
                 newEvent.setMeetingTime(DateUtil.offsetMonth(event.getMeetingTime(), Integer.parseInt(repeat[1])));
             }
-            insert(newEvent);
+            insertEvent(newEvent);
         }
-        sendEmail("reschedule", userService.getUserById(event.getParticipantId()).getEmail(), event);
+        sendEmailNotification("reschedule", userService.getUserById(event.getParticipantId()).getEmail(), event);
     }
 
-    public void deleteBatch(List<String> eventIdList) {
+    public void deleteBatchEvents(List<String> eventIdList) {
         for(String eventId : eventIdList) {
-            eventMapper.delete(eventId);
+            eventMapper.deleteEvent(eventId);
         }
     }
 
@@ -143,7 +141,7 @@ public class EventService {
         return list.size() == 0 ? null : list.get(0);
     }
 
-    private void sendEmail(String type, String email, Event event) {
+    private void sendEmailNotification(String type, String email, Event event) {
         TemplateEngine engine = TemplateUtil.createEngine(new TemplateConfig("templates", TemplateConfig.ResourceMode.CLASSPATH));
         HashMap<String, String> map = new HashMap<>();
         map.put("participantName", event.getParticipantName());

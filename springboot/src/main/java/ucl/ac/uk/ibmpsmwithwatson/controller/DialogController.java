@@ -1,5 +1,6 @@
 package ucl.ac.uk.ibmpsmwithwatson.controller;
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +10,7 @@ import ucl.ac.uk.ibmpsmwithwatson.pojo.po.Dialog;
 import ucl.ac.uk.ibmpsmwithwatson.service.DialogService;
 import ucl.ac.uk.ibmpsmwithwatson.util.Result;
 
+@Api(tags = "Shared Decision Making Dialog")
 @RestController
 @RequestMapping("/dialog")
 public class DialogController {

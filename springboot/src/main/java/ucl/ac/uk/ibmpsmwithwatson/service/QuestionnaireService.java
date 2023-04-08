@@ -46,28 +46,28 @@ public class QuestionnaireService {
         return list.get(0);
     }
 
-    public List<User> check(String questionnaireId) {
-        JSONArray jsonArray = questionnaireMapper.check(questionnaireId);
+    public List<User> checkQuestionnaire(String questionnaireId) {
+        JSONArray jsonArray = questionnaireMapper.checkQuestionnaire(questionnaireId);
         return JSONUtil.toList(jsonArray, User.class);
     }
 
-    public void insert(Questionnaire questionnaire) {
+    public void insertQuestionnaire(Questionnaire questionnaire) {
         String id;
-        if(questionnaireMapper.getCount() == null) {
-            questionnaireMapper.insertCount();
+        if(questionnaireMapper.getQuestionnaireCount() == null) {
+            questionnaireMapper.insertQuestionnaireCount();
             id = "1";
         } else {
-            id = questionnaireMapper.getCount();
+            id = questionnaireMapper.getQuestionnaireCount();
         }
-        questionnaireMapper.updateCount(String.valueOf(Integer.parseInt(id) + 1));
+        questionnaireMapper.updateQuestionnaireCount(String.valueOf(Integer.parseInt(id) + 1));
         questionnaire.setId(id);
         questionnaire.setCreateTime(new Date());
-        questionnaireMapper.insert(questionnaire.getCreatorId(),
+        questionnaireMapper.insertQuestionnaire(questionnaire.getCreatorId(),
                 JSONUtil.toJsonStr(JSONUtil.createObj().putOpt("name", "questionnaire_" + id)),
                 id, JSONUtil.toJsonStr(questionnaire));
     }
 
-    public void assign(String questionnaireId, List<String> patientIdList) {
+    public void assignQuestionnaire(String questionnaireId, List<String> patientIdList) {
         for(String id : patientIdList) {
             User patient = getPatientById(id);
             if(patient != null) {
@@ -75,29 +75,29 @@ public class QuestionnaireService {
                 JSONObject jsonObject = JSONUtil.parseObj(patient);
                 jsonObject.putOpt("label", "User");
                 jsonObject.putOpt("name", "user_" + patient.getId());
-                questionnaireMapper.assign(JSONUtil.toJsonStr(jsonObject), id);
+                questionnaireMapper.assignQuestionnaire(JSONUtil.toJsonStr(jsonObject), id);
             }
         }
     }
 
-    public void update(Questionnaire questionnaire) {
+    public void updateQuestionnaire(Questionnaire questionnaire) {
         JSONObject jsonObject = JSONUtil.parseObj(questionnaire);
         jsonObject.putOpt("label", "Questionnaire");
         jsonObject.putOpt("name", "questionnaire_" + questionnaire.getId());
-        questionnaireMapper.update(questionnaire.getId(), JSONUtil.toJsonStr(jsonObject));
+        questionnaireMapper.updateQuestionnaire(questionnaire.getId(), JSONUtil.toJsonStr(jsonObject));
     }
 
-    public void delete(String questionnaireId) {
-        JSONArray jsonArray = questionnaireMapper.check(questionnaireId);
+    public void deleteQuestionnaire(String questionnaireId) {
+        JSONArray jsonArray = questionnaireMapper.checkQuestionnaire(questionnaireId);
         List<User> list = JSONUtil.toList(jsonArray, User.class);
         for(User user : list) {
             user.setQuestionnaire("");
             JSONObject jsonObject = JSONUtil.parseObj(user);
             jsonObject.putOpt("label", "User");
             jsonObject.putOpt("name", "user_" + user.getId());
-            userMapper.update(user.getId(), JSONUtil.toJsonStr(jsonObject));
+            userMapper.updateUser(user.getId(), JSONUtil.toJsonStr(jsonObject));
         }
-        questionnaireMapper.delete(questionnaireId);
+        questionnaireMapper.deleteQuestionnaire(questionnaireId);
     }
 
     private User getPatientById(String patientId) {

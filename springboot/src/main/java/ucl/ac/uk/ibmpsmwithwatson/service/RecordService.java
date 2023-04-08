@@ -73,26 +73,26 @@ public class RecordService {
         return PaginationUtil.pagination(recordVOList, dto.getPageNum(), dto.getPageSize());
     }
 
-    public void insert(Record record) {
+    public void insertRecord(Record record) {
         String id;
-        if(recordMapper.getCount() == null) {
-            recordMapper.insertCount();
+        if(recordMapper.getRecordCount() == null) {
+            recordMapper.insertRecordCount();
             id = "1";
         } else {
-            id = recordMapper.getCount();
+            id = recordMapper.getRecordCount();
         }
-        recordMapper.updateCount(String.valueOf(Integer.parseInt(id) + 1));
+        recordMapper.updateRecordCount(String.valueOf(Integer.parseInt(id) + 1));
         record.setId(id);
         record.setCreateTime(new Date());
         if(record.getQuestionnaire().getNeedMeeting().equals("")) {
             record.getQuestionnaire().setNeedMeeting("No");
         }
-        recordMapper.insert(record.getCreatorId(), id, JSONUtil.toJsonStr(record));
+        recordMapper.insertRecord(record.getCreatorId(), id, JSONUtil.toJsonStr(record));
     }
 
-    public void deleteBatch(List<String> recordIdList) {
+    public void deleteBatchRecords(List<String> recordIdList) {
         for(String recordId : recordIdList) {
-            recordMapper.delete(recordId);
+            recordMapper.deleteRecord(recordId);
         }
     }
 }
