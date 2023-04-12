@@ -11,7 +11,9 @@ public class Result<T> {
 
     public Result() {}
 
-    public Result(T data) { this.data = data; }
+    public Result(T data) {
+        this.data = data;
+    }
 
     public static <T> Result<T> success() {
         Result<T> result = new Result<>();

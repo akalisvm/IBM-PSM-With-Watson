@@ -12,17 +12,11 @@ public class JwtUtil {
     private static final String sign = "ibm-psm-with-watson";
 
     public static String getToken(Map<String, String> map) {
-
         Calendar nowTime = Calendar.getInstance();
         nowTime.add(Calendar.HOUR, 24);
         Date expiresDate = nowTime.getTime();
-
-        JWTCreator.Builder builder = JWT.create()
-                .withIssuedAt(new Date())
-                .withExpiresAt(expiresDate);
-
+        JWTCreator.Builder builder = JWT.create().withIssuedAt(new Date()).withExpiresAt(expiresDate);
         map.forEach(builder::withClaim);
-
         return builder.sign(Algorithm.HMAC256(sign));
     }
 

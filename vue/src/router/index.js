@@ -12,39 +12,46 @@ const routes = [
       {
         path: 'home',
         name: 'Home',
-        component: () => import("@/views/Home")
+        component: () => import("@/views/Home"),
+        meta: { title: 'My Home' }
       },
       {
         path: 'dashboard',
         name: 'Dashboard',
-        component: () => import("@/views/Dashboard")
+        component: () => import("@/views/Dashboard"),
+        meta: { title: 'Dashboard' }
       },
       {
         path: 'patients',
         name: 'Patients',
-        component: () => import("@/views/Patients")
+        component: () => import("@/views/Patients"),
+        meta: { title: 'My Patients' }
       },
       {
         path: 'questionnaires',
         name: 'Questionnaires',
-        component: () => import("@/views/Questionnaires")
+        component: () => import("@/views/Questionnaires"),
+        meta: { title: 'Questionnaires' }
       },
       {
         path: 'records',
         name: 'Records',
-        component: () => import("@/views/Records")
+        component: () => import("@/views/Records"),
+        meta: { title: 'Healthcare Records' }
       },
       {
         path: 'events',
         name: 'Events',
-        component: () => import("@/views/Events")
+        component: () => import("@/views/Events"),
+        meta: { title: 'Outreach Events' }
       }
     ]
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import("@/views/Login")
+    component: () => import("@/views/Login"),
+    meta: { title: 'Login' }
   },
 ]
 
@@ -54,8 +61,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  window.document.title = to.meta.title
   if(to.name !== "Login" && !getCookie("user")) {
-    next( {name: "Login"} )
+    next({ name: "Login" })
   } else { next() }
 })
 

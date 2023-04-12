@@ -9,11 +9,9 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import ucl.ac.uk.ibmpsmwithwatson.config.BangDBConfig;
 import ucl.ac.uk.ibmpsmwithwatson.dao.GraphMapper;
-import ucl.ac.uk.ibmpsmwithwatson.dao.TableMapper;
 import ucl.ac.uk.ibmpsmwithwatson.dao.UserMapper;
 import ucl.ac.uk.ibmpsmwithwatson.pojo.po.User;
 import ucl.ac.uk.ibmpsmwithwatson.util.JwtUtil;
-import ucl.ac.uk.ibmpsmwithwatson.util.MapUtil;
 import ucl.ac.uk.ibmpsmwithwatson.util.NHSLoginClient;
 
 import java.util.List;
@@ -46,7 +44,7 @@ public class LoginService {
             nhsUser.setId(id);
             graphMapper.runCypherQuery("CREATE (" + "User" + ":" + "user_" + id + " " + JSONUtil.parseObj(nhsUser, false) + ")");
         }
-        nhsUser.setApp_token(JwtUtil.getToken(MapUtil.toUserMap(nhsUser)));
+        nhsUser.setApp_token(JwtUtil.getToken(User.toUserMap(nhsUser)));
         return nhsUser;
     }
 
@@ -56,7 +54,7 @@ public class LoginService {
         if(appUser == null || !appUser.getPassword().equals(md5.digestHex(requestUser.getPassword()))) {
             return null;
         }
-        appUser.setApp_token(JwtUtil.getToken(MapUtil.toUserMap(appUser)));
+        appUser.setApp_token(JwtUtil.getToken(User.toUserMap(appUser)));
         return appUser;
     }
 
