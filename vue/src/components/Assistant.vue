@@ -39,7 +39,7 @@
 <script>
 import request from "@/utils/request";
 import { getCookie } from "@/utils/cookie";
-import Recorder from 'js-audio-recorder';
+import Recorder from "js-audio-recorder";
 
 export default {
   name: 'Assistant',

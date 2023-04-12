@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Layout from '../layout/Layout.vue'
+import { createRouter, createWebHistory } from "vue-router";
+import Layout from "../layout/Layout.vue";
 import { getCookie } from "@/utils/cookie";
 
 const routes = [
