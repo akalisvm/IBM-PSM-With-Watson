@@ -31,9 +31,9 @@ public class AssistantService {
     @Autowired
     EventService eventService;
 
-    static final String APIkey = "hFGcCwRg-hv5smSLqq_wJA_JO1fhDd7S8HHrt1-5zpfI";
-    static final String URL = "https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/3074a022-733c-4ccf-8389-a74bdcdb89a3";
-    static final String EnvironmentID = "d9aac63d-6247-444e-901c-27a5b77e01a7";
+    static final String APIkey = "<API key>";
+    static final String URL = "<URL>";
+    static final String EnvironmentID = "<Environment ID>";
 
     public Assistant authenticate() {
         IamAuthenticator authenticator = new IamAuthenticator.Builder().apikey(APIkey).build();

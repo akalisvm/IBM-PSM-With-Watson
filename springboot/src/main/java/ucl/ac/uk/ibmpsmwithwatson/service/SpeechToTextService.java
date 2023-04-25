@@ -18,15 +18,11 @@ import java.io.InputStream;
 @Service
 public class SpeechToTextService {
 
-    static final String APIkey = "G8CReY88aWVwoM5zqaZkn55JktaXkRYHAjq4IEpkZZz3";
-    static final String URL = "https://api.eu-gb.speech-to-text.watson.cloud.ibm.com/instances/37720f6d-8937-4abf-bcec-fead11212620";
+    static final String APIkey = "<API key>";
+    static final String URL = "<URL>";
 
     public String getTranscriptByWavFile(MultipartFile file) throws InterruptedException, IOException {
         return getTranscriptByInputStream(file.getInputStream());
-    }
-
-    public String getTranscriptByFilename(String filename) throws InterruptedException {
-        return getTranscriptByInputStream(new ClassPathResource("audio" + File.separator + filename).getStream());
     }
 
     public String getTranscriptByInputStream(InputStream inputStream) throws InterruptedException {
@@ -62,12 +58,5 @@ public class SpeechToTextService {
             object.wait();
         }
         return transcript[0];
-    }
-
-    public String uploadWavFile(MultipartFile file) throws IOException {
-        String filename = IdUtil.fastSimpleUUID() + "_" + file.getOriginalFilename();
-        String rootFilePath = System.getProperty("user.dir") + "/springboot/src/main/resources/audio/" + filename;
-        FileUtil.writeBytes(file.getBytes(), rootFilePath);
-        return filename;
     }
 }

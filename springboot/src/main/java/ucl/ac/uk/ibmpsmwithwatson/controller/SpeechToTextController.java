@@ -25,13 +25,4 @@ public class SpeechToTextController {
             return Result.error("10003", e.getMessage());
         }
     }
-
-    @PostMapping("/upload")
-    public Result<?> uploadWavFile(MultipartFile file) {
-        try {
-            return Result.success(speechToTextService.uploadWavFile(file));
-        } catch (Exception e) {
-            return Result.error("10004", e.getMessage());
-        }
-    }
 }
