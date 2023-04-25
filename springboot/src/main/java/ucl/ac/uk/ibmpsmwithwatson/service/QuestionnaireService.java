@@ -21,10 +21,10 @@ import java.util.List;
 public class QuestionnaireService {
 
     @Autowired
-    QuestionnaireMapper questionnaireMapper;
+    UserMapper userMapper;
 
     @Autowired
-    UserMapper userMapper;
+    QuestionnaireMapper questionnaireMapper;
 
     public Integer getNumberOfQuestionnairesByDoctorId(String doctorId) {
         return (Integer) questionnaireMapper.getNumberOfQuestionnairesByDoctorId(doctorId).get("count");

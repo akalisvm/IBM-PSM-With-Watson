@@ -1,16 +1,20 @@
 # IBM-PSM-With-Watson
-IBM PSM With Watson As Tianang Chen's UCL MEng Final Year Project
+IBM PSM With Watson (a Vue.js + Spring Boot + BangDB web application) As Tianang Chen's UCL MEng Final Year Project
 
 ## Project Title 
 
 **Using IBM software and Watson (Watson Assistant) through a voice gateway to call patients to schedule/reschedule appointments**
 
-## Overview
+## System Manual
 
-*Communication is regarded as the "life blood" of any successful organisation. Business processes have a vital role to play in the efficient and effective function of organisations by enabling efficient communication.*
+The web application has been deployed at <http://43.157.89.132>.
 
-*Those same business processes consume massive amounts of data and when incomplete, can contribute to decisions that yield unwarranted variations from the ideal. Unwarranted variation can cost money, reduce quality and can lead to unsatisfied customers/patients.*
+To run the application locally, follow the steps:
 
-*IBM Pathway Signal Management with Watson provides actionable insights to support the drive to improve productivity by reducing unwarranted variation and process complexity. By leveraging IBM’s data fabric it connects the right data, at the right time, to the right people, from where it’s needed.*
+- Clone the repository **git clone https://github.com/akalisvm/IBM-PSM-With-Watson.git**.
+- Run **cd vue** to switch to the root package of the front end. 
+- Run **npm run serve** to start the front end.
+- Run **main()** method in the class **IbmPsmWithWatsonApplication** to start back end.
+- Go to <http://localhost:8080> to start using the application locally.
 
-*For this specific element we would like to see how the team could leverage Watson Assistant with the voice gateway to call patients to schedule/reschedule appointments and ask about their symptoms and their progression on those symptoms. The ultimate goal here is an application that would reduce administrative and nurse time to conduct important yet repetitive and time consuming tasks to free up time for clinical facing duties.*
+The API key, URL, and Environment ID for IBM Watson Assistant and IBM Speech to Text are concealed to prevent unauthorized access to credentials. Similarly, the email and password for the SMTP service are also obscured to avoid malicious usage, implying that the further developer needs to create their own SMTP service. This approach ensures security and protects against potential breaches or misuse of sensitive information.

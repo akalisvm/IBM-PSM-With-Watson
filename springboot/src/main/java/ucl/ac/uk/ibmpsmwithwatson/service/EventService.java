@@ -27,10 +27,10 @@ import java.util.List;
 public class EventService {
 
     @Autowired
-    EventMapper eventMapper;
+    UserService userService;
 
     @Autowired
-    UserService userService;
+    EventMapper eventMapper;
 
     public List<Event> getUpcomingEvents(String doctorId) {
         List<Event> eventList = JSONUtil.toList(eventMapper.getUpcomingEvents(doctorId, new Date().getTime()), Event.class);
@@ -156,7 +156,7 @@ public class EventService {
             String content = template.render(map);
             MailUtil.send(email, "Outreach event scheduled", content, true);
         } else if(type.equals("reschedule")) {
-            Template template = engine.getTemplate("schedule.html");
+            Template template = engine.getTemplate("reschedule.html");
             String content = template.render(map);
             MailUtil.send(email, "Outreach event rescheduled", content, true);
         }

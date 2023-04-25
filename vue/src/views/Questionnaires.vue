@@ -255,9 +255,9 @@
         </el-table>
       </div>
       <template #footer>
-        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <el-button v-if="this.dialogMode !== 5" @click="dialogVisible = false">Cancel</el-button>
         <el-button v-if="this.dialogMode !== 5" @click="addQuestion">Add a new question</el-button>
-        <el-button type="primary" @click="submit">Submit</el-button>
+        <el-button v-if="this.dialogMode !== 5" type="primary" @click="submit">Submit</el-button>
       </template>
     </el-dialog>
   </div>

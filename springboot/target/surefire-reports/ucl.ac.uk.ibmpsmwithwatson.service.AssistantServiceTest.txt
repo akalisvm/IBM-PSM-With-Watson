@@ -1,0 +1,10 @@
+-------------------------------------------------------------------------------
+Test set: ucl.ac.uk.ibmpsmwithwatson.service.AssistantServiceTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 23.735 s <<< FAILURE! - in ucl.ac.uk.ibmpsmwithwatson.service.AssistantServiceTest
+getResponse  Time elapsed: 12.127 s  <<< ERROR!
+org.springframework.web.client.ResourceAccessException: I/O error on POST request for "http://43.157.89.132:18080/graph/mygraph/query": connect timed out; nested exception is java.net.SocketTimeoutException: connect timed out
+	at ucl.ac.uk.ibmpsmwithwatson.service.AssistantServiceTest.getResponse(AssistantServiceTest.java:18)
+Caused by: java.net.SocketTimeoutException: connect timed out
+	at ucl.ac.uk.ibmpsmwithwatson.service.AssistantServiceTest.getResponse(AssistantServiceTest.java:18)
+

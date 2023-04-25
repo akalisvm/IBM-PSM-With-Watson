@@ -39,10 +39,6 @@ public class RecordMapper {
                 ")-[CREATED {\"name\":\"record_" + recordId + "\"}]->(Record:record_" + recordId + " " + recordProp + ")");
     }
 
-    public void updateRecord(String recordId, String recordProp) {
-        tableMapper.runSQLQuery("update mygraph set val = " + recordProp + " where name=\"record_" + recordId + "\"");
-    }
-
     public void deleteRecord(String recordId) {
         tableMapper.runSQLQuery("delete from mygraph_rel where name=\"record_" + recordId + "\"");
         tableMapper.runSQLQuery("delete from mygraph where name=\"record_" + recordId + "\"");
