@@ -1,5 +1,5 @@
 # IBM-PSM-With-Watson
-IBM PSM With Watson (a Vue.js + Spring Boot + BangDB web application) As Tianang Chen's UCL MEng Final Year Project
+IBM PSM With Watson (a Vue.js + Spring Boot + BangDB web application) As XFZP1's UCL MEng Final Year Project
 
 ## Project Title 
 
